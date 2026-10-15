@@ -251,8 +251,58 @@ async def run_tests():
             assert nav_fits is True, "Navigation buttons must fit within 375px mobile screen"
             print("  [PASS] Mobile viewport layout verified.")
 
+            # Suite 8: Audio Synthesis & Settings Controls
+            print("[SUITE 8/11] Audio Synthesis & Settings Controls...")
+            await eval_js("""
+                window.gameApp.audio.init();
+                window.gameApp.audio.setMasterVolume(0.7);
+                window.gameApp.audio.setMusicVolume(0.5);
+                window.gameApp.audio.setSfxVolume(0.8);
+                window.gameApp.audio.setAmbienceVolume(0.4);
+                window.gameApp.audio.toggleMute(false);
+            """)
+            assert await eval_js("window.gameApp.audio.masterVol") == 0.7
+            assert await eval_js("window.gameApp.audio.musicVol") == 0.5
+            assert await eval_js("window.gameApp.audio.isMuted") is False
+            print("  [PASS] Web Audio synthesizer volume controls verified.")
+
+            # Suite 9: Detective Journal & Timeline Reconstruction
+            print("[SUITE 9/11] Detective Journal & Timeline Reconstruction...")
+            await eval_js("window.gameApp.openJournal();")
+            assert await eval_js("document.querySelector('.screen.active')?.id") == "journal-screen"
+            dossier_count = await eval_js("document.querySelectorAll('.dossier-card').length")
+            assert dossier_count > 0, "Dossier cards must render in journal"
+            
+            await eval_js("window.gameApp.openTimeline();")
+            assert await eval_js("document.querySelector('.screen.active')?.id") == "timeline-screen"
+            timeline_events = await eval_js("document.querySelectorAll('.timeline-card').length")
+            assert timeline_events > 0, "Timeline event cards must render in timeline screen"
+            print("  [PASS] Suspect dossiers and chronological timeline verified.")
+
+            # Suite 10: Anime Cut-in & Achievement System
+            print("[SUITE 10/11] Cinematic Anime Cut-in & Achievements...")
+            await eval_js("""
+                window.gameApp.achievements.unlock('first_clue');
+                window.gameApp.triggerAnimeCutIn('Marcus Cruz', 'OBJECTION!', 'assets/characters/cruz_nervous.png');
+            """)
+            is_cutin_active = await eval_js("document.getElementById('anime-cutin').classList.contains('active')")
+            assert is_cutin_active is True, "Cut-in banner must activate with active class"
+            assert await eval_js("window.gameApp.achievements.has('first_clue')") is True
+            print("  [PASS] Anime cut-in banner and achievement unlocking verified.")
+
+            # Suite 11: The Obsidian Hourglass Syndicate Conspiracy Epilogue
+            print("[SUITE 11/11] Overarching Syndicate Mystery Epilogue...")
+            await eval_js("window.gameApp.openEpilogue();")
+            assert await eval_js("document.querySelector('.screen.active')?.id") == "epilogue-screen"
+            epilogue_text = await eval_js("document.getElementById('epilogue-screen').innerText")
+            assert "OBSIDIAN HOURGLASS" in epilogue_text
+            assert "Star of Alexandria" in epilogue_text
+            assert "Victor Sterling" in epilogue_text
+            assert "Thaddeus Thorne" in epilogue_text
+            print("  [PASS] Overarching conspiracy narrative connection verified.")
+
             assert len(console_errors) == 0, f"Found console errors: {console_errors}"
-            print("\n>> ALL 7 AUTOMATED WEB TEST SUITES PASSED (0 FAILURES, 0 CONSOLE ERRORS)")
+            print("\n>> ALL 11 AUTOMATED WEB TEST SUITES PASSED (0 FAILURES, 0 CONSOLE ERRORS)")
 
             listener.cancel()
     finally:

@@ -13,6 +13,16 @@
   <!-- Dynamic Background Layer -->
   <div id="scene-bg" class="scene-bg"></div>
 
+  <!-- Environmental Ambience Canvas (Rain, Dust, Lightning) -->
+  <canvas id="ambient-canvas" class="ambient-canvas"></canvas>
+
+  <!-- Dramatic Anime Speed Lines & Cut-In -->
+  <div id="speedlines-overlay" class="speedlines-overlay"></div>
+  <div id="anime-cutin" class="anime-cutin">
+    <div class="cutin-img" id="cutin-img"></div>
+    <div class="cutin-text" id="cutin-text">OBJECTION!</div>
+  </div>
+
   <!-- Anime Character Portrait -->
   <img id="character-portrait" class="character-portrait" src="assets/characters/detective_neutral.png" alt="Character" style="display:none;">
 
@@ -20,7 +30,7 @@
   <div id="hud-bar" class="header-bar" style="display:none;">
     <div class="header-title">
       <h2 id="hud-case-title">Case #1: The Midnight Museum Heist</h2>
-      <span>Consulting Detective Sherlock (Scotland Yard)</span>
+      <span>Consulting Detective Sherlock &bull; Scotland Yard</span>
     </div>
     <div class="header-stats">
       <div id="hud-score" class="score-badge">Score: 100</div>
@@ -29,6 +39,11 @@
         <div class="energy-bar-wrap">
           <div id="hud-energy-fill" class="energy-bar-fill"></div>
         </div>
+      </div>
+      <div class="hud-controls">
+        <button id="btn-hud-audio" class="hud-icon-btn" title="Toggle Sound / BGM">🎵</button>
+        <button id="btn-hud-journal" class="hud-icon-btn" title="Detective Journal">📓</button>
+        <button id="btn-hud-settings" class="hud-icon-btn" title="Settings">⚙️</button>
       </div>
     </div>
   </div>
@@ -55,17 +70,19 @@
 
   <!-- 1. MAIN MENU SCREEN -->
   <div id="menu-screen" class="screen active">
-    <div style="position:absolute; top:80px; width:100%; text-align:center;">
-      <h1 style="font-size:3.6rem; color:var(--gold-light); text-shadow:0 0 25px rgba(244,196,66,0.6); letter-spacing:4px; margin-bottom:6px;">CASE CLOSED</h1>
-      <p style="font-size:1.25rem; color:var(--cyan); letter-spacing:2px; font-weight:600;">ANIME DETECTIVE MYSTERY SIMULATOR</p>
-      <p style="font-size:0.9rem; color:var(--text-dim); margin-top:4px;">C++17 Architecture &bull; Official Web Edition</p>
+    <div style="position:absolute; top:70px; width:100%; text-align:center;">
+      <h1 style="font-size:3.5rem; color:var(--gold-light); text-shadow:0 0 25px rgba(244,196,66,0.6); letter-spacing:4px; margin-bottom:6px;">CASE CLOSED</h1>
+      <p style="font-size:1.2rem; color:var(--cyan); letter-spacing:2px; font-weight:600;">ANIME DETECTIVE MYSTERY SIMULATOR</p>
+      <p style="font-size:0.85rem; color:var(--text-dim); margin-top:4px;">The Obsidian Hourglass Chronicles &bull; C++17 &amp; ES6 Architecture</p>
     </div>
 
-    <div style="position:absolute; bottom:100px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; gap:14px; width:360px;">
-      <button id="btn-new-game" class="btn btn-primary" style="padding:14px; font-size:1.1rem;">★ New Criminal Investigation</button>
-      <button id="btn-continue" class="btn" style="padding:12px;">Continue Saved Case</button>
-      <button id="btn-how-to-play" class="btn" style="padding:12px;">How to Play (Manual)</button>
-      <button id="btn-credits" class="btn" style="padding:12px;">Credits &amp; OOP Architecture</button>
+    <div style="position:absolute; bottom:50px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; gap:10px; width:360px;">
+      <button id="btn-new-game" class="btn btn-primary" style="padding:13px; font-size:1.05rem;">★ New Criminal Investigation</button>
+      <button id="btn-continue" class="btn" style="padding:11px;">Continue Saved Case</button>
+      <button id="btn-menu-achievements" class="btn" style="padding:11px;">🏆 Trophies &amp; Achievements</button>
+      <button id="btn-menu-settings" class="btn" style="padding:11px;">⚙️ Settings &amp; Audio</button>
+      <button id="btn-how-to-play" class="btn" style="padding:11px;">How to Play (Manual)</button>
+      <button id="btn-credits" class="btn" style="padding:11px;">Credits &amp; OOP Architecture</button>
     </div>
   </div>
 
@@ -108,7 +125,9 @@
     <div class="investigation-nav-bar">
       <button id="btn-nav-interrogate" class="btn">Interrogate</button>
       <button id="btn-nav-clueboard" class="btn">Clue Board</button>
-      <button id="btn-nav-notebook" class="btn">Notebook</button>
+      <button id="btn-nav-timeline" class="btn">Timeline</button>
+      <button id="btn-nav-journal" class="btn">Journal</button>
+      <button id="btn-nav-notebook" class="btn" style="display:none;" aria-hidden="true">Notebook</button>
       <button id="btn-nav-accuse" class="btn btn-danger">Accuse!</button>
     </div>
 
@@ -153,7 +172,8 @@
 
   <!-- 7. CLUE BOARD SCREEN -->
   <div id="clueboard-screen" class="screen">
-    <div class="screen-content-padded">
+    <canvas id="clueboard-canvas" class="clueboard-canvas"></canvas>
+    <div class="screen-content-padded" style="position:relative; z-index:15;">
       <h2 style="color:var(--gold); font-size:1.6rem; margin-bottom:8px;">EVIDENCE CLUE BOARD</h2>
       <p style="color:var(--text-dim); font-size:0.95rem; margin-bottom:16px;">Click two evidence pins, then click 'Connect Pinned Clues' to discover breakthroughs:</p>
       <div id="clue-pins-grid" class="clue-pins-grid"></div>
@@ -213,7 +233,114 @@
         <h4 style="color:var(--gold-light); font-size:1rem; margin-bottom:10px;">--- Suspect Elimination Report ---</h4>
         <div id="verdict-eliminations"></div>
       </div>
-      <button id="btn-verdict-menu" class="btn btn-primary" style="padding:14px 36px; font-size:1.05rem;">Return to Main Menu</button>
+      <div style="margin-top:20px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+        <button id="btn-verdict-menu" class="btn btn-primary" style="padding:14px 36px; font-size:1.05rem;">Return to Main Menu</button>
+        <button id="btn-verdict-epilogue" class="btn btn-primary" style="display:none; padding:14px 36px; font-size:1.05rem; background:linear-gradient(135deg, #f59e0b, #d97706); border-color:#fbbf24;">★ Unveil the Syndicate Conspiracy &raquo;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10B. INVESTIGATION JOURNAL SCREEN -->
+  <div id="journal-screen" class="screen">
+    <div class="screen-content-padded">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2 style="color:var(--gold); font-size:1.8rem;">DETECTIVE'S INVESTIGATION JOURNAL</h2>
+        <button id="btn-journal-back" class="btn">&laquo; Return to Investigation</button>
+      </div>
+      <div class="journal-nav-tabs">
+        <button id="tab-journal-dossiers" class="btn btn-primary">Suspect Dossiers</button>
+        <button id="tab-journal-evidence" class="btn">Evidence Archive</button>
+        <button id="tab-journal-leads" class="btn">Timeline &amp; Leads</button>
+      </div>
+      <div id="journal-dossiers-view" class="journal-view active">
+        <div id="dossiers-grid" class="dossiers-grid"></div>
+      </div>
+      <div id="journal-evidence-view" class="journal-view" style="display:none;">
+        <div id="evidence-archive-grid" class="evidence-archive-grid"></div>
+      </div>
+      <div id="journal-leads-view" class="journal-view" style="display:none;">
+        <div id="journal-leads-list" style="max-height:460px; overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10C. TIMELINE RECONSTRUCTION SCREEN -->
+  <div id="timeline-screen" class="screen">
+    <div class="screen-content-padded">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="color:var(--gold); font-size:1.8rem;">CRIME TIMELINE RECONSTRUCTION</h2>
+          <p style="color:var(--text-dim); font-size:0.95rem;">Cross-reference statements with forensic records to pinpoint timeline impossibilities:</p>
+        </div>
+        <button id="btn-timeline-back" class="btn">&laquo; Return to Investigation</button>
+      </div>
+      <div id="timeline-events-container" class="timeline-container"></div>
+      <div id="timeline-breakthrough" class="timeline-breakthrough" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- 10D. CONSPIRACY EPILOGUE (TRUE OVERARCHING ENDING) -->
+  <div id="epilogue-screen" class="screen">
+    <div class="screen-content-padded" style="text-align:center;">
+      <h1 style="color:var(--gold-light); font-size:2.3rem; text-shadow:0 0 25px rgba(244,196,66,0.6); margin-bottom:10px;">THE OBSIDIAN HOURGLASS CONSPIRACY</h1>
+      <p style="color:var(--cyan); font-size:1.15rem; letter-spacing:1px; margin-bottom:20px;">The Master Overarching Mystery Unveiled by Scotland Yard</p>
+      <div style="background:var(--panel-bg); border:2px solid var(--gold); border-radius:10px; padding:26px; max-width:960px; margin:0 auto 24px auto; text-align:left; line-height:1.8; font-size:1.02rem;">
+        <p style="margin-bottom:14px;"><strong style="color:var(--gold);">1. THE CIPHER SAPPHIRE (Case #1):</strong> The 45-carat Star of Alexandria was not stolen for simple black-market gem trade. Micro-etched into its platinum facet was an astronomical coordinates matrix created by the Royal Astrologer in 1782.</p>
+        <p style="margin-bottom:14px;"><strong style="color:var(--gold);">2. THE LAUNDERED EMPIRE (Case #2):</strong> Victor Sterling was murdered because he discovered his railway capital was being funneled through black-market shell accounts by Julian Gray. The syndicate needed £60,000 to finance a secret excavation beneath the London docks.</p>
+        <p style="margin-bottom:14px;"><strong style="color:var(--gold);">3. THE HOROLOGICAL DECODER (Case #3):</strong> Master Clockmaker Thaddeus Thorne had spent twenty years forging a mechanical planetary clockwork capable of resolving the sapphire's coordinates. Cornelius Thorne murdered him to deliver the prototype to syndicate leadership.</p>
+        <p style="margin-top:16px; color:#fff; border-top:1px solid var(--border); padding-top:14px;"><em>"Justice has struck down three puppets, but the Obsidian Hourglass still turns in the shadows. Scotland Yard is now watching the horizon."</em></p>
+      </div>
+      <button id="btn-epilogue-menu" class="btn btn-primary" style="padding:14px 40px; font-size:1.1rem;">Return to Main Menu</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settings-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-card" style="width:520px; text-align:left;">
+      <h2 style="color:var(--gold); font-size:1.5rem; text-align:center; margin-bottom:16px;">GAME &amp; AUDIO SETTINGS</h2>
+      <div class="settings-group">
+        <label>Master Volume: <span id="val-master-vol">80%</span></label>
+        <input type="range" id="slider-master-vol" min="0" max="100" value="80" class="settings-slider">
+      </div>
+      <div class="settings-group">
+        <label>Music Volume (BGM): <span id="val-music-vol">70%</span></label>
+        <input type="range" id="slider-music-vol" min="0" max="100" value="70" class="settings-slider">
+      </div>
+      <div class="settings-group">
+        <label>Sound Effects (SFX): <span id="val-sfx-vol">85%</span></label>
+        <input type="range" id="slider-sfx-vol" min="0" max="100" value="85" class="settings-slider">
+      </div>
+      <div class="settings-group">
+        <label>Atmospheric Ambience (Rain / Clock): <span id="val-ambience-vol">60%</span></label>
+        <input type="range" id="slider-ambience-vol" min="0" max="100" value="60" class="settings-slider">
+      </div>
+      <div class="settings-group" style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+        <label for="toggle-mute">Mute All Audio:</label>
+        <input type="checkbox" id="toggle-mute" style="width:20px; height:20px; cursor:pointer;">
+      </div>
+      <div class="settings-group" style="display:flex; justify-content:space-between; align-items:center;">
+        <label for="toggle-screen-shake">Cinematic Screen Shake:</label>
+        <input type="checkbox" id="toggle-screen-shake" checked style="width:20px; height:20px; cursor:pointer;">
+      </div>
+      <div class="settings-group" style="display:flex; justify-content:space-between; align-items:center;">
+        <label for="toggle-reduced-motion">Reduced Motion (Accessibility):</label>
+        <input type="checkbox" id="toggle-reduced-motion" style="width:20px; height:20px; cursor:pointer;">
+      </div>
+      <div style="margin-top:20px; text-align:center;">
+        <button id="btn-close-settings" class="btn btn-primary" style="padding:10px 32px;">Save &amp; Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENTS MODAL -->
+  <div id="achievements-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-card" style="width:680px; max-width:92vw; text-align:left;">
+      <h2 style="color:var(--gold); font-size:1.6rem; text-align:center; margin-bottom:6px;">DETECTIVE ACHIEVEMENTS</h2>
+      <p style="color:var(--text-dim); font-size:0.9rem; text-align:center; margin-bottom:16px;">Trophies earned through deduction, forensic diligence, and courtroom triumphs:</p>
+      <div id="achievements-grid" class="achievements-grid" style="max-height:400px; overflow-y:auto;"></div>
+      <div style="margin-top:18px; text-align:center;">
+        <button id="btn-close-achievements" class="btn">&laquo; Close Trophies</button>
+      </div>
     </div>
   </div>
 

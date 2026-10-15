@@ -1,99 +1,359 @@
-// CASE CLOSED — Detective Mystery Simulator (Web Visual Novel Edition)
-// 100% Client-Side Pure JavaScript Game Engine (Zero Dependencies)
+// CASE CLOSED — Detective Mystery Simulator (Anime Visual Novel Edition)
+// Comprehensive Procedural Audio Engine, Ambient Particle System, Clueboard Threads,
+// Timeline Reconstruction, Character Dossiers, Achievements, and The Obsidian Hourglass Lore.
 
-class AudioFX {
+// =========================================================================
+// 1. PROCEDURAL AUDIO SYNTHESIZER & AMBIENCE ENGINE
+// =========================================================================
+class AudioEngine {
   constructor() {
     this.ctx = null;
+    this.masterGain = null;
+    this.musicGain = null;
+    this.sfxGain = null;
+    this.ambienceGain = null;
+
+    this.masterVol = 0.8;
+    this.musicVol = 0.7;
+    this.sfxVol = 0.85;
+    this.ambienceVol = 0.6;
+    this.isMuted = false;
+
+    this.currentBgm = null;
+    this.bgmTimer = null;
+    this.bgmStep = 0;
+
+    this.rainNode = null;
+    this.clockTimer = null;
+
     this.init();
   }
+
   init() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (AudioContext) {
       this.ctx = new AudioContext();
+      this.masterGain = this.ctx.createGain();
+      this.musicGain = this.ctx.createGain();
+      this.sfxGain = this.ctx.createGain();
+      this.ambienceGain = this.ctx.createGain();
+
+      this.musicGain.connect(this.masterGain);
+      this.sfxGain.connect(this.masterGain);
+      this.ambienceGain.connect(this.masterGain);
+      this.masterGain.connect(this.ctx.destination);
+
+      this.applyVolumes();
     }
   }
+
   resume() {
     if (this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
   }
-  playTypewriter() {
+
+  applyVolumes() {
     if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const mult = this.isMuted ? 0 : 1;
+    this.masterGain.gain.setValueAtTime(this.masterVol * mult, now);
+    this.musicGain.gain.setValueAtTime(this.musicVol, now);
+    this.sfxGain.gain.setValueAtTime(this.sfxVol, now);
+    this.ambienceGain.gain.setValueAtTime(this.ambienceVol, now);
+  }
+
+  setMasterVolume(val) { this.masterVol = val; this.applyVolumes(); }
+  setMusicVolume(val) { this.musicVol = val; this.applyVolumes(); }
+  setSFXVolume(val) { this.sfxVol = val; this.applyVolumes(); }
+  setSfxVolume(val) { this.setSFXVolume(val); }
+  setAmbienceVolume(val) { this.ambienceVol = val; this.applyVolumes(); }
+  toggleMute(forceVal) {
+    this.isMuted = (typeof forceVal === 'boolean') ? forceVal : !this.isMuted;
+    this.applyVolumes();
+    return this.isMuted;
+  }
+
+  // -------------------------------------------------------------
+  // Procedural Sound Effects
+  // -------------------------------------------------------------
+  playTypewriter() {
+    if (!this.ctx || this.isMuted) return;
     this.resume();
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(800 + Math.random() * 200, this.ctx.currentTime);
-    gain.gain.setValueAtTime(0.015, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.03);
+    osc.frequency.setValueAtTime(750 + Math.random() * 200, this.ctx.currentTime);
+    gain.gain.setValueAtTime(0.012, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.025);
     osc.connect(gain);
-    gain.connect(this.ctx.destination);
+    gain.connect(this.sfxGain);
     osc.start();
-    osc.stop(this.ctx.currentTime + 0.03);
+    osc.stop(this.ctx.currentTime + 0.025);
   }
+
   playChime() {
-    if (!this.ctx) return;
+    if (!this.ctx || this.isMuted) return;
     this.resume();
     const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
     freqs.forEach((f, i) => {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.08);
-      gain.gain.setValueAtTime(0.12, this.ctx.currentTime + i * 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.08 + 0.6);
+      osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.07);
+      gain.gain.setValueAtTime(0.12, this.ctx.currentTime + i * 0.07);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.07 + 0.55);
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(this.ctx.currentTime + i * 0.08);
-      osc.stop(this.ctx.currentTime + i * 0.08 + 0.6);
+      gain.connect(this.sfxGain);
+      osc.start(this.ctx.currentTime + i * 0.07);
+      osc.stop(this.ctx.currentTime + i * 0.07 + 0.55);
     });
   }
-  playObjection() {
-    if (!this.ctx) return;
+
+  playHiddenClue() {
+    if (!this.ctx || this.isMuted) return;
     this.resume();
-    // Dramatic chord hit
+    const freqs = [1046.5, 1318.5, 1567.98, 2093.00, 2637.02];
+    freqs.forEach((f, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.06);
+      gain.gain.setValueAtTime(0.14, this.ctx.currentTime + i * 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.06 + 0.8);
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start(this.ctx.currentTime + i * 0.06);
+      osc.stop(this.ctx.currentTime + i * 0.06 + 0.8);
+    });
+  }
+
+  playObjection() {
+    if (!this.ctx || this.isMuted) return;
+    this.resume();
     const freqs = [130.81, 164.81, 196.00, 261.63, 523.25];
     freqs.forEach(f => {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(f, this.ctx.currentTime);
-      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.setValueAtTime(0.24, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.2);
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGain);
       osc.start();
       osc.stop(this.ctx.currentTime + 1.2);
     });
+
+    // Sub-bass punch
+    const sub = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(80, this.ctx.currentTime);
+    sub.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.4);
+    subGain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+    subGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
+    sub.connect(subGain);
+    subGain.connect(this.sfxGain);
+    sub.start();
+    sub.stop(this.ctx.currentTime + 0.4);
   }
+
   playBuzzer() {
-    if (!this.ctx) return;
+    if (!this.ctx || this.isMuted) return;
     this.resume();
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(140, this.ctx.currentTime);
     osc.frequency.setValueAtTime(120, this.ctx.currentTime + 0.15);
-    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+    gain.gain.setValueAtTime(0.16, this.ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
     osc.connect(gain);
-    gain.connect(this.ctx.destination);
+    gain.connect(this.sfxGain);
     osc.start();
     osc.stop(this.ctx.currentTime + 0.35);
   }
+
+  playGavel() {
+    if (!this.ctx || this.isMuted) return;
+    this.resume();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.2);
+  }
+
+  playThreadConnect() {
+    if (!this.ctx || this.isMuted) return;
+    this.resume();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.12);
+    gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.25);
+  }
+
+  // -------------------------------------------------------------
+  // Procedural BGM Engine (Looping Multi-Voice Synthesizer)
+  // -------------------------------------------------------------
+  playBGM(trackName) {
+    if (!this.ctx) return;
+    this.resume();
+    if (this.currentBgm === trackName) return;
+    this.stopBGM();
+    this.currentBgm = trackName;
+    this.bgmStep = 0;
+
+    // Define track scale notes (Hz)
+    const tracks = {
+      menu: [146.83, 220.00, 293.66, 349.23, 440.00, 349.23, 293.66, 220.00], // D minor arpeggios
+      investigation: [164.81, 196.00, 246.94, 293.66, 329.63, 293.66, 246.94, 196.00], // E minor mystery
+      tension: [138.59, 185.00, 233.08, 277.18, 311.13, 277.18, 233.08, 185.00], // Dissonant tension
+      verdict: [196.00, 246.94, 293.66, 392.00, 493.88, 587.33, 493.88, 392.00] // G major triumph
+    };
+
+    const notes = tracks[trackName] || tracks.investigation;
+    const intervalMs = trackName === 'tension' ? 380 : 480;
+
+    this.bgmTimer = setInterval(() => {
+      if (!this.ctx || this.isMuted) return;
+      const note = notes[this.bgmStep % notes.length];
+      const now = this.ctx.currentTime;
+
+      // Voice 1: Melodic tone
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = trackName === 'tension' ? 'sawtooth' : 'triangle';
+      osc.frequency.setValueAtTime(note, now);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + (intervalMs / 1000) * 0.9);
+      osc.connect(gain);
+      gain.connect(this.musicGain);
+      osc.start(now);
+      osc.stop(now + (intervalMs / 1000) * 0.9);
+
+      // Voice 2: Deep bass foundation on downbeats
+      if (this.bgmStep % 4 === 0) {
+        const bass = this.ctx.createOscillator();
+        const bassGain = this.ctx.createGain();
+        bass.type = 'sine';
+        bass.frequency.setValueAtTime(note / 2, now);
+        bassGain.gain.setValueAtTime(0.08, now);
+        bassGain.gain.exponentialRampToValueAtTime(0.001, now + (intervalMs / 1000) * 2.2);
+        bass.connect(bassGain);
+        bassGain.connect(this.musicGain);
+        bass.start(now);
+        bass.stop(now + (intervalMs / 1000) * 2.2);
+      }
+
+      this.bgmStep++;
+    }, intervalMs);
+  }
+
+  stopBGM() {
+    if (this.bgmTimer) {
+      clearInterval(this.bgmTimer);
+      this.bgmTimer = null;
+    }
+    this.currentBgm = null;
+  }
+
+  // -------------------------------------------------------------
+  // Environmental Ambience Engine (Rain & Clock Tick)
+  // -------------------------------------------------------------
+  startAmbience(type) {
+    if (!this.ctx) return;
+    this.resume();
+    this.stopAmbience();
+
+    if (type === 'rain') {
+      // White noise buffer bandpassed for rain
+      const bufSize = this.ctx.sampleRate * 2;
+      const buffer = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+      noise.loop = true;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1000, this.ctx.currentTime);
+      filter.Q.setValueAtTime(1.2, this.ctx.currentTime);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ambienceGain);
+
+      noise.start();
+      this.rainNode = noise;
+
+    } else if (type === 'clock') {
+      // 1-second pendulum impulses
+      let tick = true;
+      this.clockTimer = setInterval(() => {
+        if (!this.ctx || this.isMuted) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(tick ? 1100 : 850, now);
+        gain.gain.setValueAtTime(0.03, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+        osc.connect(gain);
+        gain.connect(this.ambienceGain);
+        osc.start(now);
+        osc.stop(now + 0.035);
+        tick = !tick;
+      }, 1000);
+    }
+  }
+
+  stopAmbience() {
+    if (this.rainNode) {
+      try { this.rainNode.stop(); } catch (e) {}
+      this.rainNode = null;
+    }
+    if (this.clockTimer) {
+      clearInterval(this.clockTimer);
+      this.clockTimer = null;
+    }
+  }
 }
 
-// Full Case Database matching C++ CaseFile.cpp
+// =========================================================================
+// 2. EXPANDED STORY DATABASE & OVERARCHING LORE
+// =========================================================================
 const CASE_DATA = {
   1: {
     id: "CASE-01",
     title: "Case #1: The Midnight Museum Heist",
     tagline: "The 45-carat sapphire disappears during a 4-minute blackout.",
-    briefing: "Scotland Yard Dispatch has called us to the Royal Alexandria Museum. At 1:14 AM, the main circuit breaker tripped, cutting gallery power. In that four-minute window, the armored glass pedestal of the Star of Alexandria was breached and the sapphire stolen. Cross-examine the night staff, examine the crime scenes, and identify the thief!",
-    culpritId: "S02", // Guard Cruz
+    briefing: "Scotland Yard Dispatch has called us to the Royal Alexandria Museum at 1:30 AM. At 1:14 AM, the primary circuit breaker tripped, cloaking the gallery in darkness. In that exact four-minute window, the armored glass pedestal of the Star of Alexandria was breached and the sapphire stolen. Cross-examine the night staff, examine the crime scenes, and unmask the thief!",
+    culpritId: "S02", // Guard Marcus Cruz
     decisiveEvidenceId: "E03", // Electronic Access Log
     motiveKeyword: "DEBT",
-    solution: "Security Guard Marcus Cruz stole Curator Vance's spare keycard from the lost-and-found locker at 1:10 AM, swiped into the basement power substation at 1:12 AM, and cut the main breaker at 1:14 AM. Using pre-staged solvent and laser cutters, he seized the sapphire and swiped the North Wing patrol terminal to fabricate an alibi.",
+    solution: "Security Guard Marcus Cruz stole Curator Vance's spare keycard from the lost-and-found locker at 1:10 AM, swiped into the basement power substation at 1:12 AM, and cut the main breaker at 1:14 AM. Using pre-staged solvent and laser cutters, he seized the sapphire and sprinted through the maintenance shaft to swipe the North Wing patrol terminal at 1:15 AM to fabricate an alibi.",
+    ambience: "rain",
     scenes: [
       {
         id: "SCENE_01",
@@ -102,7 +362,8 @@ const CASE_DATA = {
         hotspots: [
           { x: 50, y: 58, name: "Shattered Pedestal", desc: "The armored pedestal fiber optic tripwire was cleanly cut at a 45-degree angle.", evId: "E01" },
           { x: 38, y: 78, name: "Vault Floor & Mud Traces", desc: "Dried mud flakes show a distinct cross-hatch combat boot tread, size 10.", evId: "E02" },
-          { x: 66, y: 65, name: "Forgotten Silk Umbrella", desc: "A stylish monogrammed silk umbrella resting against a marble pillar.", evId: "E06" }
+          { x: 66, y: 65, name: "Forgotten Silk Umbrella", desc: "A stylish monogrammed silk umbrella resting against a marble pillar.", evId: "E06" },
+          { x: 82, y: 45, name: "Concealed Pillar Alcove", desc: "Behind the marble moulding: a red wax seal stamped with an Obsidian Hourglass insignia!", evId: "E09" }
         ]
       },
       {
@@ -120,37 +381,40 @@ const CASE_DATA = {
         name: "Staff Locker Room & Guard Post",
         bg: "assets/backgrounds/scene_locker.png",
         hotspots: [
-          { x: 20, y: 46, name: "Locker #14 (Marcus Cruz)", desc: "A formal repossession demand for £12,000 overdue debt and pawn shop cards.", evId: "E05" },
-          { x: 50, y: 76, name: "Curator's Office Desk", desc: "A memo reporting his secondary museum master card missing three days prior.", evId: "E07" }
+          { x: 20, y: 46, name: "Locker #14 (Marcus Cruz)", desc: "A formal repossession demand for £12,000 overdue debt and loan shark threats.", evId: "E05" },
+          { x: 50, y: 76, name: "Curator's Office Desk", desc: "A formal memorandum reporting his secondary museum master pass missing three days prior.", evId: "E07" }
         ]
       }
     ],
     evidence: {
-      "E01": { id: "E01", name: "Cut Fiber Optic Cable", cat: "PHYSICAL", rel: "CRITICAL PROOF", desc: "Cleanly sliced optical wire indicating insider knowledge of alarm timing." },
-      "E02": { id: "E02", name: "Combat Boot Print Mud Flakes", cat: "FORENSIC", rel: "SUPPORTING PROOF", desc: "Heavy tactical size 10 boot treads matching standard museum guard issue." },
-      "E03": { id: "E03", name: "Electronic Access Log", cat: "DOCUMENT", rel: "DECISIVE EVIDENCE", desc: "Substation swiped at 1:12 AM; North Wing terminal swiped at 1:15 AM with Vance's stolen badge. Physically impossible for one person without sprinting through secret corridors." },
-      "E04": { id: "E04", name: "Solvent-Soaked Workshop Rag", cat: "CHEMICAL", rel: "CRITICAL PROOF", desc: "Industrial acetone used to dissolve anti-shatter glass sealant." },
-      "E05": { id: "E05", name: "Loan Shark Repossession Notice", cat: "DOCUMENT", rel: "MOTIVE EVIDENCE", desc: "Final notice demanding £12,000 from Marcus Cruz by midnight." },
-      "E06": { id: "E06", name: "Monogrammed Silk Umbrella", cat: "PERSONAL", rel: "RED HERRING", desc: "Belongs to Lady Sterling, who departed at 11:15 PM and forgot it." },
-      "E07": { id: "E07", name: "Curator's Stolen Keycard Report", cat: "DOCUMENT", rel: "SUPPORTING PROOF", desc: "Notice that Vance's spare pass was taken from the guard post." },
-      "E08": { id: "E08", name: "Chemical Inventory Incident Sheet", cat: "DOCUMENT", rel: "SUPPORTING PROOF", desc: "Confirms industrial solvent reported missing at 10 PM." }
+      "E01": { id: "E01", name: "Cut Fiber Optic Cable", cat: "PHYSICAL", rel: "CRITICAL PROOF", desc: "Cleanly sliced optical wire indicating insider knowledge of alarm timing and junction routing." },
+      "E02": { id: "E02", name: "Combat Boot Print Mud Flakes", cat: "FORENSIC", rel: "SUPPORTING PROOF", desc: "Heavy tactical size 10 boot treads matching standard museum night security uniform issue." },
+      "E03": { id: "E03", name: "Electronic Access Log", cat: "DOCUMENT", rel: "DECISIVE EVIDENCE", desc: "Substation swiped at 1:12 AM; North Wing terminal swiped at 1:15 AM with Vance's stolen badge. Physically impossible for one person on foot without sprinting through the maintenance shaft." },
+      "E04": { id: "E04", name: "Solvent-Soaked Workshop Rag", cat: "CHEMICAL", rel: "CRITICAL PROOF", desc: "Industrial acetone used to dissolve anti-shatter glass sealant around the Star of Alexandria." },
+      "E05": { id: "E05", name: "Loan Shark Repossession Notice", cat: "DOCUMENT", rel: "MOTIVE EVIDENCE", desc: "Final notice demanding £12,000 from Marcus Cruz by midnight under threat of violence." },
+      "E06": { id: "E06", name: "Monogrammed Silk Umbrella", cat: "PERSONAL", rel: "RED HERRING", desc: "Belongs to Lady Catherine Sterling, who departed at 11:15 PM and forgot it by the pillar." },
+      "E07": { id: "E07", name: "Curator's Stolen Keycard Report", cat: "DOCUMENT", rel: "SUPPORTING PROOF", desc: "Notice proving Vance's secondary master pass was stolen from the guard desk." },
+      "E08": { id: "E08", name: "Chemical Inventory Incident Sheet", cat: "DOCUMENT", rel: "SUPPORTING PROOF", desc: "Confirms industrial solvent was logged as missing at 10:00 PM by Elena Rostova." },
+      "E09": { id: "E09", name: "Obsidian Hourglass Wax Seal", cat: "CONSPIRACY", rel: "HIDDEN SECRET", desc: "A black wax stamp depicting a winged hourglass—the signature of an underground syndicate." }
     },
     suspects: [
       {
         id: "S01", name: "Arthur Vance", role: "Museum Curator",
-        charId: "vance",
+        charId: "vance", age: 52,
         alibi: "I was locked inside my 3rd-floor office reviewing catalog proofs from midnight to 1:20 AM without leaving.",
         motive: "The museum is under heavy debt, but insurance fraud would destroy our historical reputation.",
         greeting: "Detective, please tell me the Star of Alexandria has been located! Our reputation is ruined!",
+        secret: "Curator Vance was heavily in debt from purchasing Renaissance artifacts on personal credit, but electronic office logs prove he never departed his desk.",
         isCulprit: false,
         contradiction: { evId: "E07", res: "Curator Vance nods: 'Yes, my spare card was stolen days ago. The thief used my badge to frame me!'" }
       },
       {
         id: "S02", name: "Marcus Cruz", role: "Night Security Guard",
-        charId: "cruz",
+        charId: "cruz", age: 34,
         alibi: "I was patrolling the North Wing gallery continuously from 1:00 AM to 1:20 AM. I swiped the terminal at 1:15 AM!",
         motive: "I work for my wages, Detective. I have no interest in antique jewels.",
         greeting: "Evening, Detective. Place is sealed tight. I followed patrol regulations to the letter.",
+        secret: "Cruz's daughter Sofia needed £12,000 for emergency medical surgeries. A syndicate agent named 'Cain' offered to pay the debt in exchange for the sapphire.",
         isCulprit: true,
         contradiction: {
           evId: "E03",
@@ -159,35 +423,47 @@ const CASE_DATA = {
       },
       {
         id: "S03", name: "Elena Rostova", role: "Master Conservator",
-        charId: "elena",
+        charId: "elena", age: 29,
         alibi: "I left the museum at 10:30 PM after logging the missing solvent with security and was asleep at home.",
         motive: "I dedicate my life to preserving art, not pawning stolen artifacts.",
         greeting: "Good evening. If this is about the missing solvent, I reported the theft to Guard Cruz at 10:00 PM sharp.",
+        secret: "Elena suspected Cruz was in trouble weeks ago when suspicious men in dark trench coats visited the staff entrance.",
         isCulprit: false,
         contradiction: { evId: "E08", res: "Elena sighs: 'My lab inventory confirms I logged the theft hours before the heist.'" }
       },
       {
         id: "S04", name: "Lady Catherine Sterling", role: "Benefactor & Trustee",
-        charId: "sterling",
+        charId: "sterling", age: 58,
         alibi: "I departed the museum reception at 11:15 PM in my private carriage and arrived home in Kensington.",
         motive: "I donated that sapphire in honor of my late husband. Why on earth would I steal my own bequest?",
         greeting: "This is outrageous! Scotland Yard should be hunting jewel thieves, not harassing patrons!",
+        secret: "Mentions her husband Victor Sterling was traveling on the midnight express to Glenridge, auditing suspicious financial losses.",
         isCulprit: false,
         contradiction: { evId: "E06", res: "Lady Sterling chuckles: 'My umbrella? I left it by the marble column during the patron tea!'" }
       },
       {
         id: "W01", name: "Old Bert", role: "Night Janitor (Witness)",
-        charId: "bert",
+        charId: "bert", age: 67,
         isWitness: true,
         testimony: "At 1:14 AM, right when the lights cut out, I was replacing filters near the basement breaker. Someone in heavy combat boots sprinted past me into the service corridor reeking of chemical solvent!",
         greeting: "I told the constables already, Officer: heavy combat boots ran past the substation right as the lights died!",
+        secret: "Bert found a gold cigarette case with the letter 'C' near the basement entrance.",
         isCulprit: false
       }
+    ],
+    timeline: [
+      { id: "T1", time: "01:00 AM", desc: "Guard Cruz logs the start of his North Wing gallery patrol.", contradictory: false },
+      { id: "T2", time: "01:10 AM", desc: "Curator Vance's secondary master keycard taken from guard station locker.", contradictory: false },
+      { id: "T3", time: "01:12 AM", desc: "Substation breaker door swiped open with Vance's stolen keycard.", contradictory: false },
+      { id: "T4", time: "01:14 AM", desc: "Main circuit breaker thrown; museum blacks out; Janitor Bert hears combat boots sprinting.", contradictory: false },
+      { id: "T5", time: "01:15 AM", desc: "North Wing terminal swiped with Vance's passcard (Impossible to traverse from basement on foot in 3 min without maintenance duct!).", contradictory: true },
+      { id: "T6", time: "01:18 AM", desc: "Emergency backup generators engage; vault found shattered and empty.", contradictory: false }
     ],
     deductions: [
       { id1: "E01", id2: "E03", title: "Calculated Security Bypass", insight: "The fiber optic cut and timed card swipe prove an insider used a stolen badge to fake an alibi while cutting power." },
       { id1: "E02", id2: "E05", title: "Guard Uniform & Debt Motive", insight: "Tactical size 10 boot prints match guard issue footwear, linking the scene to Cruz's £12,000 urgent debt." },
-      { id1: "E04", id2: "E08", title: "Premeditated Solvent Theft", insight: "The solvent rag in the basement chute matches the chemical reported stolen at 10:00 PM." }
+      { id1: "E04", id2: "E08", title: "Premeditated Solvent Theft", insight: "The solvent rag in the basement chute matches the chemical reported stolen at 10:00 PM." },
+      { id1: "E05", id2: "E09", title: "Syndicate Blackmail Connection", insight: "Cruz's debt note was issued by front companies linked to the Obsidian Hourglass syndicate." }
     ],
     eliminations: [
       { id: "S01", name: "Arthur Vance", reason: "Eliminated: Electronic door logs confirm he was locked inside his 3rd-floor office from midnight to 1:20 AM." },
@@ -199,19 +475,21 @@ const CASE_DATA = {
     id: "CASE-02",
     title: "Case #2: The Last Train Mystery",
     tagline: "Tycoon Victor Sterling is poisoned aboard an express train with no stops.",
-    briefing: "Aboard the midnight express traversing the Blackwood Tunnel, financier Victor Sterling was found dead in Compartment 4-A, poisoned by potassium cyanide in his chamomile tea. The train made no stops between Wyvern and Glenridge. The culprit is aboard Carriage #4!",
+    briefing: "Aboard the midnight express traversing the Blackwood Tunnel, financier Victor Sterling was found dead in Compartment 4-A, poisoned by potassium cyanide in his chamomile tea. The train made zero stops between Wyvern and Glenridge. The assassin is riding Carriage #4!",
     culpritId: "S01", // Julian Gray
     decisiveEvidenceId: "E02", // Torn Gold Eagle Cufflink
     motiveKeyword: "EMBEZZLEMENT",
-    solution: "Personal secretary Julian Gray embezzled £60,000 from Sterling. Knowing Sterling was having inspectors arrest him at Glenridge, Gray impersonated Sterling wearing spare eagle cufflinks, received the tea tray from Conductor Morris at 11:40 PM, and poisoned the cup.",
+    solution: "Personal secretary Julian Gray embezzled £60,000 from Sterling to fund syndicate shell firms. Knowing Sterling was having inspectors arrest him at Glenridge, Gray impersonated Sterling wearing antique eagle cufflinks, received the tea tray from Conductor Morris at 11:40 PM, and poisoned the cup.",
+    ambience: "rain",
     scenes: [
       {
         id: "SCENE_01",
         name: "First Class Compartment 4-A",
         bg: "assets/backgrounds/scene_vault.png",
         hotspots: [
-          { x: 50, y: 55, name: "Teacup with Almond Odor", desc: "A half-empty bone china teacup smelling distinctly of bitter almonds (cyanide).", evId: "E01" },
-          { x: 70, y: 75, name: "Door Runner Track", desc: "Wedged in the sliding door brass runner: an antique gold eagle cufflink torn from a shirt.", evId: "E02" }
+          { x: 50, y: 55, name: "Teacup with Almond Odor", desc: "A half-empty bone china teacup smelling distinctly of bitter almonds (potassium cyanide).", evId: "E01" },
+          { x: 70, y: 75, name: "Door Runner Track", desc: "Wedged in the sliding door brass runner: an antique gold eagle cufflink torn from a shirt.", evId: "E02" },
+          { x: 28, y: 45, name: "Victorian Brass Luggage Rack", desc: "Sterling's private briefcase containing passenger dossiers.", evId: "E07" }
         ]
       },
       {
@@ -229,25 +507,29 @@ const CASE_DATA = {
         bg: "assets/backgrounds/scene_substation.png",
         hotspots: [
           { x: 45, y: 55, name: "Sterling's Audit Letter", desc: "A draft letter in Sterling's hand confronting Julian Gray with £60,000 embezzlement.", evId: "E03" },
-          { x: 75, y: 65, name: "Dr. Finch's Medical Satchel", desc: "Satchel with intact Edinburgh wax seals on all emergency narcotics.", evId: "E04" }
+          { x: 75, y: 65, name: "Dr. Finch's Medical Satchel", desc: "Satchel with intact Edinburgh wax seals on all emergency narcotics and poisons.", evId: "E04" },
+          { x: 86, y: 48, name: "Smoldering Club Car Ashtray", desc: "A charred telegram reading: 'Alexandria consignment confirmed. Silence Sterling before Glenridge. - Hourglass'", evId: "E09" }
         ]
       }
     ],
     evidence: {
-      "E01": { id: "E01", name: "Poisoned Chamomile Teacup", cat: "CHEMICAL", rel: "CRITICAL PROOF", desc: "Cyanide residue inside the deceased's teacup." },
-      "E02": { id: "E02", name: "Torn Gold Eagle Cufflink", cat: "PHYSICAL", rel: "DECISIVE EVIDENCE", desc: "Gold eagle cufflink matching Gray's frayed sleeve buttonhole." },
-      "E03": { id: "E03", name: "Embezzlement Audit Letter", cat: "DOCUMENT", rel: "MOTIVE EVIDENCE", desc: "Proves Sterling was having Gray arrested at the next station." },
-      "E04": { id: "E04", name: "Sealed Medical Ampoules", cat: "MEDICAL", rel: "ELIMINATION EVIDENCE", desc: "Proves Dr. Finch never opened his drug supply." },
-      "E06": { id: "E06", name: "Vanilla Extract Vial", cat: "SUBSTANCE", rel: "RED HERRING", desc: "Harmless baking flavoring from the galley pantry." },
-      "E08": { id: "E08", name: "Conductor's Delivery Log", cat: "DOCUMENT", rel: "SUPPORTING PROOF", desc: "Confirms tea was delivered at 11:40 PM." }
+      "E01": { id: "E01", name: "Poisoned Chamomile Teacup", cat: "CHEMICAL", rel: "CRITICAL PROOF", desc: "Lethal potassium cyanide residue coating the bottom of the deceased's teacup." },
+      "E02": { id: "E02", name: "Torn Gold Eagle Cufflink", cat: "PHYSICAL", rel: "DECISIVE EVIDENCE", desc: "Antique gold eagle cufflink matching Julian Gray's frayed left sleeve buttonhole." },
+      "E03": { id: "E03", name: "Embezzlement Audit Letter", cat: "DOCUMENT", rel: "MOTIVE EVIDENCE", desc: "Proof that Sterling had wired railway police to arrest Gray at Glenridge Station." },
+      "E04": { id: "E04", name: "Sealed Medical Ampoules", cat: "MEDICAL", rel: "ELIMINATION EVIDENCE", desc: "Proves Dr. Finch never unsealed his emergency drug ampoules." },
+      "E06": { id: "E06", name: "Vanilla Extract Vial", cat: "SUBSTANCE", rel: "RED HERRING", desc: "Harmless organic baking flavoring from the galley pantry." },
+      "E07": { id: "E07", name: "Passenger Compartment Dossier", cat: "DOCUMENT", rel: "SUPPORTING PROOF", desc: "Notes identifying all ticket holders in Carriage #4." },
+      "E08": { id: "E08", name: "Conductor's Delivery Log", cat: "DOCUMENT", rel: "SUPPORTING PROOF", desc: "Confirms tea was delivered directly to 4-A at 11:40 PM." },
+      "E09": { id: "E09", name: "Burned Syndicate Telegram", cat: "CONSPIRACY", rel: "HIDDEN SECRET", desc: "A charred syndicate telegram ordering Sterling silenced before his financial audit." }
     },
     suspects: [
       {
         id: "S01", name: "Julian Gray", role: "Personal Secretary",
-        charId: "cruz",
+        charId: "cruz", age: 31,
         alibi: "I retired to Compartment 4-C at 11:30 PM to sleep. I never walked the corridor!",
         motive: "Why would I harm my benefactor? Without him, I have nothing.",
         greeting: "Detective, this is horrifying! Mr. Sterling was like a father to me!",
+        secret: "Gray had transferred £60,000 of Sterling's railway bonds into Obsidian Hourglass accounts in Zurich.",
         isCulprit: true,
         contradiction: {
           evId: "E02",
@@ -256,34 +538,46 @@ const CASE_DATA = {
       },
       {
         id: "S02", name: "Nora Vance", role: "Shipping Competitor",
-        charId: "elena",
+        charId: "elena", age: 38,
         alibi: "I was in the Club Car from 11:15 PM onward enjoying spirits with passengers.",
         motive: "We had commercial rivalry, but I fight in court, not with poisons.",
         greeting: "Good evening. Sterling made enemies everywhere, Detective.",
+        secret: "Nora is the estranged cousin of Curator Vance from Case 1; she warned him against dealing with syndicate antiquities brokers.",
         isCulprit: false,
         contradiction: { evId: "E03", res: "Nora smiles: 'My dispute was strictly corporate, handled by attorneys.'" }
       },
       {
         id: "S03", name: "Dr. Alistair Finch", role: "Physician",
-        charId: "vance",
+        charId: "vance", age: 61,
         alibi: "I was reading clinical journals in Compartment 4-D until the emergency whistle blew.",
         motive: "Sterling sued my hospital board years ago, but that was settled.",
         greeting: "I attempted resuscitation, Detective, but cyanide arrests cellular life in seconds.",
+        secret: "Dr. Finch was once pressured by the syndicate to supply unlisted strychnine, but refused.",
         isCulprit: false,
         contradiction: { evId: "E04", res: "Dr. Finch displays his satchel: 'Every ampoule seal is intact from Edinburgh.'" }
       },
       {
         id: "W01", name: "Conductor Morris", role: "Train Conductor (Witness)",
-        charId: "bert",
+        charId: "bert", age: 45,
         isWitness: true,
         testimony: "At 11:40 PM, I delivered chamomile tea to Compartment 4-A. A gentleman opened the door wearing distinctive gold eagle cufflinks, took the tray, and said Mr. Sterling was resting.",
         greeting: "A terrible night on my train, Detective. I pride myself on passenger safety.",
+        secret: "Morris noticed Gray sweating profusely in the corridor minutes before the train entered the tunnel.",
         isCulprit: false
       }
     ],
+    timeline: [
+      { id: "T1", time: "11:15 PM", desc: "Nora Vance enters the Club Car lounge, verified by fellow passengers.", contradictory: false },
+      { id: "T2", time: "11:30 PM", desc: "Julian Gray claims he entered Compartment 4-C and was fast asleep.", contradictory: false },
+      { id: "T3", time: "11:38 PM", desc: "Conductor Morris brews fresh chamomile tea in the galley pantry.", contradictory: false },
+      { id: "T4", time: "11:40 PM", desc: "Tea delivered to 4-A door; a man wearing gold eagle cufflinks accepts the tray (Contradicts Gray's 11:30 PM sleep claim!).", contradictory: true },
+      { id: "T5", time: "11:48 PM", desc: "Express train enters Blackwood Mountain Tunnel.", contradictory: false },
+      { id: "T6", time: "11:55 PM", desc: "Emergency bell rung; Victor Sterling found dead.", contradictory: false }
+    ],
     deductions: [
       { id1: "E02", id2: "E08", title: "Impersonation at the Door", insight: "The cufflink torn in the runner at 11:40 PM proves the killer received the tea from the conductor." },
-      { id1: "E01", id2: "E03", title: "Lethal Embezzlement Cover-Up", insight: "The £60,000 theft audit letter gave Julian Gray an urgent life-or-death motive." }
+      { id1: "E01", id2: "E03", title: "Lethal Embezzlement Cover-Up", insight: "The £60,000 theft audit letter gave Julian Gray an urgent life-or-death motive." },
+      { id1: "E03", id2: "E09", title: "Railway Laundering Conspiracy", insight: "Gray's embezzlement was directed by the Obsidian Hourglass syndicate to fund dock operations." }
     ],
     eliminations: [
       { id: "S02", name: "Nora Vance", reason: "Eliminated: Club Car register and passengers confirm she never left the lounge." },
@@ -294,11 +588,12 @@ const CASE_DATA = {
     id: "CASE-03",
     title: "Case #3: The Locked Room Incident",
     tagline: "Clockmaker Thaddeus Thorne shot behind a door bolted from the inside.",
-    briefing: "Master horologist Thaddeus Thorne was found dead of a gunshot wound in his study. The heavy oak door was bolted with an iron sliding bolt from the inside, and windows were barred. Staged as a suicide, forensic ballistics and clockwork physics prove otherwise!",
+    briefing: "Master horologist Thaddeus Thorne was found dead of a gunshot wound in his high-tower workshop. The heavy oak door was bolted with a solid iron slide bolt from the inside, and windows were barred with wrought iron. Staged as a suicide, forensic ballistics and clockwork physics prove murder!",
     culpritId: "S01", // Cornelius Thorne
     decisiveEvidenceId: "E02", // Ballpoint Signature on Note
     motiveKeyword: "PATENT",
-    solution: "Nephew Cornelius Thorne was being disinherited. He shot his uncle at 8:15 PM, typed a suicide note, signed it with a modern ballpoint pen, and rigged piano wire around the bolt and pendulum weight with an ice block. At 9:00 PM, while drinking in the tavern, the clock chimed and pulled the bolt shut.",
+    solution: "Nephew Cornelius Thorne was being disinherited. He shot his uncle at 8:15 PM, typed a suicide note, signed it with a modern ballpoint pen, and rigged high-tensile piano wire around the slide bolt and clock pendulum chime weight with an ice block. At 9:00 PM, while Cornelius was visible drinking in the tavern, the clock chimed, the weight dropped, and the bolt slammed shut.",
+    ambience: "clock",
     scenes: [
       {
         id: "SCENE_01",
@@ -306,7 +601,8 @@ const CASE_DATA = {
         bg: "assets/backgrounds/briefing_room.png",
         hotspots: [
           { x: 50, y: 55, name: "Thorne's Desk & Suicide Note", desc: "A typed suicide note signed with cheap ballpoint ink. Thorne only wrote in Prussian blue fountain ink.", evId: "E02" },
-          { x: 25, y: 65, name: "Heavy Interior Slide Bolt", desc: "A friction groove and melted water droplet on the brass slide bolt.", evId: "E01" }
+          { x: 25, y: 65, name: "Heavy Interior Slide Bolt", desc: "A friction groove and melted water droplet on the brass slide bolt.", evId: "E01" },
+          { x: 80, y: 40, name: "Concealed Safe Wall Panel", desc: "A blueprint of 'The Great Clock of Alexandria' designed to decode astronomical sapphire ciphers!", evId: "E09" }
         ]
       },
       {
@@ -334,15 +630,17 @@ const CASE_DATA = {
       "E03": { id: "E03", name: "Clockwork Chime Weight Scratches", cat: "PHYSICAL", rel: "SUPPORTING PROOF", desc: "Marks where wire was tied to the descending 9:00 PM weight." },
       "E04": { id: "E04", name: "Spool of Piano Wire", cat: "PHYSICAL", rel: "CRITICAL PROOF", desc: "Tensile wire from Cornelius's tool chest." },
       "E05": { id: "E05", name: "Disinheritance Will Draft", cat: "LEGAL", rel: "MOTIVE EVIDENCE", desc: "Revoked Cornelius's rights to the patent fortune." },
-      "E08": { id: "E08", name: "Omnibus Ticket Stub", cat: "DOCUMENT", rel: "ELIMINATION EVIDENCE", desc: "Confirms Miriam departed on the 8:30 PM bus." }
+      "E08": { id: "E08", name: "Omnibus Ticket Stub", cat: "DOCUMENT", rel: "ELIMINATION EVIDENCE", desc: "Confirms Miriam departed on the 8:30 PM bus." },
+      "E09": { id: "E09", name: "Alexandria Clockwork Blueprint", cat: "CONSPIRACY", rel: "HIDDEN SECRET", desc: "Schematics for a planetary gear decoder matching the Star of Alexandria cipher from Case #1." }
     },
     suspects: [
       {
         id: "S01", name: "Cornelius Thorne", role: "Nephew & Apprentice",
-        charId: "cruz",
+        charId: "cruz", age: 27,
         alibi: "I was drinking at the Black Bull Tavern from 8:30 PM to 9:45 PM. Ten patrons saw me when the shot allegedly went off!",
         motive: "Uncle was my mentor. I stood to inherit his horological fortune.",
         greeting: "My uncle took his own life, Detective! Why torture our grieving family?",
+        secret: "Cornelius promised the syndicate his uncle's decoder blueprint in exchange for cancelling his gambling markers.",
         isCulprit: true,
         contradiction: {
           evId: "E02",
@@ -351,25 +649,36 @@ const CASE_DATA = {
       },
       {
         id: "S02", name: "Miriam Black", role: "Master Locksmith",
-        charId: "elena",
+        charId: "elena", age: 42,
         alibi: "I left the manor at 8:15 PM and caught the 8:30 PM omnibus at the crossroads.",
         motive: "We had royalties disputes, but dead men don't sign royalty checks.",
         greeting: "A slide bolt is child's play, Detective, but it can only be thrown from inside without a mechanism.",
+        secret: "Miriam knew Thaddeus was terrified someone was tracking his astronomical decoder blueprints.",
         isCulprit: false,
         contradiction: { evId: "E08", res: "Miriam presents her ticket: 'The omnibus driver stamped my fare at 8:30 PM.'" }
       },
       {
         id: "W01", name: "Constable Higgins", role: "Village Officer (Witness)",
-        charId: "bert",
+        charId: "bert", age: 50,
         isWitness: true,
         testimony: "At 9:15 PM, we broke through the study window. The door bolt was thrown solid from inside, and a small puddle of water lay beneath the brass casing.",
         greeting: "Never seen a locked room like it, Inspector. Bolted solid from the inside.",
+        secret: "Higgins remembers finding melted ice cubes in the workshop wastebasket.",
         isCulprit: false
       }
     ],
+    timeline: [
+      { id: "T1", time: "08:00 PM", desc: "Locksmith Miriam Black finishes consulting with Thaddeus on door locks.", contradictory: false },
+      { id: "T2", time: "08:15 PM", desc: "Murder occurs; Cornelius types fake note and loops wire through bolt into ice block on chime weight.", contradictory: false },
+      { id: "T3", time: "08:30 PM", desc: "Miriam departs on the crossroads omnibus, verified by ticket.", contradictory: false },
+      { id: "T4", time: "08:45 PM", desc: "Cornelius arrives at Black Bull Tavern, ordering drinks to fake presence.", contradictory: false },
+      { id: "T5", time: "09:00 PM", desc: "Clock chimes 9:00; 20-lb weight drops, pulling deadbolt shut while Cornelius drinks at tavern (Rigged automated trigger!).", contradictory: true },
+      { id: "T6", time: "09:15 PM", desc: "Constable Higgins forces window; finds melted puddle beneath bolt.", contradictory: false }
+    ],
     deductions: [
       { id1: "E01", id2: "E03", title: "Automated Mechanical Lock", insight: "Tension wire linked the slide bolt to the clock's 9:00 PM chime weight." },
-      { id1: "E02", id2: "E05", title: "Forged Suicide & Disinheritance", insight: "The ballpoint forged note and will draft expose Cornelius's panic over being cut off." }
+      { id1: "E02", id2: "E05", title: "Forged Suicide & Disinheritance", insight: "The ballpoint forged note and will draft expose Cornelius's panic over being cut off." },
+      { id1: "E01", id2: "E09", title: "The Astronomical Decoder Link", insight: "Thorne's murder was orchestrated to steal the astronomical clockwork capable of resolving the Star of Alexandria cipher!" }
     ],
     eliminations: [
       { id: "S02", name: "Miriam Black", reason: "Eliminated: Ticket stub verifies departure on 8:30 PM omnibus." }
@@ -377,6 +686,60 @@ const CASE_DATA = {
   }
 };
 
+// =========================================================================
+// 3. ACHIEVEMENTS SYSTEM
+// =========================================================================
+const ACHIEVEMENTS_LIST = [
+  { id: "first_clue", icon: "🔍", title: "First Footprint", desc: "Discover your first piece of forensic evidence." },
+  { id: "hidden_clue", icon: "👁️", title: "Keen Eye", desc: "Discover a secret Obsidian Hourglass conspiracy clue." },
+  { id: "objection", icon: "⚡", title: "OBJECTION!", desc: "Shatter a suspect's false alibi with physical proof." },
+  { id: "clue_deduction", icon: "🧵", title: "Master of Deductions", desc: "Connect two pieces of evidence on the Clue Board." },
+  { id: "timeline_sleuth", icon: "⏳", title: "Chronological Precision", desc: "Isolate a timeline contradiction during reconstruction." },
+  { id: "case_solved", icon: "⚖️", title: "Justice Delivered", desc: "Conclude any case with a Flawless Grade S verdict." },
+  { id: "conspiracy", icon: "🏛️", title: "The Obsidian Hourglass", desc: "Unveil the overarching syndicate conspiracy." },
+  { id: "master_sleuth", icon: "👑", title: "Flawless Detective", desc: "Solve all three cases with Master Sleuth Grade S." }
+];
+
+class AchievementManager {
+  constructor() {
+    this.unlocked = new Set();
+    this.load();
+  }
+  load() {
+    try {
+      const raw = localStorage.getItem('case_closed_achievements');
+      if (raw) {
+        this.unlocked = new Set(JSON.parse(raw));
+      }
+    } catch (e) {}
+  }
+  save() {
+    try {
+      localStorage.setItem('case_closed_achievements', JSON.stringify(Array.from(this.unlocked)));
+    } catch (e) {}
+  }
+  unlock(achId, app) {
+    if (!this.unlocked.has(achId)) {
+      this.unlocked.add(achId);
+      this.save();
+      const ach = ACHIEVEMENTS_LIST.find(a => a.id === achId);
+      if (ach && app) {
+        app.audio.playHiddenClue();
+        app.showToast(`🏆 TROPHY UNLOCKED: [${ach.title}] — ${ach.desc}`, 4500);
+      }
+    }
+  }
+  isUnlocked(achId) {
+    return this.unlocked.has(achId);
+  }
+  has(achId) {
+    return this.isUnlocked(achId);
+  }
+}
+
+// =========================================================================
+// 4. GAME STATE
+// =========================================================================
 class GameState {
   constructor() {
     this.caseNum = 1;
@@ -386,6 +749,7 @@ class GameState {
     this.brokenAlibis = new Set();
     this.examinedHotspots = new Set();
     this.unlockedDeductions = new Set();
+    this.timelineDiscovered = new Set();
     this.leads = [];
     this.activeSuspect = null;
     this.cluePin1 = null;
@@ -393,12 +757,21 @@ class GameState {
     this.accusedSuspect = null;
     this.accusedEvidence = null;
     this.accusedMotive = null;
+    this.settings = {
+      reducedMotion: false,
+      screenShake: true,
+      textSpeed: 22
+    };
   }
 }
 
+// =========================================================================
+// 5. MAIN WEB GAME APPLICATION
+// =========================================================================
 class WebGameApp {
   constructor() {
-    this.audio = new AudioFX();
+    this.audio = new AudioEngine();
+    this.achievements = new AchievementManager();
     this.state = new GameState();
     this.dialogueQueue = [];
     this.currentDialogue = null;
@@ -406,9 +779,14 @@ class WebGameApp {
     this.displayedChars = 0;
     this.currentSceneIdx = 0;
 
+    this.ambientAnimId = null;
+    this.rainDrops = [];
+
     this.initDOM();
     this.bindEvents();
+    this.initAmbientCanvas();
     this.showScreen('menu-screen');
+    this.audio.playBGM('menu');
   }
 
   initDOM() {
@@ -422,26 +800,56 @@ class WebGameApp {
     this.objectionEl = document.getElementById('objection-banner');
     this.modalEl = document.getElementById('modal-overlay');
     this.modalContent = document.getElementById('modal-content');
+
+    this.speedlinesEl = document.getElementById('speedlines-overlay');
+    this.cutinEl = document.getElementById('anime-cutin');
+    this.cutinImg = document.getElementById('cutin-img');
+    this.cutinText = document.getElementById('cutin-text');
+
+    this.settingsModal = document.getElementById('settings-modal');
+    this.achievementsModal = document.getElementById('achievements-modal');
+    this.clueCanvas = document.getElementById('clueboard-canvas');
   }
 
   bindEvents() {
     // Menu buttons
-    document.getElementById('btn-new-game').onclick = () => this.showScreen('case-select-screen');
-    document.getElementById('btn-continue').onclick = () => this.loadGame();
+    document.getElementById('btn-new-game').onclick = () => {
+      this.audio.resume();
+      this.showScreen('case-select-screen');
+    };
+    document.getElementById('btn-continue').onclick = () => {
+      this.audio.resume();
+      this.loadGame();
+    };
     document.getElementById('btn-how-to-play').onclick = () => this.showScreen('how-to-play-screen');
     document.getElementById('btn-credits').onclick = () => this.showScreen('credits-screen');
+
+    document.getElementById('btn-menu-achievements').onclick = () => this.openAchievements();
+    document.getElementById('btn-menu-settings').onclick = () => this.openSettings();
+
+    // HUD Quick Controls
+    document.getElementById('btn-hud-audio').onclick = () => {
+      const isMuted = this.audio.toggleMute();
+      document.getElementById('btn-hud-audio').innerText = isMuted ? '🔇' : '🎵';
+      this.showToast(isMuted ? "Audio Muted" : "Audio Active", 2000);
+    };
+    document.getElementById('btn-hud-journal').onclick = () => this.openJournal();
+    document.getElementById('btn-hud-settings').onclick = () => this.openSettings();
 
     // Case Selection
     document.getElementById('btn-case-1').onclick = () => this.startCase(1);
     document.getElementById('btn-case-2').onclick = () => this.startCase(2);
     document.getElementById('btn-case-3').onclick = () => this.startCase(3);
-    document.getElementById('btn-case-back').onclick = () => this.showScreen('menu-screen');
+    document.getElementById('btn-case-back').onclick = () => {
+      this.showScreen('menu-screen');
+      this.audio.playBGM('menu');
+    };
 
     // Navigation Back buttons
     document.getElementById('btn-htp-back').onclick = () => this.showScreen('menu-screen');
     document.getElementById('btn-credits-back').onclick = () => this.showScreen('menu-screen');
 
-    // Dialogue click-to-advance
+    // Dialogue click-to-advance & keyboard
     this.dialogueWrap.onclick = () => this.handleDialogueClick();
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' || e.code === 'Enter') {
@@ -456,14 +864,120 @@ class WebGameApp {
     // Hub Action Buttons
     document.getElementById('btn-nav-interrogate').onclick = () => this.openInterrogation();
     document.getElementById('btn-nav-clueboard').onclick = () => this.openClueBoard();
-    document.getElementById('btn-nav-notebook').onclick = () => this.openNotebook();
+    document.getElementById('btn-nav-timeline').onclick = () => this.openTimeline();
+    document.getElementById('btn-nav-journal').onclick = () => this.openJournal();
     document.getElementById('btn-nav-accuse').onclick = () => this.openAccusation();
-    document.getElementById('btn-hub-menu').onclick = () => this.showScreen('menu-screen');
+    document.getElementById('btn-hub-menu').onclick = () => {
+      this.showScreen('menu-screen');
+      this.audio.playBGM('menu');
+    };
     document.getElementById('btn-hub-save').onclick = () => this.saveGame();
     document.getElementById('btn-hub-hint').onclick = () => this.requestHint();
 
+    // Journal & Timeline Back
+    document.getElementById('btn-journal-back').onclick = () => this.openInvestigation();
+    document.getElementById('btn-timeline-back').onclick = () => this.openInvestigation();
+
+    // Journal Navigation Tabs
+    document.getElementById('tab-journal-dossiers').onclick = () => this.switchJournalTab('dossiers');
+    document.getElementById('tab-journal-evidence').onclick = () => this.switchJournalTab('evidence');
+    document.getElementById('tab-journal-leads').onclick = () => this.switchJournalTab('leads');
+
+    // Settings Modal
+    document.getElementById('btn-close-settings').onclick = () => this.closeSettings();
+    document.getElementById('slider-master-vol').oninput = (e) => {
+      const v = e.target.value / 100;
+      this.audio.setMasterVolume(v);
+      document.getElementById('val-master-vol').innerText = `${e.target.value}%`;
+    };
+    document.getElementById('slider-music-vol').oninput = (e) => {
+      const v = e.target.value / 100;
+      this.audio.setMusicVolume(v);
+      document.getElementById('val-music-vol').innerText = `${e.target.value}%`;
+    };
+    document.getElementById('slider-sfx-vol').oninput = (e) => {
+      const v = e.target.value / 100;
+      this.audio.setSFXVolume(v);
+      document.getElementById('val-sfx-vol').innerText = `${e.target.value}%`;
+    };
+    document.getElementById('slider-ambience-vol').oninput = (e) => {
+      const v = e.target.value / 100;
+      this.audio.setAmbienceVolume(v);
+      document.getElementById('val-ambience-vol').innerText = `${e.target.value}%`;
+    };
+    document.getElementById('toggle-mute').onchange = (e) => {
+      if (this.audio.isMuted !== e.target.checked) {
+        this.audio.toggleMute();
+      }
+    };
+    document.getElementById('toggle-screen-shake').onchange = (e) => {
+      this.state.settings.screenShake = e.target.checked;
+    };
+    document.getElementById('toggle-reduced-motion').onchange = (e) => {
+      this.state.settings.reducedMotion = e.target.checked;
+      document.body.classList.toggle('reduced-motion', e.target.checked);
+    };
+
+    // Achievements Modal
+    document.getElementById('btn-close-achievements').onclick = () => this.closeAchievements();
+
+    // Epilogue buttons
+    document.getElementById('btn-verdict-epilogue').onclick = () => this.openEpilogue();
+    document.getElementById('btn-epilogue-menu').onclick = () => {
+      this.showScreen('menu-screen');
+      this.audio.playBGM('menu');
+    };
+
     // Modal Close
     this.modalEl.onclick = () => this.closeModal();
+  }
+
+  // -------------------------------------------------------------
+  // Ambient Canvas Graphics (Rain & Atmospheric Dust)
+  // -------------------------------------------------------------
+  initAmbientCanvas() {
+    const canvas = document.getElementById('ambient-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const resize = () => {
+      canvas.width = canvas.parentElement.clientWidth || 1280;
+      canvas.height = canvas.parentElement.clientHeight || 720;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    this.rainDrops = [];
+    for (let i = 0; i < 75; i++) {
+      this.rainDrops.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        len: 12 + Math.random() * 18,
+        speed: 10 + Math.random() * 12
+      });
+    }
+
+    const loop = () => {
+      if (!this.state.settings.reducedMotion) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.22)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        for (let drop of this.rainDrops) {
+          ctx.moveTo(drop.x, drop.y);
+          ctx.lineTo(drop.x - 3, drop.y + drop.len);
+          drop.y += drop.speed;
+          drop.x -= 1.5;
+          if (drop.y > canvas.height) {
+            drop.y = -drop.len;
+            drop.x = Math.random() * canvas.width;
+          }
+        }
+        ctx.stroke();
+      }
+      this.ambientAnimId = requestAnimationFrame(loop);
+    };
+    loop();
   }
 
   showToast(msg, duration = 3000) {
@@ -475,16 +989,41 @@ class WebGameApp {
     }, duration);
   }
 
+  shakeScreen() {
+    if (this.state.settings.reducedMotion || !this.state.settings.screenShake) return;
+    const container = document.getElementById('game-container');
+    container.classList.remove('shake');
+    void container.offsetWidth; // Trigger reflow
+    container.classList.add('shake');
+    setTimeout(() => container.classList.remove('shake'), 450);
+  }
+
+  triggerAnimeCutIn(charId, text = "OBJECTION!") {
+    this.cutinText.innerText = text;
+    this.cutinImg.style.backgroundImage = `url('assets/characters/${charId}_angry.png')`;
+    this.speedlinesEl.classList.add('active');
+    this.cutinEl.classList.add('active');
+    this.shakeScreen();
+
+    setTimeout(() => {
+      this.cutinEl.classList.remove('active');
+      this.speedlinesEl.classList.remove('active');
+    }, 1400);
+  }
+
   showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     const target = document.getElementById(screenId);
     if (target) target.classList.add('active');
 
-    // Screen specific backdrops
-    if (screenId === 'menu-screen' || screenId === 'case-select-screen' || screenId === 'how-to-play-screen' || screenId === 'credits-screen') {
+    // Backdrops
+    if (['menu-screen', 'case-select-screen', 'how-to-play-screen', 'credits-screen'].includes(screenId)) {
       this.setBg('assets/backgrounds/main_menu.png');
       this.hidePortrait();
       this.hideDialogue();
+      document.getElementById('hud-bar').style.display = 'none';
+    } else {
+      document.getElementById('hud-bar').style.display = 'flex';
     }
   }
 
@@ -519,6 +1058,9 @@ class WebGameApp {
     this.showPortrait('detective', 'thinking');
 
     const curCase = CASE_DATA[num];
+    this.audio.playBGM('investigation');
+    this.audio.startAmbience(curCase.ambience || 'rain');
+
     this.startDialogue([
       { speaker: "Detective Sherlock", charId: "detective", expr: "thinking", text: "Scotland Yard Dispatch has called us in on urgent duty. A complex mystery has unfolded." },
       { speaker: "Detective Sherlock", charId: "detective", expr: "neutral", text: `${curCase.title}: ${curCase.tagline}` },
@@ -565,12 +1107,11 @@ class WebGameApp {
           this.currentDialogue.onFinish();
         }
       }
-    }, 22);
+    }, this.state.settings.textSpeed);
   }
 
   handleDialogueClick() {
     if (this.typewriterTimer) {
-      // Click 1: Finish typing immediately
       clearInterval(this.typewriterTimer);
       this.typewriterTimer = null;
       this.dialogueText.innerText = this.currentDialogue.text;
@@ -579,7 +1120,6 @@ class WebGameApp {
         this.currentDialogue.onFinish();
       }
     } else {
-      // Click 2: Advance to next entry
       this.nextDialogue();
     }
   }
@@ -591,7 +1131,7 @@ class WebGameApp {
   }
 
   // -------------------------------------------------------------
-  // Investigation Screen & Hotspots
+  // Crime Scene Investigation & Hotspots
   // -------------------------------------------------------------
   openInvestigation() {
     this.hideDialogue();
@@ -657,13 +1197,19 @@ class WebGameApp {
       const ev = CASE_DATA[this.state.caseNum].evidence[hs.evId];
 
       if (isNew && ev) {
-        this.audio.playChime();
+        if (ev.cat === 'CONSPIRACY') {
+          this.audio.playHiddenClue();
+          this.achievements.unlock('hidden_clue', this);
+        } else {
+          this.audio.playChime();
+          this.achievements.unlock('first_clue', this);
+        }
+
         this.state.score += 25;
         this.state.energy = Math.max(0, this.state.energy - 10);
         this.state.leads.push(`Discovered [${ev.id}] ${ev.name} at ${scene.name}`);
         this.updateHUD();
 
-        // Show Evidence Card Modal
         this.openEvidenceModal(ev);
       } else {
         this.showToast(`Already documented: ${ev ? ev.name : hs.evId}`);
@@ -675,7 +1221,7 @@ class WebGameApp {
 
   openEvidenceModal(ev) {
     this.modalContent.innerHTML = `
-      <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:10px;">[NEW EVIDENCE SECURED]</h3>
+      <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:10px;">[FORENSIC EVIDENCE SECURED]</h3>
       <h1 style="color:#fff; font-size:1.6rem; margin-bottom:8px;">${ev.id} — ${ev.name}</h1>
       <p style="color:var(--cyan); font-size:0.9rem; margin-bottom:18px;">Category: ${ev.cat} | Relevance: ${ev.rel}</p>
       <p style="line-height:1.6; font-size:1.05rem; margin-bottom:24px; color:#cbd5e1;">${ev.desc}</p>
@@ -695,6 +1241,7 @@ class WebGameApp {
     this.showScreen('interrogation-screen');
     this.setBg('assets/backgrounds/interrogation_room.png');
     this.updateHUD();
+    this.audio.playBGM('tension');
 
     const curCase = CASE_DATA[this.state.caseNum];
     const listEl = document.getElementById('suspect-list');
@@ -722,7 +1269,6 @@ class WebGameApp {
     const isBroken = this.state.brokenAlibis.has(s.id);
     this.showPortrait(s.charId, isBroken ? 'broken' : 'neutral');
 
-    // Action buttons
     const actionsEl = document.getElementById('interrogate-actions');
     actionsEl.innerHTML = '';
 
@@ -765,12 +1311,11 @@ class WebGameApp {
       actionsEl.appendChild(b3);
     }
 
-    // Play greeting
     this.startDialogue([{ speaker: s.name, charId: s.charId, expr: 'neutral', text: s.greeting }]);
   }
 
   // -------------------------------------------------------------
-  // Contradiction Screen
+  // Contradiction Screen & Objection Anime Cut-In
   // -------------------------------------------------------------
   openContradictionScreen(s) {
     this.hideDialogue();
@@ -810,9 +1355,11 @@ class WebGameApp {
 
   submitContradiction(s, ev) {
     if (s.isCulprit && s.contradiction && s.contradiction.evId === ev.id) {
-      // Success! OBJECTION!
+      // Success! Play dramatic objection cut-in
       this.audio.playObjection();
-      this.triggerObjectionBanner();
+      this.triggerAnimeCutIn('detective', 'OBJECTION!');
+      this.achievements.unlock('objection', this);
+
       this.state.score += 50;
       this.state.brokenAlibis.add(s.id);
       this.state.leads.push(`${s.name}'s statement shattered using ${ev.id}!`);
@@ -828,6 +1375,7 @@ class WebGameApp {
     } else {
       // Failed!
       this.audio.playBuzzer();
+      this.shakeScreen();
       this.state.score = Math.max(0, this.state.score - 15);
       this.updateHUD();
       this.openInterrogation();
@@ -837,15 +1385,8 @@ class WebGameApp {
     }
   }
 
-  triggerObjectionBanner() {
-    this.objectionEl.classList.add('show');
-    setTimeout(() => {
-      this.objectionEl.classList.remove('show');
-    }, 1200);
-  }
-
   // -------------------------------------------------------------
-  // Clue Board Screen
+  // Clue Board & Red Thread Connections
   // -------------------------------------------------------------
   openClueBoard() {
     this.hideDialogue();
@@ -874,6 +1415,7 @@ class WebGameApp {
       const isSelected = (this.state.cluePin1 === eid || this.state.cluePin2 === eid);
 
       const card = document.createElement('div');
+      card.id = `clue-card-${eid}`;
       card.className = `btn ${isSelected ? 'btn-primary' : ''}`;
       card.style.display = 'flex';
       card.style.flexDirection = 'column';
@@ -902,6 +1444,51 @@ class WebGameApp {
 
       grid.appendChild(card);
     });
+
+    this.renderClueThreads();
+  }
+
+  renderClueThreads() {
+    if (!this.clueCanvas) return;
+    const canvas = this.clueCanvas;
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.parentElement.clientWidth || 1280;
+    canvas.height = canvas.parentElement.clientHeight || 720;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const curCase = CASE_DATA[this.state.caseNum];
+    this.state.unlockedDeductions.forEach(key => {
+      const [id1, id2] = key.split('_');
+      const el1 = document.getElementById(`clue-card-${id1}`);
+      const el2 = document.getElementById(`clue-card-${id2}`);
+      if (el1 && el2) {
+        const r1 = el1.getBoundingClientRect();
+        const r2 = el2.getBoundingClientRect();
+        const pR = canvas.getBoundingClientRect();
+
+        const x1 = r1.left + r1.width / 2 - pR.left;
+        const y1 = r1.top + r1.height / 2 - pR.top;
+        const x2 = r2.left + r2.width / 2 - pR.left;
+        const y2 = r2.top + r2.height / 2 - pR.top;
+
+        // Draw red yarn string
+        ctx.strokeStyle = '#dc2626';
+        ctx.lineWidth = 3;
+        ctx.shadowColor = 'rgba(239, 68, 68, 0.7)';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.quadraticCurveTo((x1 + x2) / 2, (y1 + y2) / 2 + 25, x2, y2);
+        ctx.stroke();
+
+        // Pin heads
+        ctx.fillStyle = '#f4c442';
+        ctx.beginPath();
+        ctx.arc(x1, y1, 5, 0, Math.PI * 2);
+        ctx.arc(x2, y2, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
   }
 
   connectPinnedClues() {
@@ -919,7 +1506,10 @@ class WebGameApp {
     if (match) {
       const key = `${match.id1}_${match.id2}`;
       if (!this.state.unlockedDeductions.has(key)) {
+        this.audio.playThreadConnect();
         this.audio.playChime();
+        this.achievements.unlock('clue_deduction', this);
+
         this.state.unlockedDeductions.add(key);
         this.state.score += 35;
         this.state.leads.push(`Deduction: [${match.title}] ${match.insight}`);
@@ -938,33 +1528,133 @@ class WebGameApp {
   }
 
   // -------------------------------------------------------------
-  // Notebook Screen
+  // Timeline Reconstruction Screen
   // -------------------------------------------------------------
-  openNotebook() {
+  openTimeline() {
     this.hideDialogue();
     this.hidePortrait();
-    this.showScreen('notebook-screen');
+    this.showScreen('timeline-screen');
     this.setBg('assets/backgrounds/briefing_room.png');
 
-    const container = document.getElementById('notebook-leads');
+    const curCase = CASE_DATA[this.state.caseNum];
+    const container = document.getElementById('timeline-events-container');
     container.innerHTML = '';
 
-    if (this.state.leads.length === 0) {
-      container.innerHTML = '<p style="color:var(--text-dim); padding:20px;">No leads recorded yet. Examine hotspots and interrogate suspects.</p>';
-    } else {
-      this.state.leads.forEach(l => {
-        const item = document.createElement('div');
-        item.style.padding = '10px 14px';
-        item.style.marginBottom = '8px';
-        item.style.background = 'rgba(30, 41, 59, 0.6)';
-        item.style.borderLeft = '3px solid var(--gold)';
-        item.style.fontSize = '0.95rem';
-        item.innerText = l;
-        container.appendChild(item);
-      });
-    }
+    curCase.timeline.forEach(t => {
+      const isDiscovered = this.state.timelineDiscovered.has(t.id);
+      const card = document.createElement('div');
+      card.className = `timeline-card ${isDiscovered && t.contradictory ? 'contradictory' : ''}`;
+      card.innerHTML = `
+        <div class="timeline-badge">${t.time}</div>
+        <p style="color:#f1f5f9; font-size:1rem; margin-top:4px;">${t.desc}</p>
+        ${t.contradictory ? `<span style="font-size:0.8rem; color:var(--red); font-weight:bold;">${isDiscovered ? '[CHRONOLOGICAL CONTRADICTION EXPOSED]' : '[Click to Analyze Timestamp]'}</span>` : ''}
+      `;
 
-    document.getElementById('btn-notebook-back').onclick = () => this.openInvestigation();
+      card.onclick = () => {
+        if (t.contradictory) {
+          this.state.timelineDiscovered.add(t.id);
+          this.audio.playHiddenClue();
+          this.achievements.unlock('timeline_sleuth', this);
+          this.state.score += 25;
+          this.updateHUD();
+
+          const bEl = document.getElementById('timeline-breakthrough');
+          bEl.style.display = 'block';
+          bEl.innerHTML = `★ TIMELINE BREAKTHROUGH: You isolated the chronological impossibility! The suspect's timeline is physically incompatible with forensic logs! (+25 Points)`;
+          this.openTimeline();
+        } else {
+          this.showToast(`Timestamp ${t.time}: Corroborated by forensic logs.`);
+        }
+      };
+
+      container.appendChild(card);
+    });
+  }
+
+  // -------------------------------------------------------------
+  // Detective Journal & Suspect Dossiers
+  // -------------------------------------------------------------
+  openJournal() {
+    this.hideDialogue();
+    this.hidePortrait();
+    this.showScreen('journal-screen');
+    this.setBg('assets/backgrounds/briefing_room.png');
+    this.switchJournalTab('dossiers');
+  }
+
+  switchJournalTab(tab) {
+    document.getElementById('journal-dossiers-view').style.display = (tab === 'dossiers') ? 'block' : 'none';
+    document.getElementById('journal-evidence-view').style.display = (tab === 'evidence') ? 'block' : 'none';
+    document.getElementById('journal-leads-view').style.display = (tab === 'leads') ? 'block' : 'none';
+
+    document.getElementById('tab-journal-dossiers').className = `btn ${tab === 'dossiers' ? 'btn-primary' : ''}`;
+    document.getElementById('tab-journal-evidence').className = `btn ${tab === 'evidence' ? 'btn-primary' : ''}`;
+    document.getElementById('tab-journal-leads').className = `btn ${tab === 'leads' ? 'btn-primary' : ''}`;
+
+    const curCase = CASE_DATA[this.state.caseNum];
+
+    if (tab === 'dossiers') {
+      const grid = document.getElementById('dossiers-grid');
+      grid.innerHTML = '';
+      curCase.suspects.forEach(s => {
+        const isBroken = this.state.brokenAlibis.has(s.id);
+        const card = document.createElement('div');
+        card.className = 'dossier-card';
+        card.innerHTML = `
+          <div class="dossier-header">
+            <div class="dossier-avatar" style="background-image:url('assets/characters/${s.charId}_neutral.png');"></div>
+            <div>
+              <h3 style="color:#fff; font-size:1.15rem;">${s.name}</h3>
+              <p style="color:var(--cyan); font-size:0.85rem;">Role: ${s.role} | Age: ${s.age || 'Unknown'}</p>
+              <p style="color:var(--gold); font-size:0.8rem;">Status: ${isBroken ? 'ALIBI SHATTERED' : 'Person of Interest'}</p>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; color:#cbd5e1;"><strong>Alibi:</strong> "${s.alibi || s.testimony}"</p>
+          <div class="dossier-secret ${isBroken ? '' : 'locked'}">
+            <strong>Hidden Intel / Secret:</strong> ${isBroken ? s.secret : '[Unlocks when alibi or contradiction is broken]'}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+    } else if (tab === 'evidence') {
+      const grid = document.getElementById('evidence-archive-grid');
+      grid.innerHTML = '';
+      this.state.discoveredEvidence.forEach(eid => {
+        const ev = curCase.evidence[eid];
+        if (!ev) return;
+        const card = document.createElement('div');
+        card.className = 'evidence-archive-card';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between;">
+            <strong style="color:var(--gold); font-size:0.9rem;">${ev.id}</strong>
+            <span style="color:var(--cyan); font-size:0.8rem;">${ev.cat}</span>
+          </div>
+          <h4 style="color:#fff; font-size:1.05rem;">${ev.name}</h4>
+          <p style="color:#94a3b8; font-size:0.85rem; line-height:1.4;">${ev.desc}</p>
+          <span style="color:var(--gold-light); font-size:0.75rem;">Relevance: ${ev.rel}</span>
+        `;
+        grid.appendChild(card);
+      });
+
+    } else if (tab === 'leads') {
+      const list = document.getElementById('journal-leads-list');
+      list.innerHTML = '';
+      if (this.state.leads.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-dim); padding:20px;">No investigative leads recorded yet.</p>';
+      } else {
+        this.state.leads.forEach(l => {
+          const item = document.createElement('div');
+          item.style.padding = '10px 14px';
+          item.style.marginBottom = '8px';
+          item.style.background = 'rgba(30, 41, 59, 0.6)';
+          item.style.borderLeft = '3px solid var(--gold)';
+          item.style.fontSize = '0.95rem';
+          item.innerText = l;
+          list.appendChild(item);
+        });
+      }
+    }
   }
 
   // -------------------------------------------------------------
@@ -975,6 +1665,7 @@ class WebGameApp {
     this.hidePortrait();
     this.showScreen('accusation-screen');
     this.setBg('assets/backgrounds/courtroom.png');
+    this.audio.playGavel();
 
     const curCase = CASE_DATA[this.state.caseNum];
 
@@ -1014,10 +1705,10 @@ class WebGameApp {
 
     // 3. Motives
     const motives = [
-      { key: "DEBT", label: "1. Financial Debt / Blackmail" },
-      { key: "EMBEZZLEMENT", label: "2. Embezzlement Cover-Up" },
-      { key: "PATENT", label: "3. Disinheritance / Patent Theft" },
-      { key: "VENDETTA", label: "4. Personal Revenge / Jealousy" }
+      { key: "DEBT", label: "1. Financial Debt / Syndicate Coercion" },
+      { key: "EMBEZZLEMENT", label: "2. Embezzlement & Asset Laundering" },
+      { key: "PATENT", label: "3. Disinheritance & Clockwork Theft" },
+      { key: "VENDETTA", label: "4. Personal Revenge & Envy" }
     ];
     const motContainer = document.getElementById('accuse-motives');
     motContainer.innerHTML = '';
@@ -1040,7 +1731,7 @@ class WebGameApp {
 
   evaluateVerdict() {
     if (!this.state.accusedSuspect || !this.state.accusedEvidence || !this.state.accusedMotive) {
-      this.showToast("Select a suspect, decisive evidence, and motive keyword!");
+      this.showToast("Select a suspect, decisive evidence, and criminal motive!");
       return;
     }
 
@@ -1054,19 +1745,41 @@ class WebGameApp {
 
     this.showScreen('verdict-screen');
     this.setBg('assets/backgrounds/courtroom.png');
+    this.audio.playGavel();
+
+    const epilogueBtn = document.getElementById('btn-verdict-epilogue');
 
     if (isMaster) {
-      this.audio.playChime();
+      this.audio.playBGM('verdict');
+      this.achievements.unlock('case_solved', this);
+
       document.getElementById('verdict-title').innerText = "MASTER DETECTIVE — CASE CLOSED!";
       document.getElementById('verdict-title').style.color = "var(--gold)";
       document.getElementById('verdict-rank').innerText = `Final Score: ${this.state.score + 250} | Performance Rank: S (Flawless Sleuth)`;
       document.getElementById('verdict-desc').innerText = curCase.solution;
+
+      // Check if all 3 cases achieved S rank
+      const solvedCases = JSON.parse(localStorage.getItem('case_closed_solved') || '[]');
+      if (!solvedCases.includes(this.state.caseNum)) {
+        solvedCases.push(this.state.caseNum);
+        localStorage.setItem('case_closed_solved', JSON.stringify(solvedCases));
+      }
+
+      if (solvedCases.length >= 3) {
+        this.achievements.unlock('master_sleuth', this);
+        epilogueBtn.style.display = 'inline-block';
+      } else {
+        epilogueBtn.style.display = 'none';
+      }
+
     } else {
       this.audio.playBuzzer();
+      this.shakeScreen();
       document.getElementById('verdict-title').innerText = "ACCUSATION COLLAPSED";
       document.getElementById('verdict-title').style.color = "var(--red)";
       document.getElementById('verdict-rank').innerText = `Final Score: ${this.state.score} | Performance Rank: C (Insufficient Proof)`;
-      document.getElementById('verdict-desc').innerText = "The prosecution failed to substantiate the decisive physical evidence and timeline before the High Magistrate. The true culprit escaped conviction.";
+      document.getElementById('verdict-desc').innerText = "The prosecution failed to substantiate decisive physical evidence and timeline logic before the High Magistrate. The true culprit escaped conviction.";
+      epilogueBtn.style.display = 'none';
     }
 
     const elimContainer = document.getElementById('verdict-eliminations');
@@ -1080,11 +1793,56 @@ class WebGameApp {
       elimContainer.appendChild(p);
     });
 
-    document.getElementById('btn-verdict-menu').onclick = () => this.showScreen('menu-screen');
+    document.getElementById('btn-verdict-menu').onclick = () => {
+      this.showScreen('menu-screen');
+      this.audio.playBGM('menu');
+    };
+  }
+
+  openEpilogue() {
+    this.achievements.unlock('conspiracy', this);
+    this.showScreen('epilogue-screen');
+    this.setBg('assets/backgrounds/main_menu.png');
+    this.audio.playBGM('investigation');
   }
 
   // -------------------------------------------------------------
-  // Save & Load Functionality
+  // Modals: Settings & Achievements
+  // -------------------------------------------------------------
+  openSettings() {
+    this.settingsModal.style.display = 'flex';
+  }
+  closeSettings() {
+    this.settingsModal.style.display = 'none';
+  }
+
+  openAchievements() {
+    const grid = document.getElementById('achievements-grid');
+    grid.innerHTML = '';
+    ACHIEVEMENTS_LIST.forEach(a => {
+      const isUn = this.achievements.isUnlocked(a.id);
+      const card = document.createElement('div');
+      card.className = `achievement-card ${isUn ? 'unlocked' : ''}`;
+      card.innerHTML = `
+        <div class="achievement-icon">${a.icon}</div>
+        <div>
+          <h4 style="color:${isUn ? 'var(--gold-light)' : '#94a3b8'}; font-size:1.05rem;">${a.title}</h4>
+          <p style="color:#cbd5e1; font-size:0.85rem; margin-top:2px;">${a.desc}</p>
+          <span style="font-size:0.75rem; color:${isUn ? 'var(--green)' : 'var(--text-dim)'}; font-weight:bold;">
+            ${isUn ? '✓ UNLOCKED' : '🔒 LOCKED'}
+          </span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+    this.achievementsModal.style.display = 'flex';
+  }
+  closeAchievements() {
+    this.achievementsModal.style.display = 'none';
+  }
+
+  // -------------------------------------------------------------
+  // Save & Load
   // -------------------------------------------------------------
   saveGame() {
     const data = {
@@ -1095,6 +1853,7 @@ class WebGameApp {
       brokenAlibis: Array.from(this.state.brokenAlibis),
       examinedHotspots: Array.from(this.state.examinedHotspots),
       unlockedDeductions: Array.from(this.state.unlockedDeductions),
+      timelineDiscovered: Array.from(this.state.timelineDiscovered),
       leads: this.state.leads
     };
     localStorage.setItem('case_closed_web_save', JSON.stringify(data));
@@ -1117,6 +1876,7 @@ class WebGameApp {
       this.state.brokenAlibis = new Set(data.brokenAlibis || []);
       this.state.examinedHotspots = new Set(data.examinedHotspots || []);
       this.state.unlockedDeductions = new Set(data.unlockedDeductions || []);
+      this.state.timelineDiscovered = new Set(data.timelineDiscovered || []);
       this.state.leads = data.leads || [];
 
       this.showToast("Investigation resumed!", 3000);
