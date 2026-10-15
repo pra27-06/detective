@@ -1,40 +1,48 @@
 # Makefile for CASE CLOSED — Detective Mystery Simulator
-# Standard C++17 project
+# Standard C++17 project with Dual Editions (Console & 2D Visual Novel GUI)
 
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude -O2
-LDFLAGS = 
 
-SRC_DIR = src
-INC_DIR = include
-OBJ_DIR = obj
+COMMON_SRCS = src/Character.cpp src/Detective.cpp src/Suspect.cpp src/Witness.cpp \
+              src/Evidence.cpp src/CrimeScene.cpp src/ClueBoard.cpp src/Notebook.cpp \
+              src/CaseFile.cpp src/SaveManager.cpp src/TerminalUI.cpp
 
-SRCS = $(wildcard $(SRC_DIR)/*.cpp)
-OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
-TARGET = case_closed.exe
+CONSOLE_SRCS = $(COMMON_SRCS) src/GameEngine.cpp src/main.cpp
+GUI_SRCS     = $(COMMON_SRCS) src/VNAssetManager.cpp src/VNRenderer.cpp \
+               src/DialogueSystem.cpp src/VNEngine.cpp src/main_gui.cpp
 
-.PHONY: all clean run dirs
+CONSOLE_TARGET = case_closed_console.exe
+GUI_TARGET     = case_closed_gui.exe
+LEGACY_TARGET  = case_closed.exe
 
-all: dirs $(TARGET)
+GUI_LDFLAGS = -lgdiplus -lgdi32 -luser32 -lwinmm -mwindows
+
+.PHONY: all console gui clean dirs
+
+all: dirs console gui
 
 dirs:
-	@if not exist $(OBJ_DIR) mkdir $(OBJ_DIR)
 	@if not exist saves mkdir saves
 
-$(TARGET): $(OBJS)
-	@echo [LINK] Linking $@...
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-	@echo [DONE] Build complete!
+console: dirs $(CONSOLE_TARGET)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@echo [CXX] Compiling $<...
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+$(CONSOLE_TARGET): $(CONSOLE_SRCS)
+	@echo [CXX] Building Console Edition: $@...
+	$(CXX) $(CXXFLAGS) -o $@ $(CONSOLE_SRCS)
+	@copy /y $(CONSOLE_TARGET) $(LEGACY_TARGET) >nul
+	@echo [DONE] Console Edition ready.
 
-run: all
-	./$(TARGET)
+gui: dirs $(GUI_TARGET)
+
+$(GUI_TARGET): $(GUI_SRCS)
+	@echo [CXX] Building 2D Visual Novel Edition: $@...
+	$(CXX) $(CXXFLAGS) -o $@ $(GUI_SRCS) $(GUI_LDFLAGS)
+	@echo [DONE] Visual Novel Edition ready.
 
 clean:
-	@echo [CLEAN] Removing build artifacts...
-	@if exist $(OBJ_DIR) rmdir /s /q $(OBJ_DIR)
-	@if exist $(TARGET) del /f /q $(TARGET)
-	@echo [CLEAN] Clean complete.
+	@echo [CLEAN] Removing executables...
+	@if exist $(CONSOLE_TARGET) del /f /q $(CONSOLE_TARGET)
+	@if exist $(GUI_TARGET) del /f /q $(GUI_TARGET)
+	@if exist $(LEGACY_TARGET) del /f /q $(LEGACY_TARGET)
+	@echo [CLEAN] Done.
