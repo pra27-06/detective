@@ -1,0 +1,35 @@
+# Binaries and executables
+*.exe
+*.out
+*.app
+*.bin
+
+# Object files and compiler intermediate files
+*.o
+*.obj
+obj/
+bin/
+build/
+
+# Debug and symbol files
+*.pdb
+*.ilk
+*.dSYM/
+
+# IDE and Editor configuration
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vs/
+*.swp
+*~
+
+# Operating System files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporary dynamic save states (keep sample save)
+saves/case_save.dat
+saves/*.tmp

@@ -1,0 +1,27 @@
+[HEADER]
+CASE=1
+DIFFICULTY=1
+NAME=Poirot
+SCORE=185
+ENERGY=85
+HINTS=0
+[EVIDENCE]
+E01
+E02
+E03
+[BROKEN_ALIBIS]
+S02
+[EXAMINED_HOTSPOTS]
+SCENE_01:0
+SCENE_01:1
+SCENE_02:1
+[DEDUCTIONS]
+0
+[NOTES]
+The security card swipe was clearly staged to simulate an alibi.
+Examine Marcus Cruz's tactical combat boots closely.
+[LEADS]
+Discovered E01: Cut Fiber Optic Cable at The Sapphire Display Vault
+Discovered E03: Electronic Access Log Tape at Basement Electrical Substation
+Marcus Cruz's alibi destroyed with E03
+[END]
