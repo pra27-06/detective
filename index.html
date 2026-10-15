@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CASE CLOSED — Anime Visual Novel Detective Simulator</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
   <link rel="stylesheet" href="web/style.css">
 </head>
 <body>
@@ -70,26 +71,26 @@
 
   <!-- 2. CASE SELECT SCREEN -->
   <div id="case-select-screen" class="screen">
-    <div style="padding:40px 60px;">
-      <h2 style="font-size:2rem; color:var(--gold); text-align:center; margin-bottom:30px;">SELECT CASE DOSSIER</h2>
-      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px;">
-        <div id="btn-case-1" class="btn" style="flex-direction:column; padding:24px; text-align:left; border:2px solid var(--border);">
+    <div class="screen-content-padded">
+      <h2 style="font-size:2rem; color:var(--gold); text-align:center; margin-bottom:24px;">SELECT CASE DOSSIER</h2>
+      <div class="case-grid">
+        <div id="btn-case-1" class="btn case-card">
           <span style="color:var(--gold); font-size:0.85rem; font-weight:bold;">CASE FILE #1</span>
-          <h3 style="color:#fff; font-size:1.3rem; margin:8px 0;">The Midnight Museum Heist</h3>
+          <h3 style="color:#fff; font-size:1.25rem; margin:8px 0;">The Midnight Museum Heist</h3>
           <p style="color:var(--text-dim); font-size:0.9rem; line-height:1.5;">The 45-carat Star of Alexandria vanished from a sealed glass vault during a 4-minute blackout.</p>
         </div>
-        <div id="btn-case-2" class="btn" style="flex-direction:column; padding:24px; text-align:left; border:2px solid var(--border);">
+        <div id="btn-case-2" class="btn case-card">
           <span style="color:var(--gold); font-size:0.85rem; font-weight:bold;">CASE FILE #2</span>
-          <h3 style="color:#fff; font-size:1.3rem; margin:8px 0;">The Last Train Mystery</h3>
+          <h3 style="color:#fff; font-size:1.25rem; margin:8px 0;">The Last Train Mystery</h3>
           <p style="color:var(--text-dim); font-size:0.9rem; line-height:1.5;">Tycoon Victor Sterling poisoned inside a locked first-class compartment aboard the midnight express.</p>
         </div>
-        <div id="btn-case-3" class="btn" style="flex-direction:column; padding:24px; text-align:left; border:2px solid var(--border);">
+        <div id="btn-case-3" class="btn case-card">
           <span style="color:var(--gold); font-size:0.85rem; font-weight:bold;">CASE FILE #3</span>
-          <h3 style="color:#fff; font-size:1.3rem; margin:8px 0;">The Locked Room Incident</h3>
+          <h3 style="color:#fff; font-size:1.25rem; margin:8px 0;">The Locked Room Incident</h3>
           <p style="color:var(--text-dim); font-size:0.9rem; line-height:1.5;">Master clockmaker Thaddeus Thorne shot dead inside a study bolted from the inside.</p>
         </div>
       </div>
-      <div style="margin-top:40px; text-align:center;">
+      <div style="margin-top:32px; text-align:center;">
         <button id="btn-case-back" class="btn" style="padding:12px 30px;">&laquo; Return to Main Menu</button>
       </div>
     </div>
@@ -101,10 +102,10 @@
   <!-- 4. CRIME SCENE INVESTIGATION SCREEN -->
   <div id="investigation-screen" class="screen">
     <!-- Scene Tabs (Top) -->
-    <div style="position:absolute; top:70px; left:24px; display:flex; gap:10px; z-index:20;" id="scene-tabs"></div>
+    <div class="scene-tabs-bar" id="scene-tabs"></div>
 
     <!-- Navigation Hub (Top Right) -->
-    <div style="position:absolute; top:70px; right:24px; display:flex; gap:10px; z-index:20;">
+    <div class="investigation-nav-bar">
       <button id="btn-nav-interrogate" class="btn">Interrogate</button>
       <button id="btn-nav-clueboard" class="btn">Clue Board</button>
       <button id="btn-nav-notebook" class="btn">Notebook</button>
@@ -115,7 +116,7 @@
     <div id="hotspots-layer" style="position:absolute; inset:0; z-index:15;"></div>
 
     <!-- Bottom Actions -->
-    <div style="position:absolute; bottom:20px; left:24px; right:24px; display:flex; justify-content:space-between; z-index:20;">
+    <div class="investigation-bottom-bar">
       <div style="display:flex; gap:10px;">
         <button id="btn-hub-hint" class="btn">Request Hint</button>
         <button id="btn-hub-save" class="btn">Save Case</button>
@@ -126,25 +127,25 @@
 
   <!-- 5. INTERROGATION ROOM SCREEN -->
   <div id="interrogation-screen" class="screen">
-    <div style="position:absolute; top:80px; left:30px; width:300px; z-index:20;">
+    <div class="suspect-list-wrap">
       <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:12px;">Persons of Interest:</h3>
       <div id="suspect-list"></div>
-      <div style="margin-top:16px;">
+      <div style="margin-top:14px;">
         <button class="btn" style="width:100%;" onclick="window.gameApp.openInvestigation()">&laquo; Return to Scene</button>
       </div>
     </div>
 
-    <div style="position:absolute; bottom:210px; left:360px; right:60px; z-index:20; display:flex; gap:12px;" id="interrogate-actions"></div>
+    <div class="interrogate-actions-wrap" id="interrogate-actions"></div>
   </div>
 
   <!-- 6. CONTRADICTION SCREEN -->
   <div id="contradiction-screen" class="screen">
-    <div style="padding:80px 40px;">
+    <div class="screen-content-padded">
       <h2 style="color:var(--gold); font-size:1.6rem; margin-bottom:8px;">CONFRONT SUSPECT WITH EVIDENCE</h2>
-      <p id="contra-statement" style="color:#fff; font-size:1.15rem; background:rgba(30,41,59,0.8); padding:12px 18px; border-left:4px solid var(--red); border-radius:4px; max-width:820px; margin-bottom:20px;"></p>
+      <p id="contra-statement" style="color:#fff; font-size:1.15rem; background:rgba(30,41,59,0.8); padding:12px 18px; border-left:4px solid var(--red); border-radius:4px; max-width:820px; margin-bottom:16px;"></p>
       <p style="color:var(--cyan); font-size:0.95rem; margin-bottom:12px;">Select the evidence that shatters their statement:</p>
-      <div id="contra-evidence-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; max-width:980px;"></div>
-      <div style="margin-top:24px;">
+      <div id="contra-evidence-grid" class="contra-evidence-grid"></div>
+      <div style="margin-top:20px;">
         <button id="btn-contra-cancel" class="btn">&laquo; Cancel Confrontation</button>
       </div>
     </div>
@@ -152,11 +153,11 @@
 
   <!-- 7. CLUE BOARD SCREEN -->
   <div id="clueboard-screen" class="screen">
-    <div style="padding:80px 40px;">
+    <div class="screen-content-padded">
       <h2 style="color:var(--gold); font-size:1.6rem; margin-bottom:8px;">EVIDENCE CLUE BOARD</h2>
-      <p style="color:var(--text-dim); font-size:0.95rem; margin-bottom:18px;">Click two evidence pins, then click 'Connect Pinned Clues' to discover breakthroughs:</p>
-      <div id="clue-pins-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; max-width:980px;"></div>
-      <div style="margin-top:28px; display:flex; gap:16px;">
+      <p style="color:var(--text-dim); font-size:0.95rem; margin-bottom:16px;">Click two evidence pins, then click 'Connect Pinned Clues' to discover breakthroughs:</p>
+      <div id="clue-pins-grid" class="clue-pins-grid"></div>
+      <div style="margin-top:24px; display:flex; gap:16px; flex-wrap:wrap;">
         <button id="btn-clue-connect" class="btn btn-primary" style="padding:12px 28px;">Connect Pinned Clues</button>
         <button id="btn-clue-return" class="btn">&laquo; Return to Investigation</button>
       </div>
@@ -165,9 +166,9 @@
 
   <!-- 8. NOTEBOOK SCREEN -->
   <div id="notebook-screen" class="screen">
-    <div style="padding:80px 60px;">
+    <div class="screen-content-padded">
       <h2 style="color:var(--gold); font-size:1.8rem; margin-bottom:16px; text-align:center;">DETECTIVE'S FIELD NOTEBOOK</h2>
-      <div style="background:var(--panel-bg); border:2px solid var(--border); border-radius:8px; padding:24px; max-height:480px; overflow-y:auto;">
+      <div style="background:var(--panel-bg); border:2px solid var(--border); border-radius:8px; padding:20px; max-height:480px; overflow-y:auto;">
         <h3 style="color:var(--gold-light); font-size:1.15rem; margin-bottom:14px;">Investigative Leads &amp; Timeline Notes:</h3>
         <div id="notebook-leads"></div>
       </div>
@@ -179,23 +180,23 @@
 
   <!-- 9. ACCUSATION BENCH SCREEN -->
   <div id="accusation-screen" class="screen">
-    <div style="padding:80px 40px;">
-      <h2 style="color:var(--gold); font-size:1.7rem; text-align:center; margin-bottom:20px;">MAGISTRATE'S BENCH &bull; FINAL INDICTMENT</h2>
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; max-width:1100px; margin:0 auto;">
-        <div style="background:var(--panel-bg); border:1px solid var(--border); border-radius:8px; padding:18px;">
+    <div class="screen-content-padded">
+      <h2 style="color:var(--gold); font-size:1.7rem; text-align:center; margin-bottom:18px;">MAGISTRATE'S BENCH &bull; FINAL INDICTMENT</h2>
+      <div class="accusation-columns">
+        <div style="background:var(--panel-bg); border:1px solid var(--border); border-radius:8px; padding:16px;">
           <h3 style="color:var(--gold); font-size:1.05rem; margin-bottom:12px;">Step 1: Culprit</h3>
           <div id="accuse-suspects"></div>
         </div>
-        <div style="background:var(--panel-bg); border:1px solid var(--border); border-radius:8px; padding:18px;">
+        <div style="background:var(--panel-bg); border:1px solid var(--border); border-radius:8px; padding:16px;">
           <h3 style="color:var(--gold); font-size:1.05rem; margin-bottom:12px;">Step 2: Decisive Clue</h3>
           <div id="accuse-evidence"></div>
         </div>
-        <div style="background:var(--panel-bg); border:1px solid var(--border); border-radius:8px; padding:18px;">
+        <div style="background:var(--panel-bg); border:1px solid var(--border); border-radius:8px; padding:16px;">
           <h3 style="color:var(--gold); font-size:1.05rem; margin-bottom:12px;">Step 3: Criminal Motive</h3>
           <div id="accuse-motives"></div>
         </div>
       </div>
-      <div style="margin-top:28px; text-align:center; display:flex; justify-content:center; gap:20px;">
+      <div style="margin-top:24px; text-align:center; display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
         <button id="btn-submit-accusation" class="btn btn-danger" style="padding:14px 40px; font-size:1.1rem;">SUBMIT FORMAL INDICTMENT</button>
         <button id="btn-accuse-cancel" class="btn">&laquo; Back</button>
       </div>
