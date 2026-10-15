@@ -697,7 +697,9 @@ const ACHIEVEMENTS_LIST = [
   { id: "timeline_sleuth", icon: "⏳", title: "Chronological Precision", desc: "Isolate a timeline contradiction during reconstruction." },
   { id: "case_solved", icon: "⚖️", title: "Justice Delivered", desc: "Conclude any case with a Flawless Grade S verdict." },
   { id: "conspiracy", icon: "🏛️", title: "The Obsidian Hourglass", desc: "Unveil the overarching syndicate conspiracy." },
-  { id: "master_sleuth", icon: "👑", title: "Flawless Detective", desc: "Solve all three cases with Master Sleuth Grade S." }
+  { id: "master_sleuth", icon: "👑", title: "Flawless Detective", desc: "Solve all three cases with Master Sleuth Grade S." },
+  { id: "forensic_chemist", icon: "🧪", title: "Forensic Alchemist", desc: "Execute a chemical, spectroscopy, or metallurgical assay in the Lab." },
+  { id: "mind_palace_epiphany", icon: "🧠", title: "Cognitive Nexus", desc: "Synthesize a breakthrough Epiphany in the Mind Palace." }
 ];
 
 class AchievementManager {
@@ -762,6 +764,13 @@ class GameState {
       screenShake: true,
       textSpeed: 22
     };
+    this.forensicReports = new Map();
+    this.selectedForensicSpecimen = null;
+    this.selectedForensicAssay = 'chemical';
+    this.suspectHeartRates = { S01: 72, S02: 78, S03: 65, S04: 70 };
+    this.mindPalacePin1 = null;
+    this.mindPalacePin2 = null;
+    this.forgedEpiphanies = new Set();
   }
 }
 
@@ -809,6 +818,14 @@ class WebGameApp {
     this.settingsModal = document.getElementById('settings-modal');
     this.achievementsModal = document.getElementById('achievements-modal');
     this.clueCanvas = document.getElementById('clueboard-canvas');
+
+    // Forensic Lab & Mind Palace & EKG DOM references
+    this.ekgCanvas = document.getElementById('ekg-canvas');
+    this.ekgCtx = this.ekgCanvas ? this.ekgCanvas.getContext('2d') : null;
+    this.ekgAnimId = null;
+    this.ekgPhase = 0;
+    this.mindPalaceCanvas = document.getElementById('mindpalace-canvas');
+    this.mindPalaceCtx = this.mindPalaceCanvas ? this.mindPalaceCanvas.getContext('2d') : null;
   }
 
   bindEvents() {
@@ -835,6 +852,35 @@ class WebGameApp {
     };
     document.getElementById('btn-hud-journal').onclick = () => this.openJournal();
     document.getElementById('btn-hud-settings').onclick = () => this.openSettings();
+    const fHud = document.getElementById('btn-hud-forensics');
+    if (fHud) fHud.onclick = () => this.openForensicLab();
+    const mHud = document.getElementById('btn-hud-mindpalace');
+    if (mHud) mHud.onclick = () => this.openMindPalace();
+
+    const fHub = document.getElementById('btn-hub-forensics');
+    if (fHub) fHub.onclick = () => this.openForensicLab();
+    const mHub = document.getElementById('btn-hub-mindpalace');
+    if (mHub) mHub.onclick = () => this.openMindPalace();
+
+    const fBack = document.getElementById('btn-forensics-back');
+    if (fBack) fBack.onclick = () => this.openInvestigation();
+    const mBack = document.getElementById('btn-mindpalace-back');
+    if (mBack) mBack.onclick = () => this.openInvestigation();
+
+    // Forensic assay selection
+    document.querySelectorAll('.assay-card').forEach(card => {
+      card.onclick = () => {
+        document.querySelectorAll('.assay-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        this.state.selectedForensicAssay = card.dataset.assay;
+      };
+    });
+
+    const runAssayBtn = document.getElementById('btn-run-assay');
+    if (runAssayBtn) runAssayBtn.onclick = () => this.executeForensicAssay();
+
+    const synthBtn = document.getElementById('btn-synthesize-epiphany');
+    if (synthBtn) synthBtn.onclick = () => this.synthesizeMindEpiphany();
 
     // Case Selection
     document.getElementById('btn-case-1').onclick = () => this.startCase(1);
@@ -1268,6 +1314,7 @@ class WebGameApp {
     this.state.activeSuspect = s;
     const isBroken = this.state.brokenAlibis.has(s.id);
     this.showPortrait(s.charId, isBroken ? 'broken' : 'neutral');
+    this.updateEKGForSuspect(s);
 
     const actionsEl = document.getElementById('interrogate-actions');
     actionsEl.innerHTML = '';
@@ -1360,6 +1407,9 @@ class WebGameApp {
       this.triggerAnimeCutIn('detective', 'OBJECTION!');
       this.achievements.unlock('objection', this);
 
+      this.state.suspectHeartRates[s.id] = 148;
+      this.updateEKGForSuspect(s);
+
       this.state.score += 50;
       this.state.brokenAlibis.add(s.id);
       this.state.leads.push(`${s.name}'s statement shattered using ${ev.id}!`);
@@ -1376,6 +1426,9 @@ class WebGameApp {
       // Failed!
       this.audio.playBuzzer();
       this.shakeScreen();
+      this.state.suspectHeartRates[s.id] = (this.state.suspectHeartRates[s.id] || 75) + 14;
+      this.updateEKGForSuspect(s);
+
       this.state.score = Math.max(0, this.state.score - 15);
       this.updateHUD();
       this.openInterrogation();
@@ -1883,6 +1936,359 @@ class WebGameApp {
       this.openInvestigation();
     } catch (e) {
       this.showToast("Failed to parse save data!");
+    }
+  }
+
+  // -------------------------------------------------------------
+  // Psychological Profiler & EKG Cardiograph Engine
+  // -------------------------------------------------------------
+  updateEKGForSuspect(s) {
+    const card = document.getElementById('suspect-ekg-card');
+    if (!card) return;
+    if (s.isWitness) {
+      card.style.display = 'none';
+      if (this.ekgAnimId) cancelAnimationFrame(this.ekgAnimId);
+      return;
+    }
+    card.style.display = 'block';
+
+    const bpmEl = document.getElementById('ekg-bpm-display');
+    const stressFill = document.getElementById('ekg-stress-fill');
+    const microEl = document.getElementById('ekg-micro-expression');
+
+    let bpm = this.state.suspectHeartRates[s.id] || 75;
+    if (this.state.brokenAlibis.has(s.id)) {
+      bpm = Math.max(bpm, 142);
+    }
+    this.state.suspectHeartRates[s.id] = bpm;
+
+    bpmEl.innerText = `${bpm} BPM`;
+    bpmEl.className = 'ekg-bpm';
+    if (bpm >= 130) {
+      bpmEl.classList.add('critical');
+      stressFill.style.width = '96%';
+      microEl.innerText = "CRITICAL CARDIAC SURGE: Rapid respiration, perspiration beads, alibi collapsing!";
+    } else if (bpm >= 95) {
+      bpmEl.classList.add('elevated');
+      stressFill.style.width = '65%';
+      microEl.innerText = "ELEVATED TENSION: Guarded swallow, defensive stance, pulse accelerating.";
+    } else {
+      stressFill.style.width = '30%';
+      microEl.innerText = "BASELINE DEMEANOR: Steady pulse; cautious and deliberate responses.";
+    }
+
+    if (!this.ekgAnimId) {
+      this.renderEKGFrame();
+    }
+  }
+
+  renderEKGFrame() {
+    if (!this.ekgCanvas || !this.ekgCtx) return;
+    const ctx = this.ekgCtx;
+    const w = this.ekgCanvas.width;
+    const h = this.ekgCanvas.height;
+
+    ctx.fillStyle = '#090d16';
+    ctx.fillRect(0, 0, w, h);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < w; x += 20) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+    }
+    for (let y = 0; y < h; y += 10) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    }
+
+    // Determine current active suspect BPM
+    const s = this.state.activeSuspect;
+    const bpm = (s && this.state.suspectHeartRates[s.id]) ? this.state.suspectHeartRates[s.id] : 75;
+    const speed = (bpm / 60) * 3.5;
+    this.ekgPhase = (this.ekgPhase + speed) % w;
+
+    // Wave color
+    ctx.strokeStyle = bpm >= 130 ? '#ef4444' : (bpm >= 95 ? '#eab308' : '#22c55e');
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    const midY = h / 2;
+    for (let x = 0; x < w; x++) {
+      const pos = (x + this.ekgPhase) % 120;
+      let y = midY;
+      if (pos > 40 && pos < 48) {
+        y = midY - 4; // P wave
+      } else if (pos >= 48 && pos < 52) {
+        y = midY + 5; // Q wave
+      } else if (pos >= 52 && pos < 57) {
+        y = 5; // R wave (sharp peak)
+      } else if (pos >= 57 && pos < 62) {
+        y = h - 6; // S wave (sharp dip)
+      } else if (pos >= 68 && pos < 78) {
+        y = midY - 6; // T wave
+      }
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    this.ekgAnimId = requestAnimationFrame(() => this.renderEKGFrame());
+  }
+
+  // -------------------------------------------------------------
+  // Forensic Laboratory (Template Method & Spectroscopy Pattern)
+  // -------------------------------------------------------------
+  openForensicLab() {
+    this.hideDialogue();
+    this.hidePortrait();
+    this.showScreen('forensic-lab-screen');
+    this.setBg('assets/backgrounds/briefing_room.png');
+
+    const curCase = CASE_DATA[this.state.caseNum];
+    const listEl = document.getElementById('forensic-specimens-list');
+    listEl.innerHTML = '';
+
+    if (this.state.discoveredEvidence.size === 0) {
+      listEl.innerHTML = '<div style="color:var(--text-dim); padding:10px;">No forensic evidence discovered yet. Search crime scenes first!</div>';
+      return;
+    }
+
+    this.state.discoveredEvidence.forEach(eid => {
+      const ev = curCase.evidence[eid];
+      if (!ev) return;
+      const card = document.createElement('div');
+      card.className = `specimen-card ${this.state.selectedForensicSpecimen === eid ? 'selected' : ''}`;
+      card.innerHTML = `<strong>${ev.id}</strong> — ${ev.name} <span style="font-size:0.75rem; color:var(--text-dim);">(${ev.cat})</span>`;
+      card.onclick = () => {
+        this.state.selectedForensicSpecimen = eid;
+        this.openForensicLab();
+      };
+      listEl.appendChild(card);
+    });
+
+    if (!this.state.selectedForensicSpecimen && this.state.discoveredEvidence.size > 0) {
+      this.state.selectedForensicSpecimen = Array.from(this.state.discoveredEvidence)[0];
+    }
+  }
+
+  executeForensicAssay() {
+    if (!this.state.selectedForensicSpecimen) {
+      this.showToast("Select an evidence specimen first!");
+      return;
+    }
+
+    const curCase = CASE_DATA[this.state.caseNum];
+    const ev = curCase.evidence[this.state.selectedForensicSpecimen];
+    const assay = this.state.selectedForensicAssay || 'chemical';
+    const statusEl = document.getElementById('reaction-status');
+    const beakerLiquid = document.getElementById('beaker-liquid');
+    const certCard = document.getElementById('forensic-certificate');
+
+    statusEl.innerHTML = `<em>Initiating ${assay.toUpperCase()} assay on [${ev.id}: ${ev.name}]...</em>`;
+    
+    // Animate Beaker Liquid
+    if (assay === 'chemical') {
+      beakerLiquid.style.background = 'linear-gradient(180deg, #38bdf8, #1e3a8a)';
+    } else if (assay === 'spectroscopy') {
+      beakerLiquid.style.background = 'linear-gradient(180deg, #c084fc, #581c87)';
+    } else {
+      beakerLiquid.style.background = 'linear-gradient(180deg, #fbbf24, #b45309)';
+    }
+
+    this.audio.playTypewriter();
+
+    setTimeout(() => {
+      let formula = "AgNO3 + Fe4[Fe(CN)6]3 Reaction Matrix";
+      let finding = "Positive reaction for chemical residue and mechanical tampering.";
+      let merit = 40;
+
+      if (ev.id === 'E01' && this.state.caseNum === 1) {
+        formula = "UV Refraction Lambda = 365nm Polarized Field";
+        finding = "Micro-engraved coordinates matrix discovered on the sapphire facet. Links directly to the Obsidian Hourglass!";
+        merit = 50;
+      } else if (ev.id === 'E03' && this.state.caseNum === 1) {
+        formula = "Electronic Pulse Latency Analyzer";
+        finding = "Door server log reveals impossible 3-minute travel time between North Wing and Basement.";
+        merit = 40;
+      } else if (ev.id === 'E01' && this.state.caseNum === 2) {
+        formula = "Prussian Blue Hydrocyanic Acid Assay";
+        finding = "Potassium cyanide confirmed in tea dregs. Ingestion occurred exactly 12 minutes prior to demise.";
+        merit = 45;
+      } else if (ev.id === 'E02' && this.state.caseNum === 3) {
+        formula = "Synthetic Aniline Ink Spectroscopy (420nm Absorption)";
+        finding = "Forged suicide note written with modern 1894 ballpoint paste, disproving authentic quill pen origin.";
+        merit = 45;
+      }
+
+      this.audio.playHiddenClue();
+      this.achievements.unlock('forensic_chemist', this);
+      this.state.score += merit;
+      this.updateHUD();
+
+      statusEl.innerHTML = `<strong>Assay Complete:</strong> Decisive evidentiary breakthrough authenticated!`;
+      certCard.style.display = 'block';
+      document.getElementById('cert-specimen').innerText = `Target Specimen: ${ev.id} — ${ev.name}`;
+      document.getElementById('cert-formula').innerText = `Reagent Assay: ${formula}`;
+      document.getElementById('cert-finding').innerText = `Forensic Finding: ${finding}`;
+      document.getElementById('cert-badge').innerText = `+${merit} Forensic Merit Points Awarded`;
+
+      const key = `${ev.id}_${assay}`;
+      this.state.forensicReports.set(key, { evId: ev.id, formula, finding, merit });
+      this.state.leads.push(`Forensic Certificate [${ev.id}]: ${finding}`);
+    }, 600);
+  }
+
+  // -------------------------------------------------------------
+  // Cognitive Mind Palace (Composite Graph & Epiphany Synthesis)
+  // -------------------------------------------------------------
+  openMindPalace() {
+    this.hideDialogue();
+    this.hidePortrait();
+    this.showScreen('mindpalace-screen');
+    this.setBg('assets/backgrounds/crime_scene_main.png');
+
+    const curCase = CASE_DATA[this.state.caseNum];
+    const grid = document.getElementById('mindpalace-thoughts-grid');
+    grid.innerHTML = '';
+
+    // Generate thoughts from discovered clues and premises
+    const thoughts = [];
+    this.state.discoveredEvidence.forEach(eid => {
+      const ev = curCase.evidence[eid];
+      if (ev) {
+        thoughts.push({ id: ev.id, cat: ev.cat, title: ev.name, snippet: ev.desc.slice(0, 75) + '...' });
+      }
+    });
+
+    if (thoughts.length === 0) {
+      grid.innerHTML = '<div style="color:var(--text-dim); padding:16px;">No cognitive thoughts established yet. Examine crime scenes to populate premises!</div>';
+    } else {
+      thoughts.forEach(t => {
+        const card = document.createElement('div');
+        const isPinned = (this.state.mindPalacePin1 === t.id || this.state.mindPalacePin2 === t.id);
+        card.className = `thought-node-card ${isPinned ? 'pinned' : ''}`;
+        card.innerHTML = `
+          <div class="thought-node-badge">[${t.cat}] ${t.id}</div>
+          <div class="thought-node-title">${t.title}</div>
+          <p style="font-size:0.78rem; color:var(--text-dim); margin-top:4px;">${t.snippet}</p>
+        `;
+        card.onclick = () => this.pinMindPalaceThought(t.id);
+        grid.appendChild(card);
+      });
+    }
+
+    this.renderForgedEpiphanies();
+    this.initMindPalaceCanvas();
+  }
+
+  pinMindPalaceThought(thoughtId) {
+    if (this.state.mindPalacePin1 === thoughtId) {
+      this.state.mindPalacePin1 = null;
+    } else if (this.state.mindPalacePin2 === thoughtId) {
+      this.state.mindPalacePin2 = null;
+    } else if (!this.state.mindPalacePin1) {
+      this.state.mindPalacePin1 = thoughtId;
+    } else if (!this.state.mindPalacePin2) {
+      this.state.mindPalacePin2 = thoughtId;
+    } else {
+      this.state.mindPalacePin1 = thoughtId;
+    }
+
+    const curCase = CASE_DATA[this.state.caseNum];
+    const t1 = this.state.mindPalacePin1 ? curCase.evidence[this.state.mindPalacePin1]?.name : "Select Thought Alpha";
+    const t2 = this.state.mindPalacePin2 ? curCase.evidence[this.state.mindPalacePin2]?.name : "Select Thought Beta";
+
+    document.getElementById('thought-slot-1').innerText = t1 || "Select Thought Alpha";
+    document.getElementById('thought-slot-2').innerText = t2 || "Select Thought Beta";
+
+    this.openMindPalace();
+  }
+
+  synthesizeMindEpiphany() {
+    if (!this.state.mindPalacePin1 || !this.state.mindPalacePin2) {
+      this.showToast("Pin two complementary thoughts to forge an Epiphany!");
+      return;
+    }
+
+    const p1 = this.state.mindPalacePin1;
+    const p2 = this.state.mindPalacePin2;
+    const curCase = CASE_DATA[this.state.caseNum];
+
+    const match = curCase.deductions.find(d => 
+      (d.id1 === p1 && d.id2 === p2) || (d.id1 === p2 && d.id2 === p1)
+    );
+
+    if (match) {
+      const epKey = `${match.id1}_${match.id2}`;
+      if (!this.state.forgedEpiphanies.has(epKey)) {
+        this.state.forgedEpiphanies.add(epKey);
+        this.audio.playObjection();
+        this.triggerAnimeCutIn('detective', 'EPIPHANY!');
+        this.achievements.unlock('mind_palace_epiphany', this);
+
+        this.state.score += 50;
+        this.state.leads.push(`Mind Palace Epiphany: [${match.title}] — ${match.insight}`);
+        this.updateHUD();
+        this.showToast(`COGNITIVE EPIPHANY FORGED: ${match.title} (+50 Points)`, 4500);
+      } else {
+        this.showToast("This cognitive epiphany has already been forged.");
+      }
+    } else {
+      this.audio.playBuzzer();
+      this.shakeScreen();
+      this.showToast("No logical cognitive resonance between these thought premises.");
+    }
+
+    this.state.mindPalacePin1 = null;
+    this.state.mindPalacePin2 = null;
+    document.getElementById('thought-slot-1').innerText = "Select Thought Alpha";
+    document.getElementById('thought-slot-2').innerText = "Select Thought Beta";
+    this.openMindPalace();
+  }
+
+  renderForgedEpiphanies() {
+    const list = document.getElementById('forged-epiphanies-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    const curCase = CASE_DATA[this.state.caseNum];
+    const forgedList = curCase.deductions.filter(d => this.state.forgedEpiphanies.has(`${d.id1}_${d.id2}`));
+
+    if (forgedList.length === 0) {
+      list.innerHTML = '<div style="color:var(--text-dim); font-size:0.95rem; font-style:italic; padding:20px; text-align:center;">No cognitive epiphanies synthesized yet. Cross-link complementary thought premises!</div>';
+      return;
+    }
+
+    forgedList.forEach(f => {
+      const card = document.createElement('div');
+      card.className = 'epiphany-card';
+      card.innerHTML = `
+        <div class="epiphany-title">⚡ ${f.title}</div>
+        <div class="epiphany-desc">${f.insight}</div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  initMindPalaceCanvas() {
+    if (!this.mindPalaceCanvas || !this.mindPalaceCtx) return;
+    const cvs = this.mindPalaceCanvas;
+    const ctx = this.mindPalaceCtx;
+    const rect = cvs.parentElement.getBoundingClientRect();
+    cvs.width = rect.width;
+    cvs.height = rect.height;
+
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+    // Draw neural cosmic stars
+    for (let i = 0; i < 40; i++) {
+      const x = (Math.sin(i * 99) * 0.5 + 0.5) * cvs.width;
+      const y = (Math.cos(i * 77) * 0.5 + 0.5) * cvs.height;
+      const r = (i % 3) + 1;
+      ctx.fillStyle = i % 2 === 0 ? 'rgba(192, 132, 252, 0.4)' : 'rgba(244, 196, 66, 0.4)';
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
     }
   }
 

@@ -301,8 +301,45 @@ async def run_tests():
             assert "Thaddeus Thorne" in epilogue_text
             print("  [PASS] Overarching conspiracy narrative connection verified.")
 
+            # Suite 12: Forensic Chemistry & Spectroscopy Lab
+            print("[SUITE 12/14] Forensic Chemistry & Spectroscopy Lab Assays...")
+            await eval_js("window.gameApp.openForensicLab();")
+            assert await eval_js("document.querySelector('.screen.active')?.id") == "forensic-lab-screen"
+            specimens_count = await eval_js("document.querySelectorAll('.specimen-card').length")
+            assert specimens_count > 0, "Specimens must render in forensic lab"
+            await eval_js("window.gameApp.executeForensicAssay();")
+            await asyncio.sleep(0.8)
+            cert_display = await eval_js("document.getElementById('forensic-certificate').style.display")
+            assert cert_display == "block", "Forensic certificate must display upon assay completion"
+            assert await eval_js("window.gameApp.achievements.has('forensic_chemist')") is True
+            print("  [PASS] Forensic reagent assay and Scotland Yard certificate verified.")
+
+            # Suite 13: Cognitive Mind Palace & Epiphany Synthesis
+            print("[SUITE 13/14] Cognitive Mind Palace & Epiphany Synthesis...")
+            await eval_js("window.gameApp.openMindPalace();")
+            assert await eval_js("document.querySelector('.screen.active')?.id") == "mindpalace-screen"
+            thoughts_count = await eval_js("document.querySelectorAll('.thought-node-card').length")
+            assert thoughts_count > 0, "Thought nodes must render in Mind Palace"
+            await eval_js("""
+                window.gameApp.state.mindPalacePin1 = 'E01';
+                window.gameApp.state.mindPalacePin2 = 'E03';
+                window.gameApp.synthesizeMindEpiphany();
+            """)
+            assert await eval_js("window.gameApp.state.forgedEpiphanies.size") > 0
+            assert await eval_js("window.gameApp.achievements.has('mind_palace_epiphany')") is True
+            print("  [PASS] Cognitive thought pinning and Epiphany synthesis verified.")
+
+            # Suite 14: Suspect Psychological Heart-Rate EKG Monitor
+            print("[SUITE 14/14] Suspect Psychological Heart-Rate EKG Monitor...")
+            await eval_js("window.gameApp.openInterrogation();")
+            ekg_display = await eval_js("document.getElementById('suspect-ekg-card').style.display")
+            assert ekg_display == "block", "EKG monitor card must be visible for suspects"
+            bpm_text = await eval_js("document.getElementById('ekg-bpm-display').innerText")
+            assert "BPM" in bpm_text
+            print("  [PASS] Real-time suspect EKG pulse and stress gauge verified.")
+
             assert len(console_errors) == 0, f"Found console errors: {console_errors}"
-            print("\n>> ALL 11 AUTOMATED WEB TEST SUITES PASSED (0 FAILURES, 0 CONSOLE ERRORS)")
+            print("\n>> ALL 14 AUTOMATED WEB TEST SUITES PASSED (0 FAILURES, 0 CONSOLE ERRORS)")
 
             listener.cancel()
     finally:

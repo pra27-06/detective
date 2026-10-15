@@ -43,6 +43,8 @@
       <div class="hud-controls">
         <button id="btn-hud-audio" class="hud-icon-btn" title="Toggle Sound / BGM">🎵</button>
         <button id="btn-hud-journal" class="hud-icon-btn" title="Detective Journal">📓</button>
+        <button id="btn-hud-forensics" class="hud-icon-btn" title="Forensic Chemistry Lab">🧪</button>
+        <button id="btn-hud-mindpalace" class="hud-icon-btn" title="Cognitive Mind Palace">🧠</button>
         <button id="btn-hud-settings" class="hud-icon-btn" title="Settings">⚙️</button>
       </div>
     </div>
@@ -136,9 +138,11 @@
 
     <!-- Bottom Actions -->
     <div class="investigation-bottom-bar">
-      <div style="display:flex; gap:10px;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button id="btn-hub-hint" class="btn">Request Hint</button>
         <button id="btn-hub-save" class="btn">Save Case</button>
+        <button id="btn-hub-forensics" class="btn" style="border-color:#38bdf8; color:#38bdf8;">🧪 Forensic Lab</button>
+        <button id="btn-hub-mindpalace" class="btn" style="border-color:#a855f7; color:#c084fc;">🧠 Mind Palace</button>
       </div>
       <button id="btn-hub-menu" class="btn">&laquo; Main Menu</button>
     </div>
@@ -149,6 +153,20 @@
     <div class="suspect-list-wrap">
       <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:12px;">Persons of Interest:</h3>
       <div id="suspect-list"></div>
+
+      <!-- Real-time Psychological Heart-Rate EKG Monitor -->
+      <div id="suspect-ekg-card" class="ekg-monitor-card" style="display:none; margin-top:14px;">
+        <div class="ekg-header">
+          <span class="ekg-label">CARDIAC PROFILER (EKG)</span>
+          <span id="ekg-bpm-display" class="ekg-bpm">78 BPM</span>
+        </div>
+        <canvas id="ekg-canvas" width="230" height="42" class="ekg-canvas"></canvas>
+        <div class="ekg-stress-bar-wrap">
+          <div id="ekg-stress-fill" class="ekg-stress-fill" style="width: 25%;"></div>
+        </div>
+        <div id="ekg-micro-expression" class="ekg-micro-text">Pulse steady; demeanor guarded.</div>
+      </div>
+
       <div style="margin-top:14px;">
         <button class="btn" style="width:100%;" onclick="window.gameApp.openInvestigation()">&laquo; Return to Scene</button>
       </div>
@@ -340,6 +358,120 @@
       <div id="achievements-grid" class="achievements-grid" style="max-height:400px; overflow-y:auto;"></div>
       <div style="margin-top:18px; text-align:center;">
         <button id="btn-close-achievements" class="btn">&laquo; Close Trophies</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10E. FORENSIC ALCHEMY & SPECTROSCOPY LAB SCREEN -->
+  <div id="forensic-lab-screen" class="screen">
+    <div class="screen-content-padded">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="color:#38bdf8; font-size:1.8rem; text-shadow:0 0 15px rgba(56,189,248,0.4);">SCOTLAND YARD FORENSIC LABORATORY</h2>
+          <p style="color:var(--text-dim); font-size:0.95rem;">Subject physical evidence to chemical reagents, spectroscopy, and metallurgical toolmark assays:</p>
+        </div>
+        <button id="btn-forensics-back" class="btn">&laquo; Return to Investigation</button>
+      </div>
+
+      <div class="forensic-lab-layout">
+        <!-- Left: Specimen & Assay Selection -->
+        <div class="forensic-panel">
+          <h3 style="color:var(--gold); font-size:1.15rem; margin-bottom:10px;">1. Select Specimen for Analysis:</h3>
+          <div id="forensic-specimens-list" class="forensic-specimens-list"></div>
+
+          <h3 style="color:var(--gold); font-size:1.15rem; margin-top:16px; margin-bottom:10px;">2. Select Analytical Assay Method:</h3>
+          <div class="assay-options-grid">
+            <div class="assay-card active" data-assay="chemical">
+              <span class="assay-icon">🧪</span>
+              <div class="assay-info">
+                <strong>Chemical Reagent Assay</strong>
+                <p>Prussian Blue &amp; Silver Nitrate testing for poisons, solvents, and jumpers.</p>
+              </div>
+            </div>
+            <div class="assay-card" data-assay="spectroscopy">
+              <span class="assay-icon">🔬</span>
+              <div class="assay-info">
+                <strong>Microscopic Spectroscopy</strong>
+                <p>Ultraviolet refraction (365nm) &amp; aniline ink absorption curves.</p>
+              </div>
+            </div>
+            <div class="assay-card" data-assay="metallurgy">
+              <span class="assay-icon">⚙️</span>
+              <div class="assay-info">
+                <strong>Metallurgical Toolmark Assay</strong>
+                <p>Micro-groove striation and tungsten carbide mechanical shear matching.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <button id="btn-run-assay" class="btn btn-primary" style="width:100%; padding:12px; font-size:1.05rem; background:linear-gradient(135deg, #0284c7, #0369a1); border-color:#38bdf8;">⚡ Execute Forensic Assay</button>
+          </div>
+        </div>
+
+        <!-- Right: Animated Reaction Chamber & Certificate -->
+        <div class="forensic-panel">
+          <h3 style="color:var(--gold); font-size:1.15rem; margin-bottom:10px;">3. Reaction Chamber &amp; Official Certificate:</h3>
+          <div id="reaction-chamber" class="reaction-chamber">
+            <div id="reaction-beaker" class="reaction-beaker">
+              <div id="beaker-liquid" class="beaker-liquid"></div>
+              <div class="bubble b1"></div>
+              <div class="bubble b2"></div>
+              <div class="bubble b3"></div>
+            </div>
+            <div id="reaction-status" class="reaction-status">Select a specimen and assay to initiate chemical analysis.</div>
+          </div>
+
+          <div id="forensic-certificate" class="forensic-cert-card" style="display:none; margin-top:14px;">
+            <div class="cert-watermark">SCOTLAND YARD</div>
+            <h4 id="cert-title" style="color:var(--gold); font-size:1.1rem; margin-bottom:6px;">METROPOLITAN FORENSIC CERTIFICATE</h4>
+            <p id="cert-specimen" style="font-size:0.95rem; color:#fff;"></p>
+            <p id="cert-formula" style="font-size:0.85rem; color:#94a3b8; font-family:monospace;"></p>
+            <p id="cert-finding" style="font-size:0.95rem; color:#38bdf8; margin:8px 0; font-weight:600;"></p>
+            <div id="cert-badge" class="cert-merit-badge">+40 Forensic Merit Points Awarded</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10F. COGNITIVE MIND PALACE SCREEN -->
+  <div id="mindpalace-screen" class="screen">
+    <canvas id="mindpalace-canvas" class="mindpalace-canvas"></canvas>
+    <div class="screen-content-padded" style="position:relative; z-index:15;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="color:#c084fc; font-size:1.8rem; text-shadow:0 0 18px rgba(192,132,252,0.5);">SHERLOCK'S COGNITIVE MIND PALACE</h2>
+          <p style="color:var(--text-dim); font-size:0.95rem;">Enter the detective's inner mental sanctum. Synthesize complementary thought nodes to forge breakthrough Epiphanies:</p>
+        </div>
+        <button id="btn-mindpalace-back" class="btn">&laquo; Return to Investigation</button>
+      </div>
+
+      <!-- Mind Palace Layout -->
+      <div class="mindpalace-layout">
+        <!-- Floating Thought Nodes Galaxy -->
+        <div class="mindpalace-panel">
+          <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:10px;">Active Thought Nodes (Click two to synthesize):</h3>
+          <div id="mindpalace-thoughts-grid" class="thoughts-galaxy-grid"></div>
+
+          <!-- Thought Pins Synthesizer -->
+          <div class="mindpalace-synthesis-bar" style="margin-top:16px;">
+            <div class="pinned-thoughts-display">
+              <div id="thought-slot-1" class="thought-slot">Select Thought Alpha</div>
+              <span style="color:#c084fc; font-weight:bold; font-size:1.3rem;">⚡</span>
+              <div id="thought-slot-2" class="thought-slot">Select Thought Beta</div>
+            </div>
+            <button id="btn-synthesize-epiphany" class="btn btn-primary" style="margin-top:12px; width:100%; background:linear-gradient(135deg, #7e22ce, #9333ea); border-color:#c084fc;">★ Synthesize Cognitive Epiphany</button>
+          </div>
+        </div>
+
+        <!-- Crystallized Epiphanies Archive -->
+        <div class="mindpalace-panel">
+          <h3 style="color:var(--gold); font-size:1.1rem; margin-bottom:10px;">Crystallized Epiphanies &amp; Revelations:</h3>
+          <div id="forged-epiphanies-list" class="epiphanies-archive-list">
+            <div style="color:var(--text-dim); font-size:0.95rem; font-style:italic; padding:20px; text-align:center;">No cognitive epiphanies synthesized yet. Cross-link complementary thought premises!</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

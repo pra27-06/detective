@@ -6,6 +6,9 @@
 #include "CaseFile.h"
 #include "DialogueSystem.h"
 #include "VNAssetManager.h"
+#include "ForensicLab.h"
+#include "MindPalace.h"
+#include "PsychologicalProfile.h"
 
 int main() {
     std::cout << "========================================================================" << std::endl;
@@ -13,7 +16,7 @@ int main() {
     std::cout << "========================================================================" << std::endl;
 
     int passedCount = 0;
-    int totalTests = 7;
+    int totalTests = 10;
 
     // -------------------------------------------------------------------------
     // TEST 1: DialogueSystem Typing, Click-to-Finish, Click-to-Advance & Branching
@@ -255,6 +258,109 @@ int main() {
         assert(fakePort->GetWidth() > 0);
 
         std::cout << "  [PASS] Texture caching and procedural missing-asset fallbacks verified." << std::endl;
+        passedCount++;
+    }
+
+    // -------------------------------------------------------------------------
+    // TEST 8: ForensicLab Template Method & Polymorphic Analyzers
+    // -------------------------------------------------------------------------
+    std::cout << "[RUNNING TEST 8/10] ForensicLab Template Method & chemical assays..." << std::endl;
+    {
+        ForensicLab lab;
+        Evidence teaCup("E01", "Porcelain Teacup", EvidenceCategory::FORENSIC, EvidenceRelevance::CRITICAL_KEY, "Contains tea dregs", "Victim Table");
+
+        ForensicReport chemReport;
+        bool analyzedChem = lab.runAnalysis("Chemical Reagent Assay", teaCup, chemReport);
+        assert(analyzedChem);
+        assert(chemReport.isDecisiveProof);
+        assert(chemReport.forensicPoints > 0);
+        assert(chemReport.secretRevealed.find("Hydrocyanic acid") != std::string::npos);
+
+        ForensicReport spectroReport;
+        bool analyzedSpectro = lab.runAnalysis("Microscopic Spectroscopy", teaCup, spectroReport);
+        assert(analyzedSpectro);
+        assert(lab.hasReport("E01", "Chemical Reagent Assay"));
+        assert(lab.hasReport("E01", "Microscopic Spectroscopy"));
+
+        std::string cert = chemReport.formatCertificate();
+        assert(cert.find("SCOTLAND YARD METROPOLITAN FORENSIC CERTIFICATE") != std::string::npos);
+
+        std::cout << "  [PASS] Template method execution, polymorphic assays, and certificates verified." << std::endl;
+        passedCount++;
+    }
+
+    // -------------------------------------------------------------------------
+    // TEST 9: MindPalace Composite Nodes, Thought Synthesis & Observer Pattern
+    // -------------------------------------------------------------------------
+    std::cout << "[RUNNING TEST 9/10] MindPalace Composite graph & Observer notifications..." << std::endl;
+    {
+        class TestMindObserver : public MindPalaceObserver {
+        public:
+            bool notified = false;
+            std::string lastTitle;
+            void onEpiphanyForged(const std::string& title, const std::string& /*insight*/, int /*bonus*/) override {
+                notified = true;
+                lastTitle = title;
+            }
+        };
+
+        MindPalace mp;
+        TestMindObserver observer;
+        mp.attachObserver(&observer);
+
+        // Composite pattern
+        auto obs1 = std::make_shared<ObservationThought>("T01", "Keycard logged at 1:15 AM", "TIMELINE", "Access Logs");
+        auto obs2 = std::make_shared<ObservationThought>("T02", "Basement logged at 1:12 AM", "TIMELINE", "Access Logs");
+        auto hypo = std::make_shared<HypothesisThought>("H01", "Physical Impossibility", "No human could run between both locations in 3 minutes.");
+        hypo->addNode(obs1);
+        hypo->addNode(obs2);
+
+        assert(hypo->isComposite());
+        assert(hypo->getComplexityWeight() == 4); // 2 + 1 + 1
+
+        mp.addThought(obs1);
+        mp.addThought(obs2);
+        mp.addThought(hypo);
+        assert(mp.getThought("H01") != nullptr);
+
+        // Epiphany synthesis & Observer notification
+        mp.registerEpiphanyFormula("EPI_TEST", "The Impossible Transit Paradox", "Curator badge was duplicated", "T01", "T02", 75);
+        Epiphany result;
+        bool forged = mp.attemptSynthesis("T01", "T02", result);
+        assert(forged);
+        assert(observer.notified);
+        assert(observer.lastTitle == "The Impossible Transit Paradox");
+        assert(mp.getForgedEpiphanyCount() == 1);
+
+        mp.detachObserver(&observer);
+        std::cout << "  [PASS] Cognitive composite nodes, weight calculations, and observer notifications verified." << std::endl;
+        passedCount++;
+    }
+
+    // -------------------------------------------------------------------------
+    // TEST 10: PsychologicalProfile Strategies & Suspect Heart-Rate Elevation
+    // -------------------------------------------------------------------------
+    std::cout << "[RUNNING TEST 10/10] PsychologicalProfile strategy & suspect cardiac spikes..." << std::endl;
+    {
+        Suspect cruz("S02", "Marcus Cruz", "Security Guard", "Nervous", "I was on patrol", "North Wing", "Debt", true, "I broke!", "I did it");
+        cruz.setPsychologicalProfile(std::make_unique<NervousDefensiveProfile>());
+        assert(cruz.getCurrentBPM() == 78);
+        assert(cruz.getComposure() == 100);
+        assert(!cruz.isPsychologicallyBroken());
+
+        // Pressure with non-contradiction
+        cruz.applyInterrogationPressure("PHYSICAL", false);
+        assert(cruz.getCurrentBPM() > 78);
+        assert(cruz.getComposure() < 100);
+
+        // Shatter with contradiction
+        cruz.applyInterrogationPressure("FORENSIC", true);
+        assert(cruz.getCurrentBPM() >= 130);
+        assert(cruz.isPsychologicallyBroken());
+        assert(cruz.isAlibiBroken());
+        assert(!cruz.getCurrentMicroExpression().empty());
+
+        std::cout << "  [PASS] Suspect psychological state machine, cardiac spikes, and composure breakdown verified." << std::endl;
         passedCount++;
     }
 

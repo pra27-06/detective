@@ -212,6 +212,14 @@ void CaseFile::setupCase1() {
     m_clueBoard.registerValidDeduction("E04", "E08",
         "Premeditated Solvent Theft",
         "The solvent rag in the basement matches the chemical canister reported missing from Elena's conservation inventory at 10 PM.");
+
+    // Mind Palace Cognitive Epiphanies
+    m_mindPalace.registerEpiphanyFormula("EPI_C1_1", "The Impossible Guard Alibi",
+        "Curator Vance's badge was physically used by Cruz to forge an alibi while cutting power and stealing the sapphire!",
+        "E01", "E03", 50);
+    m_mindPalace.registerEpiphanyFormula("EPI_C1_2", "Guard Uniform & Gambling Panic",
+        "Cruz's uniform boots and Blackwood Syndicate debt ledger reveal he was blackmailed into committing the theft!",
+        "E02", "E05", 50);
 }
 
 void CaseFile::setupCase2() {
@@ -407,6 +415,14 @@ void CaseFile::setupCase2() {
     m_clueBoard.registerValidDeduction("E01", "E08",
         "Corridor Poisoning Point",
         "The delivery sheet and pure galley kettle prove the cyanide was introduced into the cup in the hallway right at 11:40 PM.");
+
+    // Mind Palace Cognitive Epiphanies
+    m_mindPalace.registerEpiphanyFormula("EPI_C2_1", "The Embezzlement Poison Trap",
+        "Julian Gray used potassium cyanide in the silver samovar to silence Sterling before the Glenridge audit!",
+        "E01", "E02", 50);
+    m_mindPalace.registerEpiphanyFormula("EPI_C2_2", "Desperate Cover-Up",
+        "Julian Gray faced criminal ruin from the embezzlement audit, providing the exact urgent motive to kill before arrival.",
+        "E02", "E03", 50);
 }
 
 void CaseFile::setupCase3() {
@@ -601,6 +617,14 @@ void CaseFile::setupCase3() {
     m_clueBoard.registerValidDeduction("E01", "E05",
         "Premeditated Retaliation",
         "The disinheritance draft provides the urgent motive for Cornelius to kill Thorne before Monday's legal execution.");
+
+    // Mind Palace Cognitive Epiphanies
+    m_mindPalace.registerEpiphanyFormula("EPI_C3_1", "The Mechanical Locked-Room Trick",
+        "The clock chime weight pulled the wire looped around the bolt, locking the door automatically from outside when the clock struck 9:00 PM.",
+        "E01", "E03", 50);
+    m_mindPalace.registerEpiphanyFormula("EPI_C3_2", "The Staged Suicide",
+        "Cornelius forged the suicide note with a modern ballpoint pen and had the matching piano wire in his coat to execute the trap.",
+        "E02", "E04", 50);
 }
 
 int CaseFile::getCaseNumber() const { return m_caseNumber; }

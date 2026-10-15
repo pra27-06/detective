@@ -34,7 +34,7 @@ exit /b 1
 
 :build_all
 echo [BUILD 1/2] Compiling Classic Console Edition (case_closed_console.exe)...
-set CONSOLE_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\GameEngine.cpp src\main.cpp
+set CONSOLE_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\ForensicLab.cpp src\MindPalace.cpp src\PsychologicalProfile.cpp src\GameEngine.cpp src\main.cpp
 g++ -std=c++17 -Wall -Wextra %CONSOLE_SRCS% -Iinclude -o case_closed_console.exe
 if %ERRORLEVEL% neq 0 (
     echo [ERROR] Console build failed!
@@ -47,7 +47,7 @@ echo.
 
 :build_gui
 echo [BUILD 2/2] Compiling 2D Visual Novel Edition (case_closed_gui.exe)...
-set GUI_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\VNAssetManager.cpp src\VNRenderer.cpp src\DialogueSystem.cpp src\VNEngine.cpp src\main_gui.cpp
+set GUI_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\ForensicLab.cpp src\MindPalace.cpp src\PsychologicalProfile.cpp src\VNAssetManager.cpp src\VNRenderer.cpp src\DialogueSystem.cpp src\VNEngine.cpp src\main_gui.cpp
 g++ -std=c++17 -Wall -Wextra %GUI_SRCS% -Iinclude -lgdiplus -lgdi32 -luser32 -lwinmm -mwindows -o case_closed_gui.exe
 if %ERRORLEVEL% neq 0 (
     echo [ERROR] Graphical build failed!
@@ -73,7 +73,7 @@ exit /b 0
 
 :build_console
 echo [BUILD] Compiling Classic Console Edition (case_closed_console.exe)...
-set CONSOLE_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\GameEngine.cpp src\main.cpp
+set CONSOLE_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\ForensicLab.cpp src\MindPalace.cpp src\PsychologicalProfile.cpp src\GameEngine.cpp src\main.cpp
 g++ -std=c++17 -Wall -Wextra %CONSOLE_SRCS% -Iinclude -o case_closed_console.exe
 if %ERRORLEVEL% equ 0 (
     copy /y case_closed_console.exe case_closed.exe >nul

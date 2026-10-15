@@ -12,6 +12,8 @@
 #include "Evidence.h"
 #include "CrimeScene.h"
 #include "ClueBoard.h"
+#include "ForensicLab.h"
+#include "MindPalace.h"
 
 struct TimelineEvent {
     std::string time;
@@ -71,6 +73,8 @@ private:
     std::vector<CrimeScene> m_scenes;
     std::map<std::string, Evidence> m_allEvidence;
     ClueBoard m_clueBoard;
+    ForensicLab m_forensicLab;
+    MindPalace m_mindPalace;
 
     void setupCase1();
     void setupCase2();
@@ -111,6 +115,12 @@ public:
     // Clue Board
     ClueBoard& getClueBoard();
     const ClueBoard& getClueBoard() const;
+
+    // Forensic Lab & Mind Palace (Advanced OOP Engines)
+    ForensicLab& getForensicLab() { return m_forensicLab; }
+    const ForensicLab& getForensicLab() const { return m_forensicLab; }
+    MindPalace& getMindPalace() { return m_mindPalace; }
+    const MindPalace& getMindPalace() const { return m_mindPalace; }
 
     // Objectives & Progress
     void updateObjectives();

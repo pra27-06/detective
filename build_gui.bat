@@ -26,7 +26,7 @@ if not exist "saves" (
 )
 
 echo [BUILD] Compiling Case Closed 2D Visual Novel Edition (C++17, GDI+)...
-set GUI_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\VNAssetManager.cpp src\VNRenderer.cpp src\DialogueSystem.cpp src\VNEngine.cpp src\main_gui.cpp
+set GUI_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\ForensicLab.cpp src\MindPalace.cpp src\PsychologicalProfile.cpp src\VNAssetManager.cpp src\VNRenderer.cpp src\DialogueSystem.cpp src\VNEngine.cpp src\main_gui.cpp
 
 g++ -std=c++17 -Wall -Wextra %GUI_SRCS% -Iinclude -lgdiplus -lgdi32 -luser32 -lwinmm -mwindows -o case_closed_gui.exe
 

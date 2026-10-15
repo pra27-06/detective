@@ -26,7 +26,7 @@ if not exist "saves" (
 )
 
 echo [BUILD] Compiling Case Closed Console Edition (C++17)...
-set CONSOLE_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\GameEngine.cpp src\main.cpp
+set CONSOLE_SRCS=src\Character.cpp src\Detective.cpp src\Suspect.cpp src\Witness.cpp src\Evidence.cpp src\CrimeScene.cpp src\ClueBoard.cpp src\Notebook.cpp src\CaseFile.cpp src\SaveManager.cpp src\TerminalUI.cpp src\ForensicLab.cpp src\MindPalace.cpp src\PsychologicalProfile.cpp src\GameEngine.cpp src\main.cpp
 
 g++ -std=c++17 -Wall -Wextra %CONSOLE_SRCS% -Iinclude -o case_closed_console.exe
 
