@@ -10,25 +10,61 @@
     | |___ / ___ \ ___) | |___ | |___| |__| |_| |___) | |___| |_| |     
      \____/_/   \_\____/|_____| \____|_____\___/|____/|_____|____/      
 ========================================================================
-     FORENSIC & DEDUCTIVE MYSTERY SIMULATOR IN STANDARD C++17
-      DUAL EDITION: CLASSIC TERMINAL + 2D ANIME VISUAL NOVEL
+     FORENSIC & DEDUCTIVE MYSTERY SIMULATOR IN STANDARD C++
+      FEATURING THE NEW STREAMLINED OOP MYSTERY EDITION:
+        "THE POISONED GLASS OF STERLING MANOR"
 ========================================================================
 ```
 
-**An interactive mystery simulator and 2D anime visual novel demonstrating Object-Oriented Programming (OOP) fundamentals in C++17.**
+**An interactive mystery simulator demonstrating Object-Oriented Programming (OOP) fundamentals in Modern C++.**
 
-![Standard C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg?style=for-the-badge&logo=c%2B%2B)
+![Standard C++](https://img.shields.io/badge/C%2B%2B-14%2F17-blue.svg?style=for-the-badge&logo=c%2B%2B)
 ![MinGW Compatible](https://img.shields.io/badge/MinGW-g%2B%2B-green.svg?style=for-the-badge)
-![Tri-Edition](https://img.shields.io/badge/Editions-Terminal%20%2B%20Visual%20Novel%20%2B%20Web-purple.svg?style=for-the-badge)
-![Live Online](https://img.shields.io/badge/Play%20Online-GitHub%20Pages-success?style=for-the-badge&logo=github)
 ![College OOPs Project](https://img.shields.io/badge/College%20Capstone-CSE%20OOPs-orange.svg?style=for-the-badge)
+![Zero Warnings](https://img.shields.io/badge/Build-Zero%20Warnings-success.svg?style=for-the-badge)
 
 <p align="center">
   🌐 <strong>Play the Game Online in your Browser:</strong><br>
-  <a href="https://pra27-06.github.io/detective/"><strong>https://pra27-06.github.io/detective/</strong></a>
+  <a href="https://pra27-06.github.io/detective/"><strong>https://pra27-06.github.io/detective/</strong></a><br><br>
+  🌟 <strong>Quick Start — Play the New Streamlined C++ Detective Game:</strong><br>
+  Double-click <code>run_simple_detective.bat</code> or run <code>simple_detective.exe</code>
 </p>
 
 </div>
+
+---
+
+## 🌟 NEW: Streamlined Detective Game — "The Poisoned Glass of Sterling Manor"
+
+Designed specifically to be **crystal-clear to understand, highly enjoyable, suspenseful, and a textbook demonstration of Object-Oriented Programming (OOP) in C++**.
+
+### The Crime
+At 11:15 PM during a sudden storm blackout, billionaire collector **Lord Arthur Sterling** is found dead in his study at Sterling Manor:
+- **Cause of Death:** Potassium Cyanide poison in his crystal whisky glass.
+- **The Scene:** The study door was locked from the inside, but the terrace window stood wide open with curtains flapping in the rain. His wall safe was cracked open, and a £50,000 diamond brooch was stolen!
+- **The Suspects:**
+  1. **Lady Evelyn Sterling (Widow & Heiress):** Her hands tremble, she tore her green velvet dress, and Sterling was about to cut her out of the will!
+  2. **Dr. Arthur Bell (Family Physician):** Visibly sweating, repeatedly cleaning his spectacles; his prescription bottle of cyanide went missing from his medical bag during dinner!
+  3. **Vincent Croft (Business Partner — THE CULPRIT):** Smug mining promoter with massive debts; smells of Havana cigars matching ash on the windowsill; has muddy boots and a broken pocket watch stopped at 11:15 PM with blood!
+  4. **James Higgins (Head Butler — Witness):** Served the initial untainted drinks and overheard heated arguments.
+
+### Core Gameplay Mechanics
+1. **Explore Rooms & Search Hotspots:** Search the Study, Drawing Room, Coat Closet, and Garden Terrace for physical, chemical, and document clues.
+2. **Interrogate Suspects:** Question alibis, motives, and secrets.
+3. **Confront Suspect with Evidence:** Present contradictory clues (e.g. Havana Cigar Ash or the Cracked Watch to Vincent Croft) to trigger a dramatic **"OBJECTION! Contradiction Exposed!"** that breaks their alibi!
+4. **Detective's Notebook:** View all discovered clues, suspect profiles, and their **Suspicion Meters (0% to 100%)**.
+5. **Final Accusation:** Name the Killer, the Weapon, and the Decisive Smoking Gun proof to solve the case and earn **S-Rank Master Sleuth**!
+
+### Core OOP Principles Showcased in C++
+| OOP Concept | Implementation in Code |
+|-------------|-------------------------|
+| **Abstraction** | `IInspectable` abstract interface with pure virtual `inspect()`, `getName()`, `getDescription()`. `Character` abstract base class with pure virtual `interrogate()` and `getRole()`. |
+| **Inheritance** | `Character` $\rightarrow$ `Suspect`, `Witness`. `Evidence` $\rightarrow$ `PhysicalClue`, `DocumentClue`, `ChemicalClue`. |
+| **Polymorphism** | Virtual functions called through base-class smart pointers (`std::shared_ptr<Character>`, `std::shared_ptr<Evidence>`). Runtime dynamic dispatch on `interrogate()`, `inspect()`, and `confrontWithEvidence()`. |
+| **Encapsulation** | Strict `private` data members (alibi, motive, secrets, suspicion score) with validated public getters/setters and state transition methods (`confrontWithEvidence()`). |
+| **Templates / Generics** | `template <typename T> class CaseRegistry` providing a generic, type-safe container for both Evidence and Character collections. |
+| **Operator Overloading** | Overloaded stream insertion operator `friend std::ostream& operator<<(std::ostream& os, const Evidence& ev)` for clean card printing. |
+| **Modern C++ Safety** | Smart pointers (`std::shared_ptr`, `std::make_shared`), scoped enums (`enum class EvidenceType`), RAII, and exception handling.
 
 ---
 
