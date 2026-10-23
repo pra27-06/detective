@@ -17,115 +17,124 @@ CaseFile::CaseFile(int caseNumber) : m_caseNumber(caseNumber) {
 
 void CaseFile::setupCase1() {
     m_caseId = "CASE-01";
-    m_title = "The Midnight Museum Heist";
-    m_tagline = "A priceless sapphire vanishes during a calculated blackout.";
-    m_crimeTime = "1:15 AM, Friday";
-    m_locationName = "Rowan Heritage Museum, Central Antiquities Wing";
-    m_victimName = "Sir Reginald Rowan (Trustee & Donor)";
+    m_title = "The Poisoned Glass of Sterling Manor";
+    m_tagline = "Lord Sterling is poisoned in his locked study during a thunderstorm blackout.";
+    m_crimeTime = "11:15 PM, Friday";
+    m_locationName = "Sterling Manor, Second Floor Study & Veranda";
+    m_victimName = "Lord Arthur Sterling";
 
-    m_culpritId = "S02"; // Marcus Cruz
-    m_keyEvidenceId = "E03"; // Electronic Access Log Tape
+    m_culpritId = "S03"; // Vincent Croft
+    m_keyEvidenceId = "E03"; // Cracked Gold Pocket Watch
     m_requiredContradictionId = "E03";
     m_correctMotiveKeyword = "DEBT";
 
     m_solutionExplanation = 
-        "Night Guard Marcus Cruz had accumulated £25,000 in debts with the Blackwood Syndicate due this morning. "
-        "Knowing the museum's sensor layout, Cruz used an authorized security override to cut the fiber optic sensor, "
-        "then manually flipped the basement circuit breaker at 1:14 AM. To manufacture an alibi, Cruz had stolen "
-        "Curator Vance's backup keycard and used it to swipe the North Wing patrol reader at 1:15 AM while he slipped "
-        "through the basement loading chute with the gem. The impossible transit time between the basement breaker "
-        "and North terminal exposes his fabricated alibi, corroborated by uniform bootprints and solvent rags.";
+        "Speculative mining partner Vincent Croft faced prison and bankruptcy after Lord Arthur Sterling discovered "
+        "his South African copper venture was fraudulent and demanded £20,000 repayment tonight. During dinner, Croft "
+        "stole an empty vial of potassium cyanide from Dr. Bell's bag in the coat closet. When the thunderstorm blackout "
+        "struck at 11:15 PM, Croft entered the study, poisoned Lord Sterling's whisky tumbler, and forced the safe to steal "
+        "the 50-carat diamond brooch. As Lord Sterling collapsed, he grabbed Croft's wrist, smashing Croft's gold pocket watch "
+        "and stopping it at 11:15 PM with blood traces. Croft's alibi of remaining on the dry veranda is completely shattered "
+        "by the bloodstained watch monogrammed 'V.C.', Havana cigar ash on the windowsill, and size 10 yellow mud bootprints.";
 
     m_briefing = 
-        "At 1:15 AM, the Rowan Heritage Museum plunged into darkness for exactly four minutes. "
-        "When emergency generators activated, the display case was shattered and the 45-carat "
-        "'Star of Alexandria' sapphire was missing. The silent alarm tripped, but no exterior doors "
-        "were forced. The thief possessed intimate knowledge of internal sensor relays and guard rotations.";
+        "At 11:15 PM during a raging thunderstorm, the lights of Sterling Manor flickered and died. "
+        "A chilling scream echoed from the locked second-floor study. Inside, Lord Arthur Sterling lies lifeless "
+        "over his desk with a glass of poisoned whisky. His private wall safe stands wide open, and the 50-carat "
+        "Sterling Diamond brooch is missing. Three suspects were in the manor. Cross-examine them, collect forensic "
+        "clues, expose their lies, and unmask the killer!";
 
     // Timeline
-    m_timeline.push_back({"10:00 PM", "Restorer Elena Rostova reports missing industrial solvent from the basement storage."});
-    m_timeline.push_back({"11:15 PM", "Lady Catherine Sterling concludes private patron tour and departs via main gate."});
-    m_timeline.push_back({"11:30 PM", "Museum closes; Curator Vance retires to his 3rd floor office to review catalogs."});
-    m_timeline.push_back({"01:10 AM", "Guard Cruz takes Vance's stolen secondary keycard from the lost-and-found locker."});
-    m_timeline.push_back({"01:12 AM", "Curator Vance's stolen badge is swiped at the Basement Substation entrance."});
-    m_timeline.push_back({"01:14 AM", "Main circuit breaker thrown; museum blacks out; Janitor Bert hears combat boots sprinting."});
-    m_timeline.push_back({"01:15 AM", "Pedestal laser-cut; North Wing patrol terminal swiped with Vance's stolen badge."});
-    m_timeline.push_back({"01:18 AM", "Generators restore lighting; alarm sirens sound; sapphire vault found emptied."});
+    m_timeline.push_back({"10:30 PM", "Butler Higgins overhears violent threats as Lord Sterling demands Croft repay £20,000 or face prison."});
+    m_timeline.push_back({"10:45 PM", "Lady Evelyn pleads with Lord Sterling regarding the will; Sterling deadbolts the study door."});
+    m_timeline.push_back({"11:00 PM", "Butler Higgins delivers untainted Scotch tumbler to Lord Sterling; Dr. Bell discovers cyanide vial missing."});
+    m_timeline.push_back({"11:15 PM", "Thunderstorm blackout strikes; scream heard; Lord Sterling poisoned; Croft's watch smashed at 11:15 PM."});
+    m_timeline.push_back({"11:17 PM", "Croft claims he was smoking peacefully under the dry veranda awning without moving."});
+    m_timeline.push_back({"11:25 PM", "Emergency lamps lit; Butler Higgins and Dr. Bell force study door; safe emptied and Lord Sterling dead."});
 
     // Suspect Eliminations
-    m_eliminations.push_back({"S01", "Arthur Vance", "Eliminated: Electronic door logs confirm he was locked inside his 3rd-floor office from midnight to 1:20 AM without opening."});
-    m_eliminations.push_back({"S03", "Elena Rostova", "Eliminated: Conservation prep logs show all chemical bottles in her lab remained sealed; she logged the solvent theft at 10 PM."});
-    m_eliminations.push_back({"S04", "Lady Catherine Sterling", "Eliminated: Museum gatehouse gate log and chauffeur testimony confirm she departed at 11:20 PM and was home in Kensington."});
+    m_eliminations.push_back({"S01", "Lady Evelyn Sterling", "Eliminated: Locked out of the study at 10:45 PM; Butler Higgins confirms she was weeping in the parlour during the 11:15 PM blackout."});
+    m_eliminations.push_back({"S02", "Dr. Arthur Bell", "Eliminated: Cyanide was stolen from his coat bag during dinner; cellar wine records confirm his presence in the cellar during the blackout."});
 
     // Objectives
     m_objectives.push_back({"Explore all 3 crime scenes and search physical hotspots", false});
     m_objectives.push_back({"Discover at least 5 pieces of evidence", false});
-    m_objectives.push_back({"Expose at least 2 suspect contradictions during questioning", false});
-    m_objectives.push_back({"Link clues on the Clue Board to establish the security bypass", false});
+    m_objectives.push_back({"Expose suspect contradictions during questioning", false});
+    m_objectives.push_back({"Link clues on the Clue Board / Mind Palace to establish the poison and struggle", false});
 
     // Scenes
-    CrimeScene vaultScene("SCENE_01", "The Sapphire Display Vault", 
-        "The reinforced exhibition gallery where the 'Star of Alexandria' was displayed. Shattered glass covers the floor.");
-    vaultScene.addHotspot("Shattered Pedestal", 
-        "The armored pedestal has been forced. The fiber optic tripwire was cleanly cut at a 45-degree angle.", "E01");
-    vaultScene.addHotspot("Vault Floor & Mud Traces", 
-        "Under the display pedestal, dried mud flakes show a distinct cross-hatch combat boot tread, size 10.", "E02");
-    vaultScene.addHotspot("Forgotten Silk Umbrella", 
-        "A stylish monogrammed silk umbrella resting against a marble pillar near the velvet roping.", "E06");
-    m_scenes.push_back(vaultScene);
+    CrimeScene studyScene("SCENE_01", "The Master Study (Crime Scene)", 
+        "The second-floor locked study of Lord Arthur Sterling. Smells of bitter almonds, rain, and fresh Havana cigar smoke.");
+    studyScene.addHotspot("Lord Sterling's Study Desk", 
+        "A crystal whisky tumbler beside Lord Sterling with faint white residue on the rim smelling strongly of bitter almonds.", "E01");
+    studyScene.addHotspot("Study Terrace Window Sill", 
+        "Distinct grey-white cigar ash discovered on the study window sill. Matches premium imported Havana tobacco leaf.", "E02");
+    studyScene.addHotspot("Persian Rug near Desk", 
+        "A gold pocket watch with crystal glass smashed, frozen at exactly 11:15 PM. Bloodstained and engraved 'V.C.' on the back.", "E03");
+    studyScene.addHotspot("Forced Wall Safe Alcove", 
+        "Behind the mahogany wall panel: the heavy iron safe door stands wide open, stamped with a crimson wax seal.", "E09");
+    m_scenes.push_back(studyScene);
 
-    CrimeScene basementScene("SCENE_02", "Basement Electrical Substation", 
-        "A subterranean cavern of transformers and high-voltage breaker panels powering the facility.");
-    basementScene.addHotspot("Security Terminal Server", 
-        "The automated logging terminal has recorded card swipes, power drops, and circuit trip times.", "E03");
-    basementScene.addHotspot("Disposal Chute & Laundry Cart", 
-        "Inside an iron laundry bin, an oily workshop rag soaked in chemical solvent has been discarded.", "E04");
-    basementScene.addHotspot("Chemical Incident Logbook", 
-        "A clipboard on the maintenance desk noting evening hazardous material audits and safety checks.", "E08");
-    m_scenes.push_back(basementScene);
+    CrimeScene parlourScene("SCENE_02", "The Drawing Room & Parlour", 
+        "A warm Victorian sitting room adorned with a marble fireplace and amber wall sconces.");
+    parlourScene.addHotspot("Marble Fireplace Hearth", 
+        "A scorched parchment fragment rescued from the hearth. It clearly revokes all inheritances to Lady Evelyn Sterling.", "E04");
+    parlourScene.addHotspot("Sideboard & Bar Cart", 
+        "The crystal whisky decanter served by Butler Higgins. Completely pure and untainted, proving poison was introduced in the study.", "E07");
+    parlourScene.addHotspot("Emerald Velvet Armchair", 
+        "A snagged green silk velvet thread on the chair's carving, matching the torn hem of Lady Evelyn's evening gown.", "E10");
+    m_scenes.push_back(parlourScene);
 
-    CrimeScene staffScene("SCENE_03", "Security Guard Locker Room", 
-        "A tiled locker room for on-duty museum staff. Smells of floor polish and stale pipe tobacco.");
-    staffScene.addHotspot("Locker #4 (Marked: M. Cruz)", 
-        "A locker left half-ajar. Tucked behind shirts is an urgent debt collection ledger from loan sharks.", "E05");
-    staffScene.addHotspot("Curator's Mail Cubby", 
-        "A catalog of antiquity valuations with several display pieces circled with red ink annotations.", "E07");
-    staffScene.addHotspot("CCTV Monitoring Rack", 
-        "Monitors show static during the blackout. The auxiliary recording loop was starved of power.", "");
-    m_scenes.push_back(staffScene);
+    CrimeScene verandaScene("SCENE_03", "The Veranda & Garden Terrace", 
+        "A stone balcony overlooking the rain-soaked gardens. Wet yellow mud covers the path under the study window.");
+    verandaScene.addHotspot("Rain-Soaked Flowerbed", 
+        "A deep footprint in the wet yellow garden clay directly beneath the study window, matching gentleman's riding boot, size 10.", "E06");
+    verandaScene.addHotspot("Coat Rack / Medical Satchel", 
+        "Dr. Bell's leather medical satchel hanging by the coat stand. Inside is an empty apothecary vial labeled Potassium Cyanide.", "E05");
+    verandaScene.addHotspot("Garden Hedge Bush", 
+        "Hidden deep inside the thorny boxwood hedge: the missing 50-carat Sterling Diamond brooch, discarded in haste!", "E08");
+    m_scenes.push_back(verandaScene);
 
     // Evidence
-    Evidence e1("E01", "Cut Fiber Optic Cable", EvidenceCategory::FORENSIC, EvidenceRelevance::SUPPORTING_PROOF,
-        "A fiber optic sensor cable with a surgical 45-degree cut. This bypass requires specialist knowledge of junction boxes.",
-        "Shattered Pedestal (Vault)", false, false);
+    Evidence e1("E01", "Poisoned Whisky Glass", EvidenceCategory::FORENSIC, EvidenceRelevance::SUPPORTING_PROOF,
+        "A crystal tumbler found beside the victim with faint white residue on the rim. Smells strongly of bitter almonds (cyanide).",
+        "Lord Sterling's Study Desk (Study)", false, false);
 
-    Evidence e2("E02", "Tactical Boot Mudprint", EvidenceCategory::PHYSICAL, EvidenceRelevance::SUPPORTING_PROOF,
-        "A footprint in riverbed mud, size 10 European cut with reinforced cross-hatch tread. Matches security guard uniform boots.",
-        "Vault Floor (Vault)", false, false);
+    Evidence e2("E02", "Havana Cigar Ash on Sill", EvidenceCategory::PHYSICAL, EvidenceRelevance::SUPPORTING_PROOF,
+        "Distinct grey-white cigar ash discovered on the study window sill. Matches premium imported Havana tobacco leaf.",
+        "Study Terrace Window Sill (Study)", false, false);
 
-    Evidence e3("E03", "Electronic Access Log Tape", EvidenceCategory::DOCUMENT, EvidenceRelevance::CRITICAL_KEY,
-        "Printout showing Curator Vance's secondary badge opened the basement at 1:12 AM and swiped the North Wing reader at 1:15 AM, proving impossible travel.",
-        "Security Terminal Server (Basement)", true, false);
+    Evidence e3("E03", "Cracked Gold Pocket Watch", EvidenceCategory::PHYSICAL, EvidenceRelevance::CRITICAL_KEY,
+        "A gold pocket watch with crystal glass smashed, frozen at exactly 11:15 PM. Bloodstained and engraved 'V.C.' on the back.",
+        "Persian Rug near Desk (Study)", true, false);
 
-    Evidence e4("E04", "Solvent-Soaked Chemical Rag", EvidenceCategory::FORENSIC, EvidenceRelevance::SUPPORTING_PROOF,
-        "A workshop towel saturated with high-grade industrial mineral spirits, used to dissolve vault glass adhesive without shattering sound.",
-        "Disposal Chute (Basement)", false, false);
+    Evidence e4("E04", "Burnt Will in Fireplace", EvidenceCategory::DOCUMENT, EvidenceRelevance::SUPPORTING_PROOF,
+        "A scorched parchment fragment rescued from the parlour hearth. It clearly revokes all inheritances to Lady Evelyn Sterling.",
+        "Marble Fireplace Hearth (Drawing Room)", false, false);
 
-    Evidence e5("E05", "Blackwood Syndicate Debt Ledger", EvidenceCategory::DOCUMENT, EvidenceRelevance::SUPPORTING_PROOF,
-        "A threatening letter to Marcus Cruz demanding immediate settlement of £25,000 for gambling losses by Friday morning.",
-        "Locker #4 (Guard Room)", false, false);
+    Evidence e5("E05", "Empty Cyanide Vial", EvidenceCategory::FORENSIC, EvidenceRelevance::SUPPORTING_PROOF,
+        "A small amber apothecary bottle bearing Dr. Bell's prescription label. The rubber stopper is missing.",
+        "Coat Rack / Medical Satchel (Veranda)", false, false);
 
-    Evidence e6("E06", "Silk Monogrammed Umbrella", EvidenceCategory::PHYSICAL, EvidenceRelevance::DECEPTIVE_RED_HERRING,
-        "An umbrella with initials 'C.S.' Left behind by Lady Catherine Sterling during her evening private view. Harmless oversight.",
-        "Forgotten Umbrella (Vault)", false, true);
+    Evidence e6("E06", "Muddy Bootprint (Size 10)", EvidenceCategory::FORENSIC, EvidenceRelevance::SUPPORTING_PROOF,
+        "A deep footprint in the wet yellow garden clay leading directly from under the study window toward the veranda.",
+        "Rain-Soaked Flowerbed (Veranda)", false, false);
 
-    Evidence e7("E07", "Insurance Reassessment Catalog", EvidenceCategory::DOCUMENT, EvidenceRelevance::DECEPTIVE_RED_HERRING,
-        "Curator Vance's catalog with valuations circled in red ink. Merely routine municipal insurance appraisal paperwork.",
-        "Curator's Mail Cubby (Guard Room)", false, true);
+    Evidence e7("E07", "Untainted Scotch Decanter", EvidenceCategory::FORENSIC, EvidenceRelevance::DECEPTIVE_RED_HERRING,
+        "Pure Highland whisky served by Butler Higgins. Proves the poison was not in the decanter and had to be added in the study.",
+        "Sideboard & Bar Cart (Drawing Room)", false, true);
 
-    Evidence e8("E08", "Solvent Theft Report Sheet", EvidenceCategory::DOCUMENT, EvidenceRelevance::SUPPORTING_PROOF,
-        "An official incident log written by Elena Rostova at 10:00 PM reporting a stolen can of mineral spirits from the cellar store.",
-        "Maintenance Desk (Basement)", false, false);
+    Evidence e8("E08", "Stolen Diamond Brooch", EvidenceCategory::PHYSICAL, EvidenceRelevance::SUPPORTING_PROOF,
+        "Lord Sterling's missing 50-carat antique diamond brooch, stolen from the wall safe and hidden in the garden hedge.",
+        "Garden Hedge Bush (Veranda)", false, false);
+
+    Evidence e9("E09", "Obsidian Hourglass Wax Seal", EvidenceCategory::DOCUMENT, EvidenceRelevance::DECEPTIVE_RED_HERRING,
+        "A crimson wax stamp on the safe depicting a winged hourglass—the signature of an underground syndicate.",
+        "Forced Wall Safe Alcove (Study)", false, true);
+
+    Evidence e10("E10", "Torn Green Velvet Hem", EvidenceCategory::PHYSICAL, EvidenceRelevance::DECEPTIVE_RED_HERRING,
+        "A torn green velvet thread from Lady Evelyn's dress on the parlour chair, confirming she collapsed weeping after being locked out.",
+        "Emerald Velvet Armchair (Drawing Room)", false, true);
 
     m_allEvidence["E01"] = e1;
     m_allEvidence["E02"] = e2;
@@ -135,83 +144,95 @@ void CaseFile::setupCase1() {
     m_allEvidence["E06"] = e6;
     m_allEvidence["E07"] = e7;
     m_allEvidence["E08"] = e8;
+    m_allEvidence["E09"] = e9;
+    m_allEvidence["E10"] = e10;
 
     // Suspects
-    auto vance = std::make_shared<Suspect>("S01", "Arthur Vance", "Head Museum Curator", 
-        "Nervous, intellectual, defensive of his academic reputation",
-        "Detective, I assure you I have devoted thirty years of my life to preserving these treasures!",
-        "I was locked inside my third-floor office reviewing accession catalogs from 11:30 PM until sirens sounded.",
-        "The museum operates at a deficit, but I would never stage a theft.",
-        false, "", "", "Door access logs confirm Vance remained locked inside his office without leaving.");
-    vance->addTopic("alibi", "I was on the third floor working alone with the deadbolt turned. You can check the corridor door locks.");
-    vance->addTopic("motive", "Rivals spread vile rumors that I sell artifacts. Pure slander!");
-    vance->addContradiction("keycard", "My master keycard was with me... wait! My backup card went missing from my drawer yesterday!",
-        "E03", "Vance turns pale: 'Good heavens! That explains why the access log recorded my badge at the basement door! Someone stole my spare badge to frame me!'");
+    auto evelyn = std::make_shared<Suspect>("S01", "Lady Evelyn Sterling", "Victim's Widow & Socialite", 
+        "Nervous, aristocratic, pale complexion, twisting emerald ring",
+        "Good evening, Inspector. Please be brief; my nerves are completely shattered by this tragedy.",
+        "I was in my private boudoir powdering my face from 11:00 PM until the scream at 11:25 PM.",
+        "Money? Arthur was a generous husband. I had no reason to wish him dead!",
+        false, "", "", "Butler Higgins confirms she was weeping in the parlour during the 11:15 PM blackout after Arthur locked her out.");
+    evelyn->addTopic("alibi", "I was in my boudoir and parlour powdering my face and resting. I never entered the study during the blackout.");
+    evelyn->addTopic("motive", "Arthur controlled the purse strings, but killing him would leave me at the mercy of solicitors.");
+    evelyn->addContradiction("will", "Arthur and I were devoted! He would never cut me out of his estate!",
+        "E04", "Lady Evelyn turns pale as a ghost: 'Arthur's will! Where did you find that?! Alright, yes! I went to his study at 10:45 PM to plead with him! He threw me out and locked the door behind me! When the blackout happened, I was downstairs crying! I am NOT a killer!'");
+    evelyn->addConditionalTopic("dress", "E10", "Confront with Torn Green Velvet Thread (E10)",
+        "Lady Evelyn touches her hem: 'Yes, that torn thread matches my dress. I tore it on the parlour armchair when I collapsed in tears after Arthur rejected me.'");
 
-    auto cruz = std::make_shared<Suspect>("S02", "Marcus Cruz", "Night Security Guard",
-        "Rigid military posture, guarded, evasive eye contact",
-        "Just carrying out my patrol duties, Detective. Hard to see anything when the lights cut out.",
-        "I was performing my scheduled perimeter sweep in the North Wing when the power failed at 1:15 AM. My card swipe proves it.",
-        "A guard's wage isn't handsome, but I live within my means.",
+    auto bell = std::make_shared<Suspect>("S02", "Dr. Arthur Bell", "Family Physician & Surgeon",
+        "Elderly, intellectual, polishing spectacles with trembling fingers",
+        "Inspector, this is a tragedy. Lord Sterling's cardiovascular health was always precarious.",
+        "I was down in the wine cellar selecting a bottle of vintage port for dinner when the power cut out.",
+        "Arthur was my closest patient and patron. His grants funded my clinic.",
+        false, "", "", "Cyanide was stolen from his medical bag during soup; cellar records verify his presence in the cellar during the blackout.");
+    bell->addTopic("alibi", "I was in the wine cellar looking for vintage port when the storm caused the blackout.");
+    bell->addTopic("motive", "I have devoted thirty years to saving lives, Detective. Why would I poison my benefactor?");
+    bell->addContradiction("cyanide", "Lord Sterling must have suffered a sudden heart arrest. There was no poison in this house!",
+        "E05", "Dr. Bell drops his spectacles in horror: 'My cyanide vial! Heavens above! Inspector, someone stole that vial from my leather satchel in the coat closet during dinner! Arthur was murdered with my stolen chemicals, but I swear I did not do it!'");
+    bell->addConditionalTopic("poison", "E01", "Discuss Whisky Residue (E01)",
+        "Dr. Bell shakes his head gravely: 'Bitter almonds... that is pure potassium cyanide. The thief who looted my satchel slipped it into Arthur's scotch.'");
+
+    auto croft = std::make_shared<Suspect>("S03", "Vincent Croft", "Speculative Mining Investor & Partner",
+        "Smug, sharp-eyed, smells of Havana cigars, boots caked in yellow mud",
+        "Evening, Inspector. Dreadful business, but rich old men make many enemies, don't they?",
+        "I was enjoying a peaceful Havana cigar outside on the veranda under the dry awning the entire evening. Never went near the study or garden.",
+        "Arthur and I were partners! He was preparing to wire £20,000 to finance our South African copper venture tonight.",
         true,
-        "Cruz clenches his jaw until his knuckles turn white. 'The timing log... damn it! You caught the three-minute travel gap between the basement and North Wing!'",
-        "Cruz drops his head into his hands. 'The Blackwood Syndicate had a blade at my throat for £25,000. I cut the breaker, used Vance's stolen spare badge to swipe the North reader to fake an alibi, and pried the sapphire loose with solvent. The gem is wrapped in canvas inside the rooftop HVAC exhaust shaft.'",
-        "Guilty: Primary perpetrator behind the theft and blackout.");
-    cruz->addTopic("alibi", "Check the North Wing card reader! My swipe is logged at 1:15 AM sharp. I was hundreds of feet from the vault!");
-    cruz->addTopic("motive", "I don't need any cursed sapphire. I keep my head down and do my shift.");
-    cruz->addContradiction("alibi", "My card swipe at 1:15 AM in the North Wing proves I was nowhere near the basement or vault!",
-        "E03", "Cruz freezes as you show the server logs: 'The North Wing swipe occurred at 1:15 AM, but the basement door was swiped at 1:12 AM with the same badge! No human could sprint through three locked security corridors in under 60 seconds!' Cruz stammers: 'I... I can explain that...'");
-    cruz->addContradiction("footwear", "I wear standard rubber dress shoes on night patrol, not muddy field boots.",
-        "E02", "You compare Cruz's locker boots with E02: 'The cross-hatch sole and size 10 cut match your uniform boots exactly, complete with wet river mud from the basement runoff!' Cruz looks away in defeat.");
-    cruz->addConditionalTopic("solvent", "E04", "Confront with Solvent-Soaked Rag (E04)",
-        "Cruz shifts uneasily: 'That rag? I... I use it to polish brass turnstiles! It has nothing to do with dissolving vault display sealants!'");
+        "Croft's smug grin instantly vanishes. His eyes bulge as he stares at the bloodstained watch in horror: 'You... where the devil did you dig that up?! Arthur grabbed my wrist as he went down... Dammit! He had millions and was going to throw me in prison over twenty thousand pounds!'",
+        "Croft drops his face into his hands, weeping: 'I stole the poison from Bell's bag at dinner, slipped it in Arthur's whisky, and cracked the wall safe for the 50-carat diamond! He was supposed to fall asleep quietly, but he grabbed me as the storm hit! I had no choice!'",
+        "Guilty: Primary perpetrator behind the poisoning and safe robbery.");
+    croft->addTopic("alibi", "I stayed under the dry veranda awning the entire evening smoking Havana cigars. Check the dry stone tiles!");
+    croft->addTopic("motive", "Arthur and I were on the verge of making a fortune in South African copper. I needed him alive!");
+    croft->addContradiction("watch", "I was never inside Arthur's study during the blackout, and I never laid a finger on him!",
+        "E03", "Croft freezes in terror as you present the gold watch: 'The hands are frozen at 11:15 PM, stained with Lord Sterling's blood, and engraved V.C. for Vincent Croft! Lord Sterling ripped it from your wrist as he died!' Croft's composure completely shatters.");
+    croft->addContradiction("cigar", "I never approached the study window from the outside.",
+        "E02", "You display the Havana cigar ash from the study sill: 'Vuelta Abajo tobacco ash was found on the study windowsill, dropped during the storm! You stood at the window!' Croft shifts nervously.");
+    croft->addContradiction("mud", "I remained on the dry veranda awning all night without touching the rain or dirt.",
+        "E06", "You point to Croft's riding boots: 'Size 10 riding boots left deep prints in the wet yellow garden clay under the study window, matching the yellow mud caked on your boots right now!' Croft turns pale.");
+    croft->addConditionalTopic("brooch", "E08", "Confront with Stolen Diamond Brooch (E08)",
+        "Croft sweats profusely: 'The 50-carat brooch... found in the hedge?! I... someone must have thrown it out during the panic!'");
 
-    auto elena = std::make_shared<Suspect>("S03", "Elena Rostova", "Guest Art Restorer",
-        "Sharp-eyed, analytical, composed European demeanor",
-        "Good evening. An appalling loss for cultural heritage, Detective.",
-        "I was in the conservation laboratory on the mezzanine level until 1:00 AM, then had chamomile tea in the kitchenette.",
-        "A stolen sapphire of that renown cannot be sold on any legitimate market.",
-        false, "", "", "Lab incident sheet E08 verifies she reported the chemical theft early in the evening.");
-    elena->addTopic("alibi", "I worked late restoring Byzantine ceramics. I returned to the break room around 1:00 AM.");
-    elena->addTopic("motive", "My international reputation took twenty years to build. A heist would destroy me.");
-    elena->addConditionalTopic("report", "E08", "Ask about Solvent Theft Log (E08)",
-        "Elena nods firmly: 'Precisely, Detective! At 10:00 PM, I noticed someone had taken our industrial solvent can from the supply locker. I logged it immediately on the clipboard!'");
-
-    auto catherine = std::make_shared<Suspect>("S04", "Lady Catherine Sterling", "Museum Benefactor & Patron",
-        "Aristocratic, haughty, adorned in velvet and pearls",
-        "Must I be questioned like a common suspect? My family built this institution!",
-        "I attended a private viewing of the Roman collection, leaving promptly at 11:15 PM in my chauffeured automobile.",
-        "The sapphire was donated by my late grandfather; I have always felt it belonged in our family estate.",
-        false, "", "", "Museum gate records and her chauffeur confirm her departure at 11:20 PM.");
-    catherine->addTopic("alibi", "My chauffeur drove me straight to my Kensington residence. Ask the gatekeeper!");
-    catherine->addTopic("motive", "Sentimental nostalgia does not inspire me to crawl through filthy air ducts.");
-    catherine->addConditionalTopic("umbrella", "E06", "Ask about Silk Umbrella (E06)",
-        "Lady Catherine blushes: 'Oh! My monogrammed umbrella! I wondered where I had misplaced it during the evening tour. Thank you for finding it, Officer.'");
-
-    m_characters.push_back(vance);
-    m_characters.push_back(cruz);
-    m_characters.push_back(elena);
-    m_characters.push_back(catherine);
+    m_characters.push_back(evelyn);
+    m_characters.push_back(bell);
+    m_characters.push_back(croft);
 
     // Witness
-    auto bert = std::make_shared<Witness>("W01", "Old Bert", "Museum Night Janitor",
-        "Gruff, observant, clutching an industrial broom",
-        "I told the constables already: something fishy went down in the basement tonight.",
-        "Right as the power cut at 1:14 AM, I was replacing filters near the breaker room. Someone in heavy combat boots ran past toward the loading tunnel reeking of chemical solvent!",
-        "1:14 AM", "E04");
-    bert->addTopic("boots", "Heavy combat boots, not the light dress shoes Mr. Vance or Miss Rostova wear. Pure guard issue.");
-    m_characters.push_back(bert);
+    auto higgins = std::make_shared<Witness>("W01", "James Higgins", "Head Butler",
+        "Dignified, composed, impeccable formal livery",
+        "Good evening, Inspector. A dreadful tragedy has occurred in Sterling Manor.",
+        "I served Lord Sterling a fresh glass of Scotch at 11:00 PM in the study; the decanter was pure. At 10:30 PM, I overheard Mr. Croft shouting violent threats through the study door. During the blackout, Lady Evelyn was weeping in the parlour. And Mr. Croft had yellow mud on his boots when he came back inside!",
+        "11:15 PM", "E07");
+    higgins->addTopic("threats", "At 10:30 PM, Lord Sterling shouted that Mr. Croft's mining venture was a complete fraud and demanded repayment of £20,000 by midnight.");
+    higgins->addTopic("decanter", "The decanter on the sideboard was pure. The poison must have been introduced directly into Lord Sterling's glass in the study.");
+    higgins->addTopic("boots", "Mr. Croft was tracking yellow mud across the parquet floor right after the storm passed.");
+    m_characters.push_back(higgins);
 
     // ClueBoard deductions
     m_clueBoard.registerValidDeduction("E01", "E03", 
-        "Calculated Security Bypass", 
-        "The fiber optic cut and timed card swipe prove the thief used an insider's keycard to fake an alibi while cutting power.");
-    m_clueBoard.registerValidDeduction("E02", "E05", 
-        "Guard Uniform & Desperation", 
-        "The tactical boot print matches guard issue footwear, linking the scene to Cruz's urgent financial state.");
-    m_clueBoard.registerValidDeduction("E04", "E08",
-        "Premeditated Solvent Theft",
-        "The solvent rag in the basement matches the chemical canister reported missing from Elena's conservation inventory at 10 PM.");
+        "Cyanide Poisoning & 11:15 PM Struggle", 
+        "Lord Sterling ingested the poisoned whisky and violently struggled with Vincent Croft at exactly 11:15 PM!");
+    m_clueBoard.registerValidDeduction("E01", "E05", 
+        "Stolen Chemical Lethality", 
+        "Lord Sterling's whisky was laced with cyanide stolen from Dr. Bell's medical satchel during dinner.");
+    m_clueBoard.registerValidDeduction("E02", "E06", 
+        "Veranda Intrusion Traces", 
+        "Havana cigar ash on the study sill and size 10 yellow mud bootprints directly contradict Croft's claim of remaining on the dry veranda.");
+    m_clueBoard.registerValidDeduction("E03", "E08",
+        "11:15 PM Struggle & Safe Robbery",
+        "The watch smashed at 11:15 PM with 'V.C.' monogram and blood links Vincent Croft directly to the murder and safe theft.");
+    m_clueBoard.registerValidDeduction("E04", "E10",
+        "Disinheritance Alibi Confirmation",
+        "The burnt will and torn velvet thread confirm Lady Evelyn was crying in the parlour after being locked out, clearing her.");
+
+    // Mind Palace Cognitive Epiphanies
+    m_mindPalace.registerEpiphanyFormula("EPI_C1_1", "The Stolen Poison & Struggle",
+        "Lord Sterling was poisoned with Dr. Bell's stolen cyanide, and ripped Croft's watch off during the fatal struggle!",
+        "E01", "E03", 50);
+    m_mindPalace.registerEpiphanyFormula("EPI_C1_2", "Shattered Veranda Alibi",
+        "Croft's yellow mud boots and Havana cigar ash prove he climbed into the study during the 11:15 PM blackout!",
+        "E02", "E06", 50);
 }
 
 void CaseFile::setupCase2() {
@@ -407,6 +428,14 @@ void CaseFile::setupCase2() {
     m_clueBoard.registerValidDeduction("E01", "E08",
         "Corridor Poisoning Point",
         "The delivery sheet and pure galley kettle prove the cyanide was introduced into the cup in the hallway right at 11:40 PM.");
+
+    // Mind Palace Cognitive Epiphanies
+    m_mindPalace.registerEpiphanyFormula("EPI_C2_1", "The Embezzlement Poison Trap",
+        "Julian Gray used potassium cyanide in the silver samovar to silence Sterling before the Glenridge audit!",
+        "E01", "E02", 50);
+    m_mindPalace.registerEpiphanyFormula("EPI_C2_2", "Desperate Cover-Up",
+        "Julian Gray faced criminal ruin from the embezzlement audit, providing the exact urgent motive to kill before arrival.",
+        "E02", "E03", 50);
 }
 
 void CaseFile::setupCase3() {
@@ -601,6 +630,14 @@ void CaseFile::setupCase3() {
     m_clueBoard.registerValidDeduction("E01", "E05",
         "Premeditated Retaliation",
         "The disinheritance draft provides the urgent motive for Cornelius to kill Thorne before Monday's legal execution.");
+
+    // Mind Palace Cognitive Epiphanies
+    m_mindPalace.registerEpiphanyFormula("EPI_C3_1", "The Mechanical Locked-Room Trick",
+        "The clock chime weight pulled the wire looped around the bolt, locking the door automatically from outside when the clock struck 9:00 PM.",
+        "E01", "E03", 50);
+    m_mindPalace.registerEpiphanyFormula("EPI_C3_2", "The Staged Suicide",
+        "Cornelius forged the suicide note with a modern ballpoint pen and had the matching piano wire in his coat to execute the trap.",
+        "E02", "E04", 50);
 }
 
 int CaseFile::getCaseNumber() const { return m_caseNumber; }
@@ -728,13 +765,14 @@ AccusationResult CaseFile::evaluateAccusation(const std::string& suspectId,
                                             const std::string& motiveKeyword) {
     AccusationResult res;
     res.isCorrectCulprit = (suspectId == m_culpritId);
-    res.hasKeyEvidence = (evidenceId == m_keyEvidenceId);
+    res.hasKeyEvidence = (evidenceId == m_keyEvidenceId || (m_caseNumber == 3 && evidenceId == "E02"));
 
     auto susp = getSuspectById(suspectId);
     res.isAlibiBroken = (susp != nullptr && susp->isAlibiBroken());
 
     std::string upperMotive = UI::toUpper(motiveKeyword);
-    res.isMotiveCorrect = (upperMotive.find(m_correctMotiveKeyword) != std::string::npos);
+    res.isMotiveCorrect = (upperMotive.find(m_correctMotiveKeyword) != std::string::npos ||
+                           (m_caseNumber == 3 && upperMotive.find("PATENT") != std::string::npos));
 
     res.chronologicalTimeline = m_timeline;
     res.suspectEliminations = m_eliminations;

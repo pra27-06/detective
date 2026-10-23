@@ -14,7 +14,13 @@ Suspect::Suspect(const std::string& id, const std::string& name,
       m_alibiBroken(false),
       m_breakdownDialogue(breakdownDialogue),
       m_confessionText(confessionText),
-      m_eliminationReason(eliminationReason) {}
+      m_eliminationReason(eliminationReason),
+      m_currentBPM(72),
+      m_composure(100) {
+    // Default strategy
+    m_psychProfile = std::make_unique<NervousDefensiveProfile>();
+    m_currentBPM = m_psychProfile->getBaselineBPM();
+}
 
 std::string Suspect::getRole() const {
     return "Person of Interest / Suspect";
@@ -181,3 +187,33 @@ std::string Suspect::getMotive() const { return m_motive; }
 std::string Suspect::getBreakdownDialogue() const { return m_breakdownDialogue; }
 std::string Suspect::getConfessionText() const { return m_confessionText; }
 std::string Suspect::getEliminationReason() const { return m_eliminationReason; }
+
+void Suspect::setPsychologicalProfile(std::unique_ptr<PsychologicalProfile> profile) {
+    if (profile) {
+        m_psychProfile = std::move(profile);
+        m_currentBPM = m_psychProfile->getBaselineBPM();
+    }
+}
+
+std::string Suspect::getCurrentMicroExpression() const {
+    if (m_psychProfile) {
+        return m_psychProfile->getMicroExpression(m_currentBPM);
+    }
+    return "Neutral expression.";
+}
+
+void Suspect::applyInterrogationPressure(const std::string& evidenceCategory, bool isContradiction) {
+    if (!m_psychProfile) return;
+    int spike = m_psychProfile->calculateStressSpike(evidenceCategory, isContradiction);
+    m_currentBPM += spike;
+    m_composure = std::max(0, m_composure - (isContradiction ? 35 : 12));
+
+    if (m_psychProfile->evaluateBreakdown(m_currentBPM, m_composure)) {
+        m_alibiBroken = true;
+    }
+}
+
+bool Suspect::isPsychologicallyBroken() const {
+    if (!m_psychProfile) return m_alibiBroken;
+    return m_alibiBroken || m_psychProfile->evaluateBreakdown(m_currentBPM, m_composure);
+}

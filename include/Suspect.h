@@ -2,9 +2,11 @@
 #define SUSPECT_H
 
 #include "Character.h"
+#include "PsychologicalProfile.h"
 #include <map>
 #include <vector>
 #include <string>
+#include <memory>
 
 struct Contradiction {
     std::string statementTag;
@@ -35,6 +37,11 @@ private:
     std::vector<Contradiction> m_contradictions;
     std::vector<ConditionalTopic> m_conditionalTopics;
     std::vector<std::pair<std::string, std::string>> m_transcript; // (Question, Answer)
+
+    // Psychological Profiling & Heart-Rate Mechanics (Strategy Pattern)
+    std::unique_ptr<PsychologicalProfile> m_psychProfile;
+    int m_currentBPM;
+    int m_composure;
 
 public:
     Suspect(const std::string& id, const std::string& name,
@@ -85,6 +92,14 @@ public:
     std::string getBreakdownDialogue() const;
     std::string getConfessionText() const;
     std::string getEliminationReason() const;
+
+    // Psychological Profiling
+    void setPsychologicalProfile(std::unique_ptr<PsychologicalProfile> profile);
+    int getCurrentBPM() const { return m_currentBPM; }
+    int getComposure() const { return m_composure; }
+    std::string getCurrentMicroExpression() const;
+    void applyInterrogationPressure(const std::string& evidenceCategory, bool isContradiction);
+    bool isPsychologicallyBroken() const;
 };
 
 #endif // SUSPECT_H
