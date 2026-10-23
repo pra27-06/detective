@@ -84,6 +84,20 @@ void Evidence::displayCard() const {
     UI::printBox("EVIDENCE DOSSIER: " + m_id, lines, 74);
 }
 
+bool Evidence::operator==(const Evidence& other) const {
+    return m_id == other.m_id;
+}
+
+bool Evidence::operator!=(const Evidence& other) const {
+    return !(*this == other);
+}
+
+std::ostream& operator<<(std::ostream& os, const Evidence& ev) {
+    os << "[" << ev.m_id << "] " << ev.m_name << " (" << ev.getCategoryName() 
+       << ", " << ev.getRelevanceName() << ") - Found at: " << ev.m_locationFound;
+    return os;
+}
+
 std::string Evidence::serialize() const {
     return m_id + "|" + (m_isDiscovered ? "1" : "0");
 }

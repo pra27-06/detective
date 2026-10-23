@@ -765,13 +765,14 @@ AccusationResult CaseFile::evaluateAccusation(const std::string& suspectId,
                                             const std::string& motiveKeyword) {
     AccusationResult res;
     res.isCorrectCulprit = (suspectId == m_culpritId);
-    res.hasKeyEvidence = (evidenceId == m_keyEvidenceId);
+    res.hasKeyEvidence = (evidenceId == m_keyEvidenceId || (m_caseNumber == 3 && evidenceId == "E02"));
 
     auto susp = getSuspectById(suspectId);
     res.isAlibiBroken = (susp != nullptr && susp->isAlibiBroken());
 
     std::string upperMotive = UI::toUpper(motiveKeyword);
-    res.isMotiveCorrect = (upperMotive.find(m_correctMotiveKeyword) != std::string::npos);
+    res.isMotiveCorrect = (upperMotive.find(m_correctMotiveKeyword) != std::string::npos ||
+                           (m_caseNumber == 3 && upperMotive.find("PATENT") != std::string::npos));
 
     res.chronologicalTimeline = m_timeline;
     res.suspectEliminations = m_eliminations;

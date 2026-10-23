@@ -56,6 +56,11 @@ public:
     void displayCard() const;
     void displaySummary() const;
 
+    // Operator Overloading
+    bool operator==(const Evidence& other) const;
+    bool operator!=(const Evidence& other) const;
+    friend std::ostream& operator<<(std::ostream& os, const Evidence& ev);
+
     // String serialization for Save/Load
     std::string serialize() const;
     static Evidence deserialize(const std::string& line);

@@ -360,11 +360,14 @@ public:
             return;
         }
 
+        std::cout << "\nSUSPECT CLAIM: \"" << targetSuspect->getAlibi() << "\"\n";
+        std::cout << "Observed Tell: " << targetSuspect->getTell() << "\n";
         std::cout << "\nSELECT EVIDENCE TO CONFRONT " << targetSuspect->getName() << ":\n";
         printDivider();
         for (size_t j = 0; j < discovered.size(); ++j) {
-            std::cout << "  [" << (j + 1) << "] " << discovered[j]->getId() << ": "
-                      << discovered[j]->getName() << "\n";
+            std::cout << "  [" << (j + 1) << "] " << discovered[j]->getName()
+                      << " (" << discovered[j]->getId() << ") - "
+                      << discovered[j]->getTypeName() << "\n";
         }
         std::cout << "  [0] Cancel\n";
 
@@ -378,9 +381,13 @@ public:
         bool hit = targetSuspect->confrontWithEvidence(chosenEv->getId());
         if (hit) {
             m_score += 50;
+            std::cout << "[+] SUCCESS! Contradiction exposed! (+50 Points)\n";
         } else {
             m_score = std::max(0, m_score - 10);
             m_energy = std::max(0, m_energy - 10);
+            std::cout << "[-] Contradiction failed: " << targetSuspect->getName() 
+                      << " scoffs: 'That clue has nothing to do with me!' (-10 Points, -10 Energy)\n";
+            std::cout << "    Tip: Re-read their alibi statement and examine clues found in crime scene rooms.\n";
         }
         pressEnterToContinue();
     }

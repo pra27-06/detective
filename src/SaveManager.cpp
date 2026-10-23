@@ -104,12 +104,31 @@ bool SaveManager::loadGame(const std::string& filepath, GameSaveState& outState)
             if (eq != std::string::npos) {
                 std::string key = line.substr(0, eq);
                 std::string val = line.substr(eq + 1);
-                if (key == "CASE") outState.caseNumber = std::stoi(val);
-                else if (key == "DIFFICULTY") outState.difficulty = std::stoi(val);
-                else if (key == "NAME") outState.detectiveName = val;
-                else if (key == "SCORE") outState.detectiveScore = std::stoi(val);
-                else if (key == "ENERGY") outState.detectiveEnergy = std::stoi(val);
-                else if (key == "HINTS") outState.hintsUsed = std::stoi(val);
+                try {
+                    if (key == "CASE") {
+                        int c = std::stoi(val);
+                        if (c < 1 || c > 3) return false;
+                        outState.caseNumber = c;
+                    } else if (key == "DIFFICULTY") {
+                        int d = std::stoi(val);
+                        if (d < 1 || d > 3) return false;
+                        outState.difficulty = d;
+                    } else if (key == "NAME") {
+                        if (val.empty()) return false;
+                        outState.detectiveName = val;
+                    } else if (key == "SCORE") {
+                        int s = std::stoi(val);
+                        outState.detectiveScore = std::max(0, s);
+                    } else if (key == "ENERGY") {
+                        int e = std::stoi(val);
+                        outState.detectiveEnergy = std::max(0, std::min(100, e));
+                    } else if (key == "HINTS") {
+                        outState.hintsUsed = std::max(0, std::stoi(val));
+                    }
+                } catch (const std::exception&) {
+                    // Corrupt or malformed header value encountered
+                    return false;
+                }
             }
         } else if (currentSection == "[EVIDENCE]") {
             outState.discoveredEvidenceIds.push_back(line);
@@ -129,5 +148,8 @@ bool SaveManager::loadGame(const std::string& filepath, GameSaveState& outState)
     }
 
     in.close();
+    if (outState.caseNumber < 1 || outState.caseNumber > 3) {
+        return false;
+    }
     return true;
 }

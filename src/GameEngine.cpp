@@ -501,14 +501,33 @@ void GameEngine::handleInterrogation() {
         } else if (qChoice == confrontOption && suspect) {
             UI::clearScreen();
             UI::printSubHeader("CONFRONTING " + suspect->getName() + " WITH EVIDENCE");
-            m_activeCase->displayDiscoveredEvidenceList();
 
-            std::string evId = UI::promptString("Enter Evidence ID that contradicts this suspect's claims (or 'cancel')");
-            evId = UI::toUpper(evId);
-
-            if (evId == "CANCEL" || evId.empty()) {
+            auto discovered = m_activeCase->getDiscoveredEvidence();
+            if (discovered.empty()) {
+                UI::printWarning("You haven't discovered any physical or forensic evidence yet!");
+                UI::printInfo("Search the crime scene rooms first to collect clues before challenging suspect alibis.");
+                UI::pause();
                 continue;
             }
+
+            std::cout << "\n" << UI::Color::BOLD << UI::Color::BRIGHT_YELLOW
+                      << "SUSPECT CLAIM: " << UI::Color::RESET << "\"" << suspect->getAlibi() << "\"\n"
+                      << UI::Color::DIM << "Observed Demeanor: " << suspect->getPersonality() << UI::Color::RESET << "\n\n";
+
+            std::cout << "Select a discovered clue to present against this statement:\n";
+            for (size_t i = 0; i < discovered.size(); ++i) {
+                std::cout << "  [" << (i + 1) << "] " << UI::Color::BOLD << discovered[i].getName() 
+                          << UI::Color::RESET << " (" << discovered[i].getId() << ") - "
+                          << discovered[i].getCategoryName() << "\n";
+            }
+            std::cout << "  [0] Cancel / Return to Interview\n\n";
+
+            int evChoice = UI::promptInt("Select clue number to confront", 0, static_cast<int>(discovered.size()));
+            if (evChoice == 0) {
+                continue;
+            }
+
+            std::string evId = discovered[evChoice - 1].getId();
 
             std::string statementQuote, resolutionText;
             if (suspect->testContradiction(evId, statementQuote, resolutionText)) {
@@ -518,6 +537,9 @@ void GameEngine::handleInterrogation() {
                 std::vector<std::string> lines;
                 lines.push_back("Disproven Statement:");
                 lines.push_back("\"" + statementQuote + "\"");
+                lines.push_back("");
+                lines.push_back("Decisive Proof Presented:");
+                lines.push_back("[" + evId + "] " + discovered[evChoice - 1].getName());
                 lines.push_back("");
                 lines.push_back("Suspect Admission / Resolution:");
                 lines.push_back(resolutionText);
@@ -530,7 +552,8 @@ void GameEngine::handleInterrogation() {
                 m_detective->deductScore(penalty);
                 m_investigationMistakes++;
                 UI::printError("Contradiction failed! " + suspect->getName() + 
-                              " scoffs: 'That proves nothing against me, Officer. Check your facts.'");
+                              " scoffs: 'That clue proves nothing against my statement, Detective. Check your facts.'");
+                UI::printInfo("Tip: Re-read the suspect's specific claims and physical tell to find the direct contradiction.");
                 UI::printWarning("Score penalty incurred: -" + std::to_string(penalty) + " points.");
             }
             UI::pause();

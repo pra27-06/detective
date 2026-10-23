@@ -487,19 +487,20 @@ void VNEngine::setupInterrogationScreen() {
         });
     }
 
-    // Interrogation Actions (Center-Bottom)
+    // Interrogation Actions (Center-Bottom, clearly separated above the dialogue box)
     auto suspect = m_activeCase->getSuspectById(m_activeSuspectId);
     auto witness = m_activeCase->getWitnessById(m_activeSuspectId);
 
-    int actX = 300;
-    int actY = m_windowHeight - 240;
-    int actW = 280;
-    int actH = 42;
-    int actGap = 12;
+    int actX1 = 290;
+    int actX2 = 525;
+    int actW = 220;
+    int actH = 38;
+    int actY1 = m_windowHeight - 265;
+    int actY2 = m_windowHeight - 220;
 
     if (suspect) {
         // Option 1: Alibi
-        m_clickables.emplace_back(actX, actY, actW, actH, "ask_alibi", "1. Ask about Alibi", [this, suspect]() {
+        m_clickables.emplace_back(actX1, actY1, actW, actH, "ask_alibi", "1. Ask about Alibi", [this, suspect]() {
             m_activeExpression = suspect->isAlibiBroken() ? "broken" : "neutral";
             DialogueEntry de("alibi", suspect->getName(), m_activeCharacterId, m_activeExpression,
                              suspect->getAlibi(), "interrogation_room");
@@ -508,7 +509,7 @@ void VNEngine::setupInterrogationScreen() {
         });
 
         // Option 2: Motive
-        m_clickables.emplace_back(actX + actW + actGap, actY, actW, actH, "ask_motive", "2. Inquire about Motive", [this, suspect]() {
+        m_clickables.emplace_back(actX2, actY1, actW, actH, "ask_motive", "2. Inquire about Motive", [this, suspect]() {
             m_activeExpression = "nervous";
             DialogueEntry de("motive", suspect->getName(), m_activeCharacterId, m_activeExpression,
                              suspect->getMotive(), "interrogation_room");
@@ -522,7 +523,7 @@ void VNEngine::setupInterrogationScreen() {
         if (!conditionalTopics.empty()) {
             std::string prompt = conditionalTopics[0].promptLabel;
             std::string response = conditionalTopics[0].response;
-            m_clickables.emplace_back(actX, actY + actH + actGap, actW, actH, "ask_conditional",
+            m_clickables.emplace_back(actX1, actY2, actW, actH, "ask_conditional",
                                       "[CLUE] " + prompt, [this, suspect, response]() {
                 m_activeExpression = "nervous";
                 DialogueEntry de("cond", suspect->getName(), m_activeCharacterId, m_activeExpression,
@@ -530,16 +531,24 @@ void VNEngine::setupInterrogationScreen() {
                 m_dialogue.setEntries({ de });
                 m_dialogue.start();
             });
+
+            // Option 4: Confront with Contradiction!
+            m_clickables.emplace_back(actX2, actY2, actW, actH, "confront",
+                                      "3. CONFRONT CONTRADICTION!", [this]() {
+                m_selectedEvidenceId = "";
+                setupContradictionScreen();
+            }, true);
+        } else {
+            // Option 3: Confront with Contradiction! (prominent button)
+            m_clickables.emplace_back(actX1, actY2, actW * 2 + 15, actH, "confront",
+                                      "3. ⚡ CONFRONT CONTRADICTION (Present Evidence)!", [this]() {
+                m_selectedEvidenceId = "";
+                setupContradictionScreen();
+            }, true);
         }
 
-        // Option 4: Confront with Contradiction!
-        m_clickables.emplace_back(actX + actW + actGap, actY + actH + actGap, actW, actH, "confront",
-                                  "3. CONFRONT CONTRADICTION!", [this]() {
-            setupContradictionScreen();
-        }, true);
-
     } else if (witness) {
-        m_clickables.emplace_back(actX, actY, actW, actH, "sworn_testimony", "Request Sworn Testimony", [this, witness]() {
+        m_clickables.emplace_back(actX1, actY1, actW * 2 + 15, actH, "sworn_testimony", "Request Sworn Testimony", [this, witness]() {
             m_activeExpression = "earnest";
             DialogueEntry de("witness_test", witness->getName(), m_activeCharacterId, m_activeExpression,
                              witness->giveTestimony(), "interrogation_room");
@@ -608,7 +617,7 @@ void VNEngine::setupContradictionScreen() {
     int cardW = 210;
     int cardH = 90;
     int startX = 60;
-    int startY = 280;
+    int startY = 270;
     int cols = 4;
     int gap = 20;
 
@@ -619,13 +628,25 @@ void VNEngine::setupContradictionScreen() {
         int cy = startY + row * (cardH + gap);
 
         std::string eid = discovered[i].getId();
-        m_clickables.emplace_back(cx, cy, cardW, cardH, "present_" + eid, discovered[i].getName(), [this, eid]() {
-            onContradictionSubmitted(eid);
+        m_clickables.emplace_back(cx, cy, cardW, cardH, "select_" + eid, discovered[i].getName(), [this, eid]() {
+            m_selectedEvidenceId = eid;
+            setupContradictionScreen();
         });
     }
 
+    // Present Selected Evidence Button (enabled when an item is selected)
+    if (!m_selectedEvidenceId.empty()) {
+        auto selEv = m_activeCase->getEvidenceById(m_selectedEvidenceId);
+        std::string label = "Present Clue: " + (selEv ? selEv->getName() : m_selectedEvidenceId);
+        m_clickables.emplace_back(startX, m_windowHeight - 60, 320, 40, "confirm_present", label, [this]() {
+            onContradictionSubmitted(m_selectedEvidenceId);
+        }, true);
+    }
+
     // Cancel Button
-    m_clickables.emplace_back(60, m_windowHeight - 60, 180, 40, "cancel_contradiction", "Cancel Confrontation", [this]() {
+    int cancelX = m_selectedEvidenceId.empty() ? startX : (startX + 340);
+    m_clickables.emplace_back(cancelX, m_windowHeight - 60, 200, 40, "cancel_contradiction", "Cancel Confrontation", [this]() {
+        m_selectedEvidenceId = "";
         setupInterrogationScreen();
     });
 }
@@ -636,6 +657,9 @@ void VNEngine::onContradictionSubmitted(const std::string& evidenceId) {
 
     std::string statement, resolution;
     bool success = suspect->testContradiction(evidenceId, statement, resolution);
+
+    m_selectedEvidenceId = "";
+    setupInterrogationScreen();
 
     if (success) {
         // Dramatic Objection Animation & SFX!
@@ -648,9 +672,7 @@ void VNEngine::onContradictionSubmitted(const std::string& evidenceId) {
         m_activeCase->updateObjectives();
 
         DialogueEntry de("broken_confess", suspect->getName(), m_activeCharacterId, "broken",
-                         resolution, "interrogation_room", "", [this]() {
-            setupInterrogationScreen();
-        });
+                         resolution, "interrogation_room");
         m_dialogue.setEntries({ de });
         m_dialogue.start();
         showToast("CONTRADICTION EXPOSED! Suspect's alibi shattered! (+50 Points)", 4.0f);
@@ -662,9 +684,7 @@ void VNEngine::onContradictionSubmitted(const std::string& evidenceId) {
 
         DialogueEntry de("failed_contra", suspect->getName(), m_activeCharacterId, "angry",
                          "That proves nothing against me, Detective! Check your facts before making reckless claims.",
-                         "interrogation_room", "", [this]() {
-            setupInterrogationScreen();
-        });
+                         "interrogation_room");
         m_dialogue.setEntries({ de });
         m_dialogue.start();
         showToast("Contradiction failed! Score Penalty: -15 Points", 3.5f);
@@ -815,6 +835,11 @@ void VNEngine::setupAccusationScreen() {
 }
 
 void VNEngine::onSubmitAccusation() {
+    if (m_accusedSuspectId.empty() || m_accusedEvidenceId.empty() || m_accusedMotive.empty()) {
+        showToast("Please select a Suspect, Decisive Evidence, and Criminal Motive!", 3.5f);
+        PlaySoundA("SystemHand", NULL, SND_ALIAS | SND_ASYNC);
+        return;
+    }
     m_lastVerdict = m_activeCase->evaluateAccusation(m_accusedSuspectId, m_accusedEvidenceId, m_accusedMotive);
     PlaySoundA(m_lastVerdict.isCorrectCulprit ? "SystemAsterisk" : "SystemHand", NULL, SND_ALIAS | SND_ASYNC);
     setupVerdictScreen();
@@ -1107,15 +1132,17 @@ void VNEngine::render(HDC hdc) {
 
             for (const auto& cr : m_clickables) {
                 bool isHovered = cr.contains(m_mouseX, m_mouseY);
-                if (cr.id.find("present_") != std::string::npos) {
-                    std::string eid = cr.id.substr(8);
+                if (cr.id.find("present_") != std::string::npos || cr.id.find("select_") != std::string::npos) {
+                    std::string eid = (cr.id.find("select_") != std::string::npos) ? cr.id.substr(7) : cr.id.substr(8);
                     Evidence* ev = m_activeCase->getEvidenceById(eid);
                     if (ev) {
+                        bool isSelected = (eid == m_selectedEvidenceId);
                         m_renderer->drawEvidenceCard(cr.x, cr.y, cr.w, cr.h, ev->getId(), ev->getName(),
-                                                     ev->getCategoryName(), ev->getRelevanceName(), isHovered, false);
+                                                     ev->getCategoryName(), ev->getRelevanceName(), isHovered, isSelected);
                     }
                 } else {
-                    m_renderer->drawButton(cr.x, cr.y, cr.w, cr.h, cr.label, isHovered, false);
+                    bool isSelected = (cr.id == "confirm_present");
+                    m_renderer->drawButton(cr.x, cr.y, cr.w, cr.h, cr.label, isHovered, isSelected, cr.id == "confirm_present");
                 }
             }
 
