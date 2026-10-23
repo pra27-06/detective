@@ -285,7 +285,7 @@ void VNEngine::setupCaseSelect() {
     int cardY = 220;
 
     // Case 1
-    m_clickables.emplace_back(startX, cardY, cardW, cardH, "case_1", "Case #1: The Midnight Museum Heist", [this]() {
+    m_clickables.emplace_back(startX, cardY, cardW, cardH, "case_1", "Case #1: The Poisoned Glass of Sterling Manor", [this]() {
         m_activeCase = std::make_unique<CaseFile>(1);
         m_detective = std::make_shared<Detective>("D01", "Sherlock", "SCOT-7749", "Rookie Detective");
         m_currentSceneIndex = 0;

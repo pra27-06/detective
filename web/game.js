@@ -346,129 +346,202 @@ class AudioEngine {
 const CASE_DATA = {
   1: {
     id: "CASE-01",
-    title: "Case #1: The Midnight Museum Heist",
-    tagline: "The 45-carat sapphire disappears during a 4-minute blackout.",
-    briefing: "Scotland Yard Dispatch has called us to the Royal Alexandria Museum at 1:30 AM. At 1:14 AM, the primary circuit breaker tripped, cloaking the gallery in darkness. In that exact four-minute window, the armored glass pedestal of the Star of Alexandria was breached and the sapphire stolen. Cross-examine the night staff, examine the crime scenes, and unmask the thief!",
-    culpritId: "S02", // Guard Marcus Cruz
-    decisiveEvidenceId: "E03", // Electronic Access Log
+    title: "Case #1: The Poisoned Glass of Sterling Manor",
+    tagline: "Lord Sterling is poisoned in his locked study during a thunderstorm blackout.",
+    briefing: "At 11:15 PM during a raging thunderstorm, the lights of Sterling Manor flickered and died. A chilling scream echoed from the locked second-floor study. Inside, Lord Arthur Sterling lies lifeless over his desk with a glass of poisoned whisky. His private wall safe stands wide open, and the 50-carat Sterling Diamond brooch is missing. Three suspects were in the manor. Cross-examine them, collect forensic clues, expose their lies, and unmask the killer!",
+    culpritId: "S03", // Vincent Croft
+    decisiveEvidenceId: "E03", // Cracked Gold Pocket Watch
     motiveKeyword: "DEBT",
-    solution: "Security Guard Marcus Cruz stole Curator Vance's spare keycard from the lost-and-found locker at 1:10 AM, swiped into the basement power substation at 1:12 AM, and cut the main breaker at 1:14 AM. Using pre-staged solvent and laser cutters, he seized the sapphire and sprinted through the maintenance shaft to swipe the North Wing patrol terminal at 1:15 AM to fabricate an alibi.",
+    solution: "Speculative mining partner Vincent Croft faced prison and bankruptcy after Lord Arthur Sterling discovered his South African copper venture was fraudulent and demanded £20,000 repayment tonight. During dinner, Croft stole an empty vial of potassium cyanide from Dr. Bell's bag in the coat closet. When the thunderstorm blackout struck at 11:15 PM, Croft entered the study, poisoned Lord Sterling's whisky tumbler, and forced the safe to steal the 50-carat diamond brooch. As Lord Sterling collapsed, he grabbed Croft's wrist, smashing Croft's gold pocket watch and stopping it at 11:15 PM with blood traces. Croft's alibi of remaining on the dry veranda is completely shattered by the bloodstained watch monogrammed 'V.C.', Havana cigar ash on the windowsill, and size 10 yellow mud bootprints.",
     ambience: "rain",
     scenes: [
       {
         id: "SCENE_01",
-        name: "The Sapphire Display Vault",
-        bg: "assets/backgrounds/scene_vault.png",
+        name: "The Master Study (Crime Scene)",
+        bg: "assets/backgrounds/scene_study.png",
         hotspots: [
-          { x: 50, y: 58, name: "Shattered Pedestal", desc: "The armored pedestal fiber optic tripwire was cleanly cut at a 45-degree angle.", evId: "E01" },
-          { x: 38, y: 78, name: "Vault Floor & Mud Traces", desc: "Dried mud flakes show a distinct cross-hatch combat boot tread, size 10.", evId: "E02" },
-          { x: 66, y: 65, name: "Forgotten Silk Umbrella", desc: "A stylish monogrammed silk umbrella resting against a marble pillar.", evId: "E06" },
-          { x: 82, y: 45, name: "Concealed Pillar Alcove", desc: "Behind the marble moulding: a red wax seal stamped with an Obsidian Hourglass insignia!", evId: "E09" }
+          { x: 50, y: 64, name: "Lord Sterling's Study Desk", desc: "A crystal whisky tumbler beside Lord Sterling with faint white powder on the rim smelling of bitter almonds (potassium cyanide).", evId: "E01" },
+          { x: 38, y: 38, name: "Study Terrace Window Sill", desc: "Fresh grey-white cigar ash discovered on the study window sill. Matches premium imported Havana tobacco leaf.", evId: "E02" },
+          { x: 58, y: 78, name: "Persian Rug near Desk", desc: "A gold pocket watch with crystal glass smashed, frozen at exactly 11:15 PM. Bloodstained and engraved 'V.C.' on the case.", evId: "E03" },
+          { x: 74, y: 44, name: "Forced Wall Safe Alcove", desc: "Behind the mahogany wall panel: the heavy iron safe door stands wide open, stamped with a crimson wax seal of the Obsidian Hourglass!", evId: "E09" }
         ]
       },
       {
         id: "SCENE_02",
-        name: "Basement Electrical Substation",
-        bg: "assets/backgrounds/scene_substation.png",
+        name: "The Drawing Room & Parlour",
+        bg: "assets/backgrounds/scene_parlour.png",
         hotspots: [
-          { x: 75, y: 44, name: "Security Terminal Server", desc: "Access logs show Curator Vance's badge swiped at 1:12 AM and North Wing at 1:15 AM.", evId: "E03" },
-          { x: 48, y: 86, name: "Disposal Chute & Laundry Cart", desc: "An oily workshop rag soaked in chemical solvent has been discarded in the chute.", evId: "E04" },
-          { x: 24, y: 48, name: "Chemical Incident Logbook", desc: "Logbook notes solvent reported missing from conservation storage at 10:00 PM.", evId: "E08" }
+          { x: 26, y: 68, name: "Marble Fireplace Hearth", desc: "A scorched parchment fragment rescued from the hearth. It explicitly revokes all inheritances to Lady Evelyn Sterling.", evId: "E04" },
+          { x: 78, y: 46, name: "Sideboard & Bar Cart", desc: "The crystal whisky decanter served by Butler Higgins. Completely pure and untainted, proving poison was introduced directly in the study.", evId: "E07" },
+          { x: 44, y: 74, name: "Emerald Velvet Armchair", desc: "A snagged green silk velvet thread on the chair's carving, matching the torn hem of Lady Evelyn's evening gown.", evId: "E10" }
         ]
       },
       {
         id: "SCENE_03",
-        name: "Staff Locker Room & Guard Post",
-        bg: "assets/backgrounds/scene_locker.png",
+        name: "The Veranda & Garden Terrace",
+        bg: "assets/backgrounds/scene_terrace.png",
         hotspots: [
-          { x: 20, y: 46, name: "Locker #14 (Marcus Cruz)", desc: "A formal repossession demand for £12,000 overdue debt and loan shark threats.", evId: "E05" },
-          { x: 50, y: 76, name: "Curator's Office Desk", desc: "A formal memorandum reporting his secondary museum master pass missing three days prior.", evId: "E07" }
+          { x: 38, y: 84, name: "Rain-Soaked Flowerbed", desc: "A deep footprint in the wet yellow garden clay directly beneath the study window, matching gentleman's riding boot, size 10.", evId: "E06" },
+          { x: 72, y: 32, name: "Veranda Coat Rack / Medical Satchel", desc: "Dr. Bell's leather medical bag left hanging by the door. Inside is an empty apothecary vial labeled Potassium Cyanide.", evId: "E05" },
+          { x: 86, y: 65, name: "Garden Hedge Bush", desc: "Hidden deep inside the thorny boxwood hedge: the missing 50-carat Sterling Diamond brooch, discarded in haste!", evId: "E08" }
         ]
       }
     ],
     evidence: {
-      "E01": { id: "E01", name: "Cut Fiber Optic Cable", cat: "PHYSICAL", rel: "CRITICAL PROOF", desc: "Cleanly sliced optical wire indicating insider knowledge of alarm timing and junction routing." },
-      "E02": { id: "E02", name: "Combat Boot Print Mud Flakes", cat: "FORENSIC", rel: "SUPPORTING PROOF", desc: "Heavy tactical size 10 boot treads matching standard museum night security uniform issue." },
-      "E03": { id: "E03", name: "Electronic Access Log", cat: "DOCUMENT", rel: "DECISIVE EVIDENCE", desc: "Substation swiped at 1:12 AM; North Wing terminal swiped at 1:15 AM with Vance's stolen badge. Physically impossible for one person on foot without sprinting through the maintenance shaft." },
-      "E04": { id: "E04", name: "Solvent-Soaked Workshop Rag", cat: "CHEMICAL", rel: "CRITICAL PROOF", desc: "Industrial acetone used to dissolve anti-shatter glass sealant around the Star of Alexandria." },
-      "E05": { id: "E05", name: "Loan Shark Repossession Notice", cat: "DOCUMENT", rel: "MOTIVE EVIDENCE", desc: "Final notice demanding £12,000 from Marcus Cruz by midnight under threat of violence." },
-      "E06": { id: "E06", name: "Monogrammed Silk Umbrella", cat: "PERSONAL", rel: "RED HERRING", desc: "Belongs to Lady Catherine Sterling, who departed at 11:15 PM and forgot it by the pillar." },
-      "E07": { id: "E07", name: "Curator's Stolen Keycard Report", cat: "DOCUMENT", rel: "SUPPORTING PROOF", desc: "Notice proving Vance's secondary master pass was stolen from the guard desk." },
-      "E08": { id: "E08", name: "Chemical Inventory Incident Sheet", cat: "DOCUMENT", rel: "SUPPORTING PROOF", desc: "Confirms industrial solvent was logged as missing at 10:00 PM by Elena Rostova." },
-      "E09": { id: "E09", name: "Obsidian Hourglass Wax Seal", cat: "CONSPIRACY", rel: "HIDDEN SECRET", desc: "A black wax stamp depicting a winged hourglass—the signature of an underground syndicate." }
+      "E01": { id: "E01", name: "Poisoned Whisky Glass", cat: "CHEMICAL", rel: "CRITICAL PROOF", desc: "Crystal tumbler with lethal potassium cyanide residue coating the rim. Poison was ingested at approximately 11:15 PM." },
+      "E02": { id: "E02", name: "Havana Cigar Ash on Sill", cat: "PHYSICAL", rel: "CONTRADICTION PROOF", desc: "Distinct grey-white cigar ash on the study windowsill. Premium Vuelta Abajo Havana leaf, smoked exclusively by Vincent Croft." },
+      "E03": { id: "E03", name: "Cracked Gold Pocket Watch", cat: "PHYSICAL", rel: "DECISIVE EVIDENCE", desc: "18k gold pocket watch smashed during the struggle, hands stopped at 11:15 PM. Blood drop on dial and monogrammed 'V.C.' on reverse." },
+      "E04": { id: "E04", name: "Burnt Will in Fireplace", cat: "DOCUMENT", rel: "MOTIVE PROOF", desc: "Lord Sterling's drafted testament revoking all bequests to Lady Evelyn over secret Monte Carlo gambling debts." },
+      "E05": { id: "E05", name: "Empty Cyanide Vial", cat: "CHEMICAL", rel: "CRITICAL PROOF", desc: "Amber prescription vial belonging to Dr. Bell. The lethal compound was stolen from his medical satchel during dinner." },
+      "E06": { id: "E06", name: "Muddy Bootprint (Size 10)", cat: "FORENSIC", rel: "CONTRADICTION PROOF", desc: "Fresh footprint in yellow terrace mud beneath the study window. Heavy size 10 riding boot tread matching Croft's boots." },
+      "E07": { id: "E07", name: "Untainted Scotch Decanter", cat: "FORENSIC", rel: "ELIMINATION PROOF", desc: "Pure Highland whisky served by Higgins. Proves the poison was not in the decanter and had to be added inside the study." },
+      "E08": { id: "E08", name: "Stolen Diamond Brooch", cat: "PHYSICAL", rel: "STOLEN PROPERTY", desc: "Lord Sterling's 50-carat antique diamond brooch taken from the wall safe and stashed in the garden hedge." },
+      "E09": { id: "E09", name: "Obsidian Hourglass Wax Seal", cat: "CONSPIRACY", rel: "HIDDEN SECRET", desc: "Crimson wax seal stamped on the wall safe depicting an hourglass with raven wings—syndicate signature." },
+      "E10": { id: "E10", name: "Torn Green Velvet Hem", cat: "PHYSICAL", rel: "SUPPORTING PROOF", desc: "Snagged silk velvet thread from the drawing room armchair matching Lady Evelyn's tear in her dress hem." }
     },
     suspects: [
       {
-        id: "S01", name: "Arthur Vance", role: "Museum Curator",
-        charId: "vance", age: 52,
-        alibi: "I was locked inside my 3rd-floor office reviewing catalog proofs from midnight to 1:20 AM without leaving.",
-        motive: "The museum is under heavy debt, but insurance fraud would destroy our historical reputation.",
-        greeting: "Detective, please tell me the Star of Alexandria has been located! Our reputation is ruined!",
-        secret: "Curator Vance was heavily in debt from purchasing Renaissance artifacts on personal credit, but electronic office logs prove he never departed his desk.",
+        id: "S01", name: "Lady Evelyn Sterling", role: "Victim's Widow & Socialite",
+        charId: "sterling", age: 44,
+        alibi: "I was in my private boudoir powdering my face from 11:00 PM until the scream at 11:25 PM. Arthur was a generous husband; I had no reason to wish him dead!",
+        motive: "Arthur controlled our estate finances with an iron fist, but murder would leave me penniless.",
+        greeting: "Good evening, Inspector. Please be brief; my nerves are completely shattered by this tragedy.",
+        tell: "Continuously twists her emerald ring; green velvet evening dress has a visibly torn hem.",
+        secret: "Arthur had discovered her secret Monte Carlo gambling debts and drafted a new will disinheriting her completely.",
         isCulprit: false,
-        contradiction: { evId: "E07", res: "Curator Vance nods: 'Yes, my spare card was stolen days ago. The thief used my badge to frame me!'" }
+        contradictions: {
+          "E04": {
+            isDecisive: true,
+            cutIn: "OBJECTION!",
+            title: "The Burnt Will",
+            res: "Lady Evelyn gasps and turns deathly pale! She clutches her throat:\n'Arthur's will! Where did you find that?! Alright, yes! I went to his study at 10:45 PM to plead with him not to disinherit me!\nHe was furious, threw me out, and locked the deadbolt behind me! When the blackout happened at 11:15, I was downstairs in the parlour crying into my handkerchief!\nI swear he was alive and locked inside! I am NOT a killer!'",
+            expr: "broken",
+            points: 40,
+            heartRate: 142
+          },
+          "E10": {
+            isDecisive: false,
+            cutIn: "HOLD IT!",
+            title: "Torn Velvet Thread",
+            res: "Lady Evelyn touches her hem: 'Yes, that thread tore on the parlour armchair when I collapsed in tears after Arthur rejected me. Butler Higgins saw me in the parlour!'",
+            expr: "nervous",
+            points: 25,
+            heartRate: 120
+          }
+        },
+        contradiction: { evId: "E04", res: "Lady Evelyn gasps: 'Arthur was disinheriting me tonight! But when the blackout happened, I was crying in the parlour! He was alive and locked the door!'" }
       },
       {
-        id: "S02", name: "Marcus Cruz", role: "Night Security Guard",
-        charId: "cruz", age: 34,
-        alibi: "I was patrolling the North Wing gallery continuously from 1:00 AM to 1:20 AM. I swiped the terminal at 1:15 AM!",
-        motive: "I work for my wages, Detective. I have no interest in antique jewels.",
-        greeting: "Evening, Detective. Place is sealed tight. I followed patrol regulations to the letter.",
-        secret: "Cruz's daughter Sofia needed £12,000 for emergency medical surgeries. A syndicate agent named 'Cain' offered to pay the debt in exchange for the sapphire.",
+        id: "S02", name: "Dr. Arthur Bell", role: "Family Physician & Surgeon",
+        charId: "bell", age: 56,
+        alibi: "I was down in the wine cellar selecting a vintage port for dinner when the power died. Lord Sterling had a delicate heart; this must have been heart failure!",
+        motive: "Lord Sterling was my closest friend and patron. His grants funded my free clinic.",
+        greeting: "Inspector, this is a terrible tragedy. Lord Sterling's cardiovascular system was notoriously fragile.",
+        tell: "Continuously cleans his spectacles with trembling fingers; collar is damp with nervous sweat.",
+        secret: "Dr. Bell realized during dinner that someone had stolen a lethal vial of potassium cyanide from his medical bag.",
+        isCulprit: false,
+        contradictions: {
+          "E05": {
+            isDecisive: true,
+            cutIn: "OBJECTION!",
+            title: "Empty Cyanide Vial",
+            res: "Dr. Bell drops his spectacles on the floor with a clatter! His hands tremble violently:\n'My cyanide bottle! Heavens above! Inspector, someone stole that vial from my leather satchel in the coat closet during dinner!\nI noticed it was missing at 11:00 PM and was frantically searching the halls for it!\nArthur didn't die of a heart attack—he was murdered with my stolen chemicals! But I swear before God I did not administer it!'",
+            expr: "surprised",
+            points: 40,
+            heartRate: 145
+          },
+          "E01": {
+            isDecisive: false,
+            cutIn: "HOLD IT!",
+            title: "Cyanide Residue",
+            res: "Dr. Bell recoils: 'Bitter almonds... potassium cyanide! That confirms my worst nightmare! The thief who looted my satchel poisoned Arthur's glass!'",
+            expr: "worried",
+            points: 25,
+            heartRate: 130
+          }
+        },
+        contradiction: { evId: "E05", res: "Dr. Bell drops his spectacles: 'Someone stole that cyanide vial from my satchel during dinner! Arthur was poisoned with my stolen chemicals, but I didn't do it!'" }
+      },
+      {
+        id: "S03", name: "Vincent Croft", role: "Speculative Mining Investor & Partner",
+        charId: "croft", age: 38,
+        alibi: "I was enjoying a peaceful Havana cigar outside on the veranda under the dry awning the entire evening. Never went near the study or the garden!",
+        motive: "Arthur and I were business partners. He was preparing to wire £20,000 to finance our South African venture tonight.",
+        greeting: "Evening, Inspector. Dreadful business, but wealthy old men make many enemies, don't they?",
+        tell: "Smells heavily of Havana tobacco; knuckles scraped; riding boots caked in wet yellow terrace mud.",
+        secret: "Croft's mining syndicate was an outright fraud. Lord Sterling discovered the embezzlement and threatened Croft with Scotland Yard and 20 years in prison unless repaid by midnight.",
         isCulprit: true,
+        contradictions: {
+          "E03": {
+            isDecisive: true,
+            cutIn: "OBJECTION!",
+            title: "Cracked Gold Watch",
+            res: "Croft's smug grin instantly vanishes. His eyes bulge as he stares at the bloodstained watch in horror:\n'You... where the devil did you dig that up?! Arthur grabbed my wrist as he went down...\nDammit! He had millions and was going to throw me in prison over twenty thousand pounds!\nI stole the poison from Bell's bag at dinner, slipped it in Arthur's whisky, and cracked the wall safe for the diamond!\nHe was supposed to fall asleep quietly, but he grabbed me as the storm hit! I had no choice!'",
+            expr: "broken",
+            points: 50,
+            heartRate: 168
+          },
+          "E02": {
+            isDecisive: false,
+            cutIn: "HOLD IT!",
+            title: "Havana Cigar Ash on Sill",
+            res: "Croft flinches, nervously dropping his hand from his pocket:\n'C-cigar ash?! Alright, so what?! Maybe the wind blew some ash through the open terrace window! That doesn't prove I entered the study!'\n(His heart rate surges to 138 BPM; his alibi of staying far away is crumbling!)",
+            expr: "nervous",
+            points: 30,
+            heartRate: 138
+          },
+          "E06": {
+            isDecisive: false,
+            cutIn: "TAKE THAT!",
+            title: "Muddy Bootprint (Size 10)",
+            res: "Croft stammers, looking down at his yellow mud-caked boots:\n'Confound it! Fine, I stepped into the flowerbed under the window when the lightning flashed! But that doesn't make me a murderer!'\n(His claim of staying under the dry awning is completely shattered!)",
+            expr: "nervous",
+            points: 30,
+            heartRate: 142
+          },
+          "E08": {
+            isDecisive: false,
+            cutIn: "TAKE THAT!",
+            title: "Stolen Diamond Brooch",
+            res: "Croft breaks out in a cold sweat: 'The 50-carat brooch... found in the hedge?! I... someone must have thrown it out the window during the panic!'",
+            expr: "nervous",
+            points: 35,
+            heartRate: 150
+          }
+        },
         contradiction: {
           evId: "E03",
-          res: "Cruz's face pales as you display the server log: 'Vance's badge was swiped at the basement power breaker at 1:12 AM, then at the North Wing at 1:15 AM! Only the guard on duty could have sprinted through the staff passage!' Cruz falls to his knees: 'I had to do it... the loan sharks were going to break my legs tonight!'"
+          res: "Croft's smug grin vanishes. 'Arthur grabbed my wrist as he went down... Dammit! He was going to throw me in prison! I stole the poison from Bell's bag, slipped it in Arthur's whisky, and forced the safe!'"
         }
       },
       {
-        id: "S03", name: "Elena Rostova", role: "Master Conservator",
-        charId: "elena", age: 29,
-        alibi: "I left the museum at 10:30 PM after logging the missing solvent with security and was asleep at home.",
-        motive: "I dedicate my life to preserving art, not pawning stolen artifacts.",
-        greeting: "Good evening. If this is about the missing solvent, I reported the theft to Guard Cruz at 10:00 PM sharp.",
-        secret: "Elena suspected Cruz was in trouble weeks ago when suspicious men in dark trench coats visited the staff entrance.",
-        isCulprit: false,
-        contradiction: { evId: "E08", res: "Elena sighs: 'My lab inventory confirms I logged the theft hours before the heist.'" }
-      },
-      {
-        id: "S04", name: "Lady Catherine Sterling", role: "Benefactor & Trustee",
-        charId: "sterling", age: 58,
-        alibi: "I departed the museum reception at 11:15 PM in my private carriage and arrived home in Kensington.",
-        motive: "I donated that sapphire in honor of my late husband. Why on earth would I steal my own bequest?",
-        greeting: "This is outrageous! Scotland Yard should be hunting jewel thieves, not harassing patrons!",
-        secret: "Mentions her husband Victor Sterling was traveling on the midnight express to Glenridge, auditing suspicious financial losses.",
-        isCulprit: false,
-        contradiction: { evId: "E06", res: "Lady Sterling chuckles: 'My umbrella? I left it by the marble column during the patron tea!'" }
-      },
-      {
-        id: "W01", name: "Old Bert", role: "Night Janitor (Witness)",
-        charId: "bert", age: 67,
+        id: "W01", name: "James Higgins", role: "Head Butler (Witness)",
+        charId: "higgins", age: 62,
         isWitness: true,
-        testimony: "At 1:14 AM, right when the lights cut out, I was replacing filters near the basement breaker. Someone in heavy combat boots sprinted past me into the service corridor reeking of chemical solvent!",
-        greeting: "I told the constables already, Officer: heavy combat boots ran past the substation right as the lights died!",
-        secret: "Bert found a gold cigarette case with the letter 'C' near the basement entrance.",
+        testimony: "A dreadful night, Inspector. At 10:30 PM, I overheard Mr. Croft shouting violent threats at Lord Sterling through the study door. At 11:00 PM, I served Lord Sterling a fresh glass of Scotch from the sideboard decanter; the decanter was untainted. During the blackout at 11:15 PM, Lady Evelyn was downstairs in the parlour weeping. And when Mr. Croft stepped back inside from the garden, his riding boots were covered in wet yellow mud!",
+        greeting: "Good evening, Inspector. Sterling Manor has never witnessed such horror in my forty years of service.",
+        secret: "Higgins saw Croft lingering suspiciously by Dr. Bell's coat satchel before dinner.",
         isCulprit: false
       }
     ],
     timeline: [
-      { id: "T1", time: "01:00 AM", desc: "Guard Cruz logs the start of his North Wing gallery patrol.", contradictory: false },
-      { id: "T2", time: "01:10 AM", desc: "Curator Vance's secondary master keycard taken from guard station locker.", contradictory: false },
-      { id: "T3", time: "01:12 AM", desc: "Substation breaker door swiped open with Vance's stolen keycard.", contradictory: false },
-      { id: "T4", time: "01:14 AM", desc: "Main circuit breaker thrown; museum blacks out; Janitor Bert hears combat boots sprinting.", contradictory: false },
-      { id: "T5", time: "01:15 AM", desc: "North Wing terminal swiped with Vance's passcard (Impossible to traverse from basement on foot in 3 min without maintenance duct!).", contradictory: true },
-      { id: "T6", time: "01:18 AM", desc: "Emergency backup generators engage; vault found shattered and empty.", contradictory: false }
+      { id: "T1", time: "10:30 PM", desc: "Butler Higgins overhears violent threats as Lord Sterling demands Croft repay £20,000 or face prison.", contradictory: false },
+      { id: "T2", time: "10:45 PM", desc: "Lady Evelyn pleads with Lord Sterling regarding the will; Sterling deadbolts the study door.", contradictory: false },
+      { id: "T3", time: "11:00 PM", desc: "Butler Higgins delivers untainted Scotch tumbler to Lord Sterling; Dr. Bell discovers cyanide vial missing.", contradictory: false },
+      { id: "T4", time: "11:15 PM", desc: "Thunderstorm trips circuit breaker; scream heard; Lord Sterling poisoned; Croft's watch smashed at 11:15 PM in struggle.", contradictory: false },
+      { id: "T5", time: "11:17 PM", desc: "Croft claims he was peacefully smoking under the dry veranda awning the entire evening without moving.", contradictory: true },
+      { id: "T6", time: "11:25 PM", desc: "Emergency lamps lit; Butler Higgins and Dr. Bell force study door; safe emptied and Lord Sterling dead.", contradictory: false }
     ],
     deductions: [
-      { id1: "E01", id2: "E03", title: "Calculated Security Bypass", insight: "The fiber optic cut and timed card swipe prove an insider used a stolen badge to fake an alibi while cutting power." },
-      { id1: "E02", id2: "E05", title: "Guard Uniform & Debt Motive", insight: "Tactical size 10 boot prints match guard issue footwear, linking the scene to Cruz's £12,000 urgent debt." },
-      { id1: "E04", id2: "E08", title: "Premeditated Solvent Theft", insight: "The solvent rag in the basement chute matches the chemical reported stolen at 10:00 PM." },
-      { id1: "E05", id2: "E09", title: "Syndicate Blackmail Connection", insight: "Cruz's debt note was issued by front companies linked to the Obsidian Hourglass syndicate." }
+      { id1: "E01", id2: "E03", title: "Cyanide Poisoning & 11:15 PM Struggle", insight: "Lord Sterling ingested the poisoned whisky and violently struggled with Vincent Croft at exactly 11:15 PM!" },
+      { id1: "E01", id2: "E05", title: "Stolen Chemical Lethality", insight: "Lord Sterling's whisky was laced with cyanide stolen from Dr. Bell's medical satchel during dinner." },
+      { id1: "E02", id2: "E06", title: "Veranda Intrusion Traces", insight: "Havana cigar ash on the study sill and size 10 yellow mud bootprints directly contradict Croft's claim of remaining on the dry veranda." },
+      { id1: "E03", id2: "E08", title: "11:15 PM Struggle & Safe Robbery", insight: "The watch smashed at 11:15 PM with 'V.C.' monogram and blood links Vincent Croft directly to the murder and safe theft." },
+      { id1: "E04", id2: "E10", title: "Disinheritance Alibi Confirmation", insight: "The burnt will and torn velvet thread confirm Lady Evelyn was crying in the parlour after being locked out, clearing her." }
     ],
     eliminations: [
-      { id: "S01", name: "Arthur Vance", reason: "Eliminated: Electronic door logs confirm he was locked inside his 3rd-floor office from midnight to 1:20 AM." },
-      { id: "S03", name: "Elena Rostova", reason: "Eliminated: Laboratory logs show chemical bottles remained sealed; she logged the theft at 10:00 PM." },
-      { id: "S04", name: "Lady Catherine Sterling", reason: "Eliminated: Gatehouse logs and chauffeur confirm she departed at 11:15 PM and was in Kensington." }
+      { id: "S01", name: "Lady Evelyn Sterling", reason: "Eliminated: Locked out of the study at 10:45 PM; Butler Higgins confirms she was weeping in the parlour during the 11:15 PM blackout." },
+      { id: "S02", name: "Dr. Arthur Bell", reason: "Eliminated: Cyanide was stolen from his coat bag during dinner; wine cellar records and pantry logs confirm his absence during the murder." }
     ]
   },
   2: {
@@ -1046,7 +1119,8 @@ class WebGameApp {
 
   triggerAnimeCutIn(charId, text = "OBJECTION!") {
     this.cutinText.innerText = text;
-    this.cutinImg.style.backgroundImage = `url('assets/characters/${charId}_angry.png')`;
+    const imgName = charId === 'detective' ? 'detective_pointing' : `${charId}_angry`;
+    this.cutinImg.style.backgroundImage = `url('assets/characters/${imgName}.png')`;
     this.speedlinesEl.classList.add('active');
     this.cutinEl.classList.add('active');
     this.shakeScreen();
@@ -1370,71 +1444,137 @@ class WebGameApp {
     this.setBg('assets/backgrounds/interrogation_room.png');
     this.showPortrait(s.charId, 'neutral');
 
-    document.getElementById('contra-statement').innerText = `Suspect Claim: "${s.alibi}"`;
+    const statementEl = document.getElementById('contra-statement');
+    statementEl.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+        <span style="background:var(--gold); color:#000; font-size:0.85rem; font-weight:bold; padding:4px 12px; border-radius:4px;">${s.name} (${s.role})</span>
+        <span style="color:var(--text-dim); font-size:0.85rem;">Observed Tell: <em style="color:#fde047;">${s.tell || s.secret || 'Guarded'}</em></span>
+      </div>
+      <div style="font-size:1.15rem; color:#fff; font-weight:500; line-height:1.5;">Suspect Claim: &ldquo;${s.alibi}&rdquo;</div>
+    `;
+
     const grid = document.getElementById('contra-evidence-grid');
     grid.innerHTML = '';
 
     const curCase = CASE_DATA[this.state.caseNum];
-    this.state.discoveredEvidence.forEach(eid => {
-      const ev = curCase.evidence[eid];
-      if (!ev) return;
 
-      const card = document.createElement('div');
-      card.className = 'btn';
-      card.style.display = 'flex';
-      card.style.flexDirection = 'column';
-      card.style.alignItems = 'flex-start';
-      card.style.padding = '14px';
-      card.style.textAlign = 'left';
-
-      card.innerHTML = `
-        <span style="color:var(--gold); font-size:0.85rem; font-weight:bold;">${ev.id} • ${ev.cat}</span>
-        <strong style="color:#fff; font-size:1.05rem; margin:4px 0;">${ev.name}</strong>
-        <span style="color:var(--text-dim); font-size:0.8rem;">${ev.rel}</span>
+    // Check if player has found any evidence
+    if (this.state.discoveredEvidence.size === 0) {
+      grid.innerHTML = `
+        <div style="grid-column: 1 / -1; background:rgba(30,41,59,0.7); border:2px dashed var(--border); border-radius:8px; padding:32px; text-align:center;">
+          <h3 style="color:var(--gold); font-size:1.2rem; margin-bottom:10px;">No Evidence Discovered Yet!</h3>
+          <p style="color:var(--text-dim); font-size:0.95rem; margin-bottom:18px;">
+            You have not uncovered any clues in the manor rooms to challenge this suspect's statement.
+            Search the crime scenes first for physical and forensic proof!
+          </p>
+          <button class="btn btn-primary" onclick="window.gameApp.openInvestigation()">Go Search Manor Rooms &raquo;</button>
+        </div>
       `;
+    } else {
+      this.state.discoveredEvidence.forEach(eid => {
+        const ev = curCase.evidence[eid];
+        if (!ev) return;
 
-      card.onclick = () => this.submitContradiction(s, ev);
-      grid.appendChild(card);
-    });
+        const card = document.createElement('div');
+        card.className = 'btn';
+        card.style.display = 'flex';
+        card.style.flexDirection = 'column';
+        card.style.alignItems = 'flex-start';
+        card.style.padding = '14px';
+        card.style.textAlign = 'left';
+        card.style.cursor = 'pointer';
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:4px;">
+            <span style="color:var(--gold); font-size:0.85rem; font-weight:bold;">${ev.id} &bull; ${ev.cat}</span>
+            <span style="color:var(--cyan); font-size:0.75rem;">${ev.rel}</span>
+          </div>
+          <strong style="color:#fff; font-size:1.05rem; margin:2px 0 6px 0;">${ev.name}</strong>
+          <span style="color:var(--text-dim); font-size:0.8rem; line-height:1.4;">${ev.desc.slice(0, 95)}...</span>
+        `;
+
+        card.onclick = () => this.submitContradiction(s, ev);
+        grid.appendChild(card);
+      });
+    }
 
     document.getElementById('btn-contra-cancel').onclick = () => this.openInterrogation();
   }
 
   submitContradiction(s, ev) {
-    if (s.isCulprit && s.contradiction && s.contradiction.evId === ev.id) {
-      // Success! Play dramatic objection cut-in
+    // 1. Check if evidence matches any contradiction for this suspect
+    let match = null;
+    if (s.contradictions && s.contradictions[ev.id]) {
+      match = s.contradictions[ev.id];
+    } else if (s.contradiction && s.contradiction.evId === ev.id) {
+      match = {
+        isDecisive: s.isCulprit || true,
+        cutIn: "OBJECTION!",
+        title: "Contradiction Exposed",
+        res: s.contradiction.res,
+        expr: s.isCulprit ? "broken" : "shocked",
+        points: 40,
+        heartRate: s.isCulprit ? 165 : 140
+      };
+    }
+
+    if (match) {
+      // SUCCESS! Play dramatic objection cut-in
       this.audio.playObjection();
-      this.triggerAnimeCutIn('detective', 'OBJECTION!');
+      this.triggerAnimeCutIn('detective', match.cutIn || 'OBJECTION!');
       this.achievements.unlock('objection', this);
 
-      this.state.suspectHeartRates[s.id] = 148;
+      this.state.suspectHeartRates[s.id] = match.heartRate || 150;
       this.updateEKGForSuspect(s);
 
-      this.state.score += 50;
-      this.state.brokenAlibis.add(s.id);
-      this.state.leads.push(`${s.name}'s statement shattered using ${ev.id}!`);
+      const pts = match.points || 50;
+      this.state.score += pts;
+      if (match.isDecisive) {
+        this.state.brokenAlibis.add(s.id);
+      }
+      this.state.leads.push(`${s.name} confronted with [${ev.id}: ${ev.name}]!`);
       this.updateHUD();
 
       setTimeout(() => {
         this.openInterrogation();
-        this.showPortrait(s.charId, 'broken');
-        this.startDialogue([{ speaker: s.name, charId: s.charId, expr: 'broken', text: s.contradiction.res }]);
-        this.showToast("CONTRADICTION EXPOSED! Alibi Shattered! (+50 Points)", 4000);
+        const expr = match.expr || 'broken';
+        this.showPortrait(s.charId, expr);
+        this.startDialogue([{ speaker: s.name, charId: s.charId, expr: expr, text: match.res }]);
+        this.showToast(`CONTRADICTION EXPOSED! (+${pts} Points)`, 4000);
       }, 1400);
 
     } else {
-      // Failed!
-      this.audio.playBuzzer();
-      this.shakeScreen();
-      this.state.suspectHeartRates[s.id] = (this.state.suspectHeartRates[s.id] || 75) + 14;
-      this.updateEKGForSuspect(s);
-
+      // Clue does NOT contradict this suspect
+      this.audio.playTypewriter();
       this.state.score = Math.max(0, this.state.score - 15);
       this.updateHUD();
+      this.state.suspectHeartRates[s.id] = Math.min(130, (this.state.suspectHeartRates[s.id] || 75) + 6);
+      this.updateEKGForSuspect(s);
+
+      let dismissText = "";
+      if (s.id === "S03") { // Vincent Croft
+        if (ev.id === "E04") dismissText = "Lord Arthur's burnt will? What does his family inheritance dispute have to do with me, Inspector? I'm an investor, not his heir! Talk to Lady Evelyn!";
+        else if (ev.id === "E05") dismissText = "Dr. Bell's prescription vial? I don't practice medicine, Detective. Go wave that bottle in the doctor's face!";
+        else if (ev.id === "E01") dismissText = "Arthur's poisoned whisky glass? I wasn't even in the room! The butler delivered that drink, not me!";
+        else dismissText = "What does that prove against me, Detective? I told you, I was smoking peacefully under the veranda awning all evening!";
+      } else if (s.id === "S01") { // Lady Evelyn
+        if (ev.id === "E03") dismissText = "A gold pocket watch engraved 'V.C.'? Those are Vincent Croft's initials, Inspector, not mine! Why are you showing me Croft's watch?";
+        else if (ev.id === "E02") dismissText = "Havana cigar ash? I am a Victorian lady, Detective! I certainly do not smoke imported cigars!";
+        else if (ev.id === "E06") dismissText = "Size 10 riding boots? Look at my silk evening slippers! Only a gentleman would wear heavy riding boots in the garden!";
+        else dismissText = "That proves nothing against me, Detective! Check your facts before making reckless claims.";
+      } else if (s.id === "S02") { // Dr. Bell
+        if (ev.id === "E02") dismissText = "Cigar ash? I despise cigar smoke, Detective. It was Mr. Croft smoking Havana cigars on the terrace all evening.";
+        else if (ev.id === "E04") dismissText = "Lord Arthur's will? I am the family physician, Detective, not their solicitor. I know nothing of his inheritances.";
+        else if (ev.id === "E03") dismissText = "A smashed pocket watch with blood? Heavens, that looks like Mr. Croft's timepiece! Examine the monogram!";
+        else dismissText = "That evidence does not contradict my statement, Inspector. Arthur's heart was fragile, though someone stole my cyanide!";
+      } else {
+        dismissText = `${s.name} shakes their head: 'That clue has nothing to do with my statement, Detective. Re-read my alibi!'`;
+      }
+
       this.openInterrogation();
-      this.showPortrait(s.charId, 'angry');
-      this.startDialogue([{ speaker: s.name, charId: s.charId, expr: 'angry', text: "That proves nothing against me, Detective! Check your facts before making reckless claims." }]);
-      this.showToast("Contradiction Failed! (-15 Points)", 3000);
+      this.showPortrait(s.charId, 'neutral');
+      this.startDialogue([{ speaker: s.name, charId: s.charId, expr: 'neutral', text: dismissText }]);
+      this.showToast("That clue does not contradict this statement. (Tip: Re-read their alibi and observed tell!)", 4000);
     }
   }
 
@@ -2103,12 +2243,16 @@ class WebGameApp {
       let merit = 40;
 
       if (ev.id === 'E01' && this.state.caseNum === 1) {
-        formula = "UV Refraction Lambda = 365nm Polarized Field";
-        finding = "Micro-engraved coordinates matrix discovered on the sapphire facet. Links directly to the Obsidian Hourglass!";
+        formula = "Prussian Blue Hydrocyanic Acid Assay (FeSO4 + FeCl3)";
+        finding = "Potassium Cyanide (KCN) confirmed on crystal rim. Lethal dosage ingested at approximately 11:15 PM.";
         merit = 50;
       } else if (ev.id === 'E03' && this.state.caseNum === 1) {
-        formula = "Electronic Pulse Latency Analyzer";
-        finding = "Door server log reveals impossible 3-minute travel time between North Wing and Basement.";
+        formula = "Chronometer Micro-Stress & Forensic Serology";
+        finding = "Pocket watch mechanism shattered by violent impact at 11:15 PM. Blood traces match victim; reverse monogram 'V.C.' authenticated.";
+        merit = 45;
+      } else if (ev.id === 'E02' && this.state.caseNum === 1) {
+        formula = "Vuelta Abajo Tobacco Alkaloid Chromatography";
+        finding = "Premium Havana tobacco ash confirmed. Matches imported cigars smoked exclusively by Vincent Croft.";
         merit = 40;
       } else if (ev.id === 'E01' && this.state.caseNum === 2) {
         formula = "Prussian Blue Hydrocyanic Acid Assay";
@@ -2297,7 +2441,7 @@ class WebGameApp {
       this.state.energy -= 10;
       this.updateHUD();
       if (this.state.caseNum === 1) {
-        this.showToast("Hint: Compare Marcus Cruz's claimed patrol time with the Electronic Access Log (E03). Can a guard be in two places at once?", 6000);
+        this.showToast("Hint: Croft claims he was on the dry veranda and never went near the study. Check the study rug for what Arthur tore from the killer at 11:15 PM (E03), the windowsill for cigar ash (E02), and the garden for boot tracks (E06)!", 7000);
       } else if (this.state.caseNum === 2) {
         this.showToast("Hint: The Conductor saw gold eagle cufflinks on the tea recipient. Examine the runner track (E02)!", 6000);
       } else {

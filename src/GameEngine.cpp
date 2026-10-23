@@ -83,7 +83,7 @@ void GameEngine::startNewGame() {
     m_difficulty = static_cast<GameDifficulty>(diffChoice);
 
     std::cout << "\n" << UI::Color::CYAN << "Select Criminal Case File:" << UI::Color::RESET << "\n";
-    std::cout << "  [1] Case #1: The Midnight Museum Heist (Theft / Sensor Bypass)\n";
+    std::cout << "  [1] Case #1: The Poisoned Glass of Sterling Manor (Poisoning / Alibi Contradiction)\n";
     std::cout << "  [2] Case #2: The Last Train Mystery    (Poisoning / Alibi Deception)\n";
     std::cout << "  [3] Case #3: The Locked Room Incident  (Mechanical Clockwork Trap)\n\n";
     int caseChoice = UI::promptInt("Select case to open", 1, 3);

@@ -102,21 +102,21 @@ int main() {
     std::cout << "[RUNNING TEST 3/7] Suspect alibis and contradiction resolution..." << std::endl;
     {
         CaseFile cf(1);
-        auto cruz = cf.getSuspectById("S02");
-        assert(cruz != nullptr);
-        assert(!cruz->isAlibiBroken());
+        auto croft = cf.getSuspectById("S03");
+        assert(croft != nullptr);
+        assert(!croft->isAlibiBroken());
 
         std::string stmt, resolution;
 
         // Presenting unrelated evidence (E01) must fail and keep alibi intact
-        bool fail = cruz->testContradiction("E01", stmt, resolution);
+        bool fail = croft->testContradiction("E01", stmt, resolution);
         assert(!fail);
-        assert(!cruz->isAlibiBroken());
+        assert(!croft->isAlibiBroken());
 
-        // Presenting decisive contradictory evidence (E03 Access Log) shatters alibi
-        bool success = cruz->testContradiction("E03", stmt, resolution);
+        // Presenting decisive contradictory evidence (E03 Pocket Watch) shatters alibi
+        bool success = croft->testContradiction("E03", stmt, resolution);
         assert(success);
-        assert(cruz->isAlibiBroken());
+        assert(croft->isAlibiBroken());
         assert(!resolution.empty());
 
         std::cout << "  [PASS] Contradiction rejection and alibi breaking logic verified." << std::endl;
@@ -161,25 +161,25 @@ int main() {
         CaseFile cf(1);
 
         // Premature accusation: alibi not broken
-        auto premature = cf.evaluateAccusation("S02", "E03", "DEBT");
+        auto premature = cf.evaluateAccusation("S03", "E03", "DEBT");
         assert(premature.isCorrectCulprit);
         assert(!premature.isAlibiBroken); // Alibi not yet broken!
 
-        // Break Cruz's alibi
-        auto cruz = cf.getSuspectById("S02");
-        assert(cruz != nullptr);
-        cruz->setAlibiBroken(true);
+        // Break Croft's alibi
+        auto croft = cf.getSuspectById("S03");
+        assert(croft != nullptr);
+        croft->setAlibiBroken(true);
 
-        // Flawless accusation: correct suspect (S02), key evidence (E03), correct motive (DEBT)
-        auto flawless = cf.evaluateAccusation("S02", "E03", "DEBT");
+        // Flawless accusation: correct suspect (S03), key evidence (E03), correct motive (DEBT)
+        auto flawless = cf.evaluateAccusation("S03", "E03", "DEBT");
         assert(flawless.isCorrectCulprit);
         assert(flawless.isAlibiBroken);
         assert(flawless.hasKeyEvidence);
         assert(flawless.isMotiveCorrect);
         assert(flawless.scoreAwarded > 0);
-        assert(flawless.suspectEliminations.size() >= 3);
+        assert(flawless.suspectEliminations.size() >= 2);
 
-        // False accusation: innocent suspect Vance (S01)
+        // False accusation: innocent suspect Evelyn (S01)
         auto falseAcc = cf.evaluateAccusation("S01", "E01", "DEBT");
         assert(!falseAcc.isCorrectCulprit);
 
@@ -195,8 +195,8 @@ int main() {
         CaseFile cf(1);
         cf.markEvidenceDiscovered("E01");
         cf.markEvidenceDiscovered("E03");
-        auto cruz = cf.getSuspectById("S02");
-        if (cruz) cruz->setAlibiBroken(true);
+        auto croft = cf.getSuspectById("S03");
+        if (croft) croft->setAlibiBroken(true);
 
         Detective det("D01", "Sherlock", "SCOT-7749", "Chief Inspector");
         det.setScore(380);

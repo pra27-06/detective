@@ -21,38 +21,41 @@ This document provides a comprehensive test plan for manual and automated verifi
 
 ## 2. Complete Case Walkthroughs (Flawless S-Rank Solutions)
 
-### Case 1: The Midnight Museum Heist
-- **Goal:** Expose Night Guard Marcus Cruz (`S02`) for the theft of the 45-carat sapphire.
-- **Crime Time:** 1:15 AM, Friday
+### Case 1: The Poisoned Glass of Sterling Manor
+- **Goal:** Expose speculative mining partner Vincent Croft (`S03`) for the cyanide poisoning of Lord Arthur Sterling and theft of the 50-carat diamond.
+- **Crime Time:** 11:15 PM, Friday
 - **Solution Blueprint:**
   1. **Investigate Scenes:**
-     - Go to `Scene 1: The Sapphire Display Vault`:
-       - Inspect `Shattered Pedestal` -> Discover `E01: Cut Fiber Optic Cable`.
-       - Inspect `Vault Floor & Mud Traces` -> Discover `E02: Tactical Boot Mudprint`.
-       - Inspect `Forgotten Silk Umbrella` -> Discover `E06: Silk Monogrammed Umbrella` (*Red Herring #1*).
-     - Go to `Scene 2: Basement Electrical Substation`:
-       - Inspect `Security Terminal Server` -> Discover `E03: Electronic Access Log Tape` (*Critical Key Evidence*).
-       - Inspect `Disposal Chute` -> Discover `E04: Solvent-Soaked Chemical Rag`.
-       - Inspect `Chemical Incident Logbook` -> Discover `E08: Solvent Theft Report Sheet`.
-     - Go to `Scene 3: Security Guard Locker Room`:
-       - Inspect `Locker #4 (M. Cruz)` -> Discover `E05: Blackwood Syndicate Debt Ledger`.
-       - Inspect `Curator's Mail Cubby` -> Discover `E07: Insurance Reassessment Catalog` (*Red Herring #2*).
+     - Go to `Scene 1: The Master Study (Crime Scene)`:
+       - Inspect `Lord Sterling's Study Desk` -> Discover `E01: Poisoned Whisky Glass` (*Lethal cyanide residue*).
+       - Inspect `Study Terrace Window Sill` -> Discover `E02: Havana Cigar Ash on Sill` (*Vuelta Abajo tobacco*).
+       - Inspect `Persian Rug near Desk` -> Discover `E03: Cracked Gold Pocket Watch` (*Stopped at 11:15 PM, "V.C."*).
+       - Inspect `Forced Wall Safe Alcove` -> Discover `E09: Obsidian Hourglass Wax Seal`.
+     - Go to `Scene 2: The Drawing Room & Parlour`:
+       - Inspect `Marble Fireplace Hearth` -> Discover `E04: Burnt Will in Fireplace` (*Revoking Evelyn's inheritance*).
+       - Inspect `Sideboard & Bar Cart` -> Discover `E07: Untainted Scotch Decanter` (*Untainted whisky*).
+       - Inspect `Emerald Velvet Armchair` -> Discover `E10: Torn Green Velvet Hem`.
+     - Go to `Scene 3: The Veranda & Garden Terrace`:
+       - Inspect `Rain-Soaked Flowerbed` -> Discover `E06: Muddy Bootprint (Size 10)` (*Yellow terrace mud*).
+       - Inspect `Coat Rack / Medical Satchel` -> Discover `E05: Empty Cyanide Vial` (*Dr. Bell's stolen vial*).
+       - Inspect `Garden Hedge Bush` -> Discover `E08: Stolen Diamond Brooch` (*Stolen from wall safe*).
   2. **Interrogate & Expose Contradictions:**
-     - Question `S03: Elena Rostova` -> Select `[4] [CLUE UNLOCKED] Ask about Solvent Theft Log (E08)` -> Elena confirms she logged the missing solvent at 10 PM.
-     - Question `S04: Lady Catherine Sterling` -> Select `[4] [CLUE UNLOCKED] Ask about Silk Umbrella (E06)` -> Lady Catherine identifies her forgotten umbrella, dispelling suspicion.
-     - Question `S01: Arthur Vance` -> Select `[4] CONFRONT WITH CONTRADICTION` with `E03` -> Vance admits his backup badge was stolen from his drawer.
-     - Question `S02: Marcus Cruz`:
-       - Select `[5] CONFRONT WITH CONTRADICTION` with `E03` -> Cruz's North Wing alibi shatters against the impossible basement-to-north travel timing!
-       - Select `[5] CONFRONT WITH CONTRADICTION` with `E02` -> Cross-hatch boot tread matches his uniform boots.
+     - Question `S01: Lady Evelyn Sterling` -> Select `CONFRONT CONTRADICTION` with `E04: Burnt Will` -> Lady Evelyn admits she pleaded with Arthur at 10:45 PM and was crying in the parlour during the 11:15 PM blackout.
+     - Question `S02: Dr. Arthur Bell` -> Select `CONFRONT CONTRADICTION` with `E05: Empty Cyanide Vial` -> Dr. Bell admits his medical cyanide was stolen from his bag during dinner.
+     - Question `S03: Vincent Croft`:
+       - Select `CONFRONT CONTRADICTION` with `E03: Cracked Gold Pocket Watch` -> OBJECTION! Croft breaks down: Arthur grabbed his wrist at 11:15 PM as the cyanide took effect!
+       - Select `CONFRONT CONTRADICTION` with `E02: Havana Cigar Ash` -> HOLD IT! Shatters his claim of staying on the veranda.
+       - Select `CONFRONT CONTRADICTION` with `E06: Muddy Bootprint` -> TAKE THAT! Proves he stepped in the mud under the study window.
   3. **Clue Board Deductions:**
-     - Connect `E01` and `E03` -> Synthesizes *"Calculated Security Bypass"*.
-     - Connect `E02` and `E05` -> Synthesizes *"Guard Uniform & Desperation"*.
-     - Connect `E04` and `E08` -> Synthesizes *"Premeditated Solvent Theft"*.
+     - Connect `E01` and `E05` -> Synthesizes *"Stolen Chemical Lethality"*.
+     - Connect `E02` and `E06` -> Synthesizes *"Veranda Intrusion Traces"*.
+     - Connect `E03` and `E08` -> Synthesizes *"11:15 PM Struggle & Safe Robbery"*.
+     - Connect `E04` and `E10` -> Synthesizes *"Disinheritance Alibi Confirmation"*.
   4. **Final Accusation:**
-     - Select `[9] Submit Final Accusation to Magistrate`.
-     - Step 1 (Culprit): `S02` (Marcus Cruz)
-     - Step 2 (Decisive Evidence): `E03` (Electronic Access Log Tape)
-     - Step 3 (Motive): `[1] Financial Debt / Blackmail`
+     - Select `Submit Final Accusation to Magistrate`.
+     - Step 1 (Culprit): `S03` (Vincent Croft)
+     - Step 2 (Decisive Evidence): `E03` (Cracked Gold Pocket Watch)
+     - Step 3 (Motive): `[1] Financial Debt / Syndicate Coercion` (Ultimatum on £20,000 debt)
      - *Outcome:* **MASTER DETECTIVE — FLAWLESS INDICTMENT!** Full confession obtained; Grade **S**.
 
 ---

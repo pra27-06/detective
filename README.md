@@ -96,7 +96,7 @@ All editions **share 100% of the underlying object-oriented game logic** (`CaseF
 
 - **Standard C++17 Only:** Zero external third-party installations. Compiles cleanly with MinGW `g++`.
 - **Three Original Mystery Cases:**
-  1. *The Midnight Museum Heist:* Grand larceny of the 45-carat sapphire during a deliberate 4-minute blackout.
+  1. *The Poisoned Glass of Sterling Manor:* Lord Arthur Sterling is poisoned in his locked study during a thunderstorm blackout.
   2. *The Last Train Mystery:* Fast-acting cyanide poisoning of a shipping tycoon aboard an express liner with no stops.
   3. *The Locked Room Incident:* Homicide of an eccentric clockmaker inside a study bolted from the inside.
 - **Deep Mystery Design:**

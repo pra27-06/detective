@@ -330,6 +330,175 @@ def create_scene_locker_bg():
     im = draw_vignette(im, 0.4)
     return im
 
+def create_scene_study_bg():
+    w, h = 1280, 720
+    im = Image.new("RGB", (w, h), (24, 18, 16))
+    draw = ImageDraw.Draw(im)
+
+    # Victorian Wood Paneled Study Walls
+    for y in range(h):
+        r = int(22 + (y / h) * 16)
+        g = int(14 + (y / h) * 10)
+        b = int(12 + (y / h) * 8)
+        draw.line([(0, y), (w, y)], fill=(r, g, b))
+
+    # Bookshelves on left & right
+    for bx in [60, 180, 1020, 1140]:
+        draw.rectangle([bx, 60, bx + 90, 520], fill=(42, 28, 20), outline=(65, 45, 30), width=2)
+        for shelf_y in range(120, 520, 70):
+            draw.line([(bx, shelf_y), (bx + 90, shelf_y)], fill=(75, 50, 35), width=4)
+            # Books on shelves
+            for book_i in range(8):
+                book_x = bx + 6 + book_i * 10
+                book_h = 45 + (book_i * 7) % 18
+                b_color = [(120, 30, 30), (30, 60, 90), (40, 80, 45), (140, 110, 40)][book_i % 4]
+                draw.rectangle([book_x, shelf_y - book_h, book_x + 8, shelf_y - 2], fill=b_color)
+
+    # Arched Gothic Window in Center with Thunderstorm Flash
+    win_cx = 640
+    win_w = 340
+    draw.rectangle([win_cx - win_w//2, 80, win_cx + win_w//2, 460], fill=(20, 30, 45), outline=(65, 45, 30), width=8)
+    draw.arc([win_cx - win_w//2, 20, win_cx + win_w//2, 140], 180, 360, fill=(65, 45, 30), width=8)
+    # Lightning streak in window
+    draw.line([(win_cx - 40, 80), (win_cx - 10, 160), (win_cx - 30, 240), (win_cx + 20, 360)], fill=(220, 240, 255), width=3)
+    # Window panes / mullions
+    draw.line([(win_cx, 80), (win_cx, 460)], fill=(50, 35, 25), width=4)
+    draw.line([(win_cx - win_w//2, 270), (win_cx + win_w//2, 270)], fill=(50, 35, 25), width=4)
+    # Rain streaks on glass
+    for ri in range(25):
+        rx = win_cx - 140 + (ri * 13) % 280
+        ry = 90 + (ri * 23) % 340
+        draw.line([(rx, ry), (rx - 4, ry + 16)], fill=(120, 150, 190, 120), width=1)
+
+    # Velvet drapes around window
+    draw.polygon([(win_cx - win_w//2 - 40, 60), (win_cx - win_w//2 + 20, 60), (win_cx - win_w//2, 480), (win_cx - win_w//2 - 60, 480)], fill=(90, 15, 25))
+    draw.polygon([(win_cx + win_w//2 - 20, 60), (win_cx + win_w//2 + 40, 60), (win_cx + win_w//2 + 60, 480), (win_cx + win_w//2, 480)], fill=(90, 15, 25))
+
+    # Polished Parquet Floor
+    draw.rectangle([0, 500, w, h], fill=(35, 22, 16))
+    for fy in range(510, h, 24):
+        draw.line([(0, fy), (w, fy)], fill=(48, 30, 22), width=1)
+    # Crimson Persian Rug in Center
+    draw.polygon([(win_cx - 320, 530), (win_cx + 320, 530), (win_cx + 420, h - 20), (win_cx - 420, h - 20)], fill=(110, 25, 30), outline=(200, 160, 60), width=4)
+
+    # Large Mahogany Study Desk in Foreground
+    desk_top_y = 470
+    draw.polygon([(win_cx - 260, desk_top_y), (win_cx + 260, desk_top_y), (win_cx + 310, desk_top_y + 110), (win_cx - 310, desk_top_y + 110)], fill=(55, 32, 22), outline=(85, 50, 35), width=3)
+    draw.rectangle([win_cx - 290, desk_top_y + 110, win_cx + 290, desk_top_y + 180], fill=(42, 24, 16), outline=(70, 40, 28), width=2)
+
+    # Open Wall Safe in background alcove
+    safe_x = 920
+    draw.rectangle([safe_x, 260, safe_x + 90, 380], fill=(25, 28, 32), outline=(80, 85, 95), width=4)
+    # Safe door swung open
+    draw.polygon([(safe_x + 90, 260), (safe_x + 150, 240), (safe_x + 150, 400), (safe_x + 90, 380)], fill=(45, 50, 58), outline=(90, 100, 115), width=3)
+    draw.ellipse([safe_x + 115, 310, safe_x + 135, 330], fill=(180, 150, 50)) # dial
+
+    im = draw_vignette(im, 0.45)
+    return im
+
+def create_scene_parlour_bg():
+    w, h = 1280, 720
+    im = Image.new("RGB", (w, h), (26, 20, 18))
+    draw = ImageDraw.Draw(im)
+
+    # Drawing Room Damask Wallpaper
+    for y in range(h):
+        r = int(32 + (y / h) * 14)
+        g = int(22 + (y / h) * 10)
+        b = int(18 + (y / h) * 8)
+        draw.line([(0, y), (w, y)], fill=(r, g, b))
+
+    # Marble Fireplace on Left
+    fp_x = 180
+    draw.rectangle([fp_x, 180, fp_x + 280, 580], fill=(210, 205, 200), outline=(240, 235, 230), width=4) # Marble mantle
+    draw.rectangle([fp_x - 20, 160, fp_x + 300, 200], fill=(230, 225, 220), outline=(255, 250, 245), width=3) # Mantle shelf
+    # Fireplace hearth (dark interior)
+    draw.rectangle([fp_x + 40, 300, fp_x + 240, 560], fill=(15, 12, 10), outline=(80, 70, 65), width=4)
+    # Glowing fire embers
+    draw.ellipse([fp_x + 70, 480, fp_x + 210, 550], fill=(180, 50, 20))
+    draw.ellipse([fp_x + 90, 495, fp_x + 190, 545], fill=(240, 120, 30))
+    draw.ellipse([fp_x + 115, 510, fp_x + 165, 540], fill=(255, 220, 80))
+
+    # Golden Ornate Wall Mirror above fireplace
+    draw.ellipse([fp_x + 30, 40, fp_x + 250, 150], fill=(45, 38, 42), outline=(220, 180, 60), width=5)
+
+    # Rich Velvet Armchair beside Hearth
+    draw.polygon([(fp_x + 340, 440), (fp_x + 470, 440), (fp_x + 490, 640), (fp_x + 320, 640)], fill=(20, 75, 50)) # Emerald green velvet
+    draw.rectangle([fp_x + 330, 340, fp_x + 480, 450], fill=(25, 90, 60), outline=(15, 55, 35), width=3) # Chair back
+
+    # Sideboard & Bar Cart on Right
+    sb_x = 880
+    draw.rectangle([sb_x, 340, sb_x + 320, 580], fill=(55, 35, 25), outline=(85, 55, 40), width=3)
+    # Mirror backsplash
+    draw.rectangle([sb_x + 20, 140, sb_x + 300, 340], fill=(35, 42, 50), outline=(180, 150, 60), width=4)
+    # Crystal decanters & glasses on sideboard
+    for gi in range(4):
+        gx = sb_x + 50 + gi * 60
+        draw.rectangle([gx, 300, gx + 25, 338], fill=(200, 225, 245, 160), outline=(240, 250, 255), width=1)
+        draw.rectangle([gx + 8, 285, gx + 17, 300], fill=(220, 240, 255, 180))
+
+    # Polished oak floor
+    draw.rectangle([0, 560, w, h], fill=(38, 26, 20))
+    for y in range(570, h, 20):
+        draw.line([(0, y), (w, y)], fill=(50, 34, 26), width=1)
+
+    im = draw_vignette(im, 0.4)
+    return im
+
+def create_scene_terrace_bg():
+    w, h = 1280, 720
+    im = Image.new("RGB", (w, h), (12, 16, 24))
+    draw = ImageDraw.Draw(im)
+
+    # Night Storm Sky with Dark Rolling Clouds
+    for y in range(h):
+        r = int(10 + (y / h) * 12)
+        g = int(14 + (y / h) * 16)
+        b = int(22 + (y / h) * 26)
+        draw.line([(0, y), (w, y)], fill=(r, g, b))
+
+    # Lightning Flash in Upper Sky
+    draw.line([(780, 40), (740, 130), (765, 210), (720, 320)], fill=(225, 240, 255), width=3)
+    draw.line([(740, 130), (690, 180)], fill=(190, 215, 255), width=2)
+
+    # Distant manor gardens and stormy weeping willows
+    for tx in [80, 260, 440, 1000, 1160]:
+        draw.ellipse([tx - 90, 220, tx + 90, 440], fill=(16, 24, 22))
+
+    # Manor Veranda Covered Awning (Roof) on top
+    draw.polygon([(0, 0), (w, 0), (w, 110), (0, 140)], fill=(30, 35, 42), outline=(50, 58, 70), width=3)
+    # Veranda Pillars
+    for px in [160, 540, 920]:
+        draw.rectangle([px, 90, px + 40, 530], fill=(45, 52, 62), outline=(65, 75, 90), width=2)
+        # Hanging brass gas lantern
+        draw.rectangle([px + 45, 180, px + 75, 230], fill=(240, 190, 60), outline=(80, 60, 20), width=2)
+        draw.line([(px + 40, 170), (px + 60, 170), (px + 60, 180)], fill=(80, 60, 20), width=3)
+
+    # Stone Balustrade / Railing
+    rail_y = 440
+    draw.rectangle([0, rail_y, w, rail_y + 25], fill=(55, 62, 72), outline=(80, 90, 105), width=2)
+    for bx in range(20, w, 45):
+        draw.rectangle([bx, rail_y + 25, bx + 16, 530], fill=(48, 55, 65))
+    draw.rectangle([0, 530, w, 550], fill=(55, 62, 72))
+
+    # Wet Yellow Garden Mud & Flowerbed at Base
+    draw.rectangle([0, 550, w, h], fill=(32, 28, 22))
+    # Wet Yellow Mud Flakes
+    for my in range(560, h, 18):
+        draw.line([(0, my), (w, my)], fill=(45, 38, 28), width=1)
+    # Distinct Muddy Bootprint indentation near center-left
+    draw.ellipse([460, 610, 510, 635], fill=(22, 18, 14), outline=(75, 65, 35), width=2)
+    draw.ellipse([515, 615, 540, 632], fill=(22, 18, 14), outline=(75, 65, 35), width=2)
+
+    # Rain drops streaks
+    for ri in range(50):
+        rx = (ri * 29) % w
+        ry = (ri * 19) % (h - 100)
+        draw.line([(rx, ry), (rx - 6, ry + 22)], fill=(130, 160, 210, 90), width=1)
+
+    im = draw_vignette(im, 0.45)
+    return im
+
 def create_interrogation_bg():
     w, h = 1280, 720
     im = Image.new("RGB", (w, h), (12, 14, 18))
@@ -485,6 +654,34 @@ def create_anime_character(char_type, expression):
             py = 430 + int(math.sin(p / 8.0 * math.pi) * 16)
             draw.ellipse([px - 4, py - 4, px + 4, py + 4], fill=(255, 255, 250), outline=(200, 200, 200))
 
+    elif char_type == "croft": # Speculative mining partner (Dark olive-green coat, gold buttons, ascot)
+        draw.polygon([(head_cx - 190, 850), (head_cx - 160, 430), (head_cx - 90, 380),
+                      (head_cx + 90, 380), (head_cx + 160, 430), (head_cx + 190, 850)], fill=(32, 46, 36))
+        # Silk waistcoat
+        draw.polygon([(head_cx - 65, 420), (head_cx + 65, 420), (head_cx + 55, 750), (head_cx - 55, 750)], fill=(48, 68, 52))
+        # Brass buttons
+        for by in [460, 510, 560, 610]:
+            draw.ellipse([head_cx - 6, by - 6, head_cx + 6, by + 6], fill=(225, 190, 65))
+        # Gold ascot tie
+        draw.polygon([(head_cx - 28, 390), (head_cx + 28, 390), (head_cx + 22, 480), (head_cx, 510), (head_cx - 22, 480)], fill=(170, 145, 70))
+
+    elif char_type == "bell": # Family Physician (Navy blue professional suit, spectacles)
+        draw.polygon([(head_cx - 180, 850), (head_cx - 150, 430), (head_cx - 85, 380),
+                      (head_cx + 85, 380), (head_cx + 150, 430), (head_cx + 180, 850)], fill=(30, 40, 58))
+        # White shirt & dark tie
+        draw.polygon([(head_cx - 45, 380), (head_cx, 440), (head_cx + 45, 380)], fill=(240, 245, 250))
+        draw.polygon([(head_cx - 14, 430), (head_cx + 14, 430), (head_cx + 16, 560), (head_cx, 590), (head_cx - 16, 560)], fill=(18, 24, 38))
+
+    elif char_type == "higgins": # Head Butler (Black formal livery, white shirt & bowtie)
+        draw.polygon([(head_cx - 180, 850), (head_cx - 150, 430), (head_cx - 85, 380),
+                      (head_cx + 85, 380), (head_cx + 150, 430), (head_cx + 180, 850)], fill=(20, 20, 24))
+        # White wing-collar shirt
+        draw.polygon([(head_cx - 45, 380), (head_cx, 440), (head_cx + 45, 380)], fill=(250, 250, 252))
+        # Black bowtie
+        draw.polygon([(head_cx - 24, 410), (head_cx - 6, 420), (head_cx - 24, 430)], fill=(15, 15, 20))
+        draw.polygon([(head_cx + 24, 410), (head_cx + 6, 420), (head_cx + 24, 430)], fill=(15, 15, 20))
+        draw.ellipse([head_cx - 8, 412, head_cx + 8, 428], fill=(25, 25, 30))
+
     elif char_type == "bert": # Janitor (Denim overalls & gray shirt)
         draw.polygon([(head_cx - 190, 850), (head_cx - 160, 430), (head_cx - 85, 380),
                       (head_cx + 85, 380), (head_cx + 160, 430), (head_cx + 190, 850)], fill=(70, 75, 80))
@@ -527,9 +724,12 @@ def create_anime_character(char_type, expression):
     # 4. Hair Back
     hair_colors = {
         "cruz": (35, 38, 45),
+        "croft": (48, 36, 28),
         "vance": (180, 185, 195),
+        "bell": (175, 180, 190),
         "elena": (145, 75, 40),
         "sterling": (230, 200, 120),
+        "higgins": (130, 130, 135),
         "bert": (120, 120, 125),
         "detective": (45, 35, 28)
     }
@@ -739,6 +939,9 @@ def main():
         "scene_vault.png": create_scene_vault_bg(),
         "scene_substation.png": create_scene_substation_bg(),
         "scene_locker.png": create_scene_locker_bg(),
+        "scene_study.png": create_scene_study_bg(),
+        "scene_parlour.png": create_scene_parlour_bg(),
+        "scene_terrace.png": create_scene_terrace_bg(),
         "interrogation_room.png": create_interrogation_bg(),
         "clueboard_bg.png": create_clueboard_bg(),
         "courtroom.png": create_courtroom_bg()
@@ -753,9 +956,12 @@ def main():
         ("cruz", "neutral"), ("cruz", "nervous"), ("cruz", "angry"), ("cruz", "broken"),
         ("vance", "neutral"), ("vance", "worried"), ("vance", "surprised"),
         ("elena", "neutral"), ("elena", "thoughtful"), ("elena", "annoyed"),
-        ("sterling", "neutral"), ("sterling", "shocked"),
+        ("sterling", "neutral"), ("sterling", "shocked"), ("sterling", "nervous"), ("sterling", "broken"),
         ("bert", "neutral"), ("bert", "earnest"),
-        ("detective", "neutral"), ("detective", "pointing"), ("detective", "thinking")
+        ("croft", "neutral"), ("croft", "nervous"), ("croft", "angry"), ("croft", "broken"),
+        ("bell", "neutral"), ("bell", "worried"), ("bell", "surprised"),
+        ("higgins", "neutral"), ("higgins", "earnest"),
+        ("detective", "neutral"), ("detective", "pointing"), ("detective", "thinking"), ("detective", "angry")
     ]
     for char_type, expr in characters:
         fname = f"{char_type}_{expr}.png"

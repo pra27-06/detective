@@ -164,9 +164,9 @@ async def run_tests():
             pre_pen = await eval_js("window.gameApp.state.score")
             await eval_js("""
                 (() => {
-                    const cruz = CASE_DATA[1].suspects.find(s => s.id === 'S02');
+                    const croft = CASE_DATA[1].suspects.find(s => s.id === 'S03');
                     const wrong = CASE_DATA[1].evidence['E01'];
-                    window.gameApp.submitContradiction(cruz, wrong);
+                    window.gameApp.submitContradiction(croft, wrong);
                 })();
             """)
             post_pen = await eval_js("window.gameApp.state.score")
@@ -175,13 +175,13 @@ async def run_tests():
             # Valid contradiction
             await eval_js("""
                 (() => {
-                    const cruz = CASE_DATA[1].suspects.find(s => s.id === 'S02');
+                    const croft = CASE_DATA[1].suspects.find(s => s.id === 'S03');
                     const right = CASE_DATA[1].evidence['E03'];
-                    window.gameApp.submitContradiction(cruz, right);
+                    window.gameApp.submitContradiction(croft, right);
                 })();
             """)
             await asyncio.sleep(1.6)
-            assert await eval_js("window.gameApp.state.brokenAlibis.has('S02')") is True
+            assert await eval_js("window.gameApp.state.brokenAlibis.has('S03')") is True
             print("  [PASS] Contradiction penalty and decisive alibi break verified.")
 
             # Suite 4: Clue Board Deductions
@@ -200,7 +200,7 @@ async def run_tests():
             # Collapsed
             await eval_js("""
                 window.gameApp.openAccusation();
-                window.gameApp.state.accusedSuspect = 'S01'; // Curator Vance
+                window.gameApp.state.accusedSuspect = 'S01'; // Lady Evelyn Sterling
                 window.gameApp.state.accusedEvidence = 'E03';
                 window.gameApp.state.accusedMotive = 'DEBT';
                 window.gameApp.evaluateVerdict();
@@ -211,7 +211,7 @@ async def run_tests():
             # Master Sleuth
             await eval_js("""
                 window.gameApp.openAccusation();
-                window.gameApp.state.accusedSuspect = 'S02'; // Guard Cruz
+                window.gameApp.state.accusedSuspect = 'S03'; // Vincent Croft
                 window.gameApp.state.accusedEvidence = 'E03';
                 window.gameApp.state.accusedMotive = 'DEBT';
                 window.gameApp.evaluateVerdict();

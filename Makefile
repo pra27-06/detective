@@ -6,7 +6,8 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude -O2
 
 COMMON_SRCS = src/Character.cpp src/Detective.cpp src/Suspect.cpp src/Witness.cpp \
               src/Evidence.cpp src/CrimeScene.cpp src/ClueBoard.cpp src/Notebook.cpp \
-              src/CaseFile.cpp src/SaveManager.cpp src/TerminalUI.cpp
+              src/CaseFile.cpp src/SaveManager.cpp src/TerminalUI.cpp \
+              src/ForensicLab.cpp src/MindPalace.cpp src/PsychologicalProfile.cpp
 
 CONSOLE_SRCS = $(COMMON_SRCS) src/GameEngine.cpp src/main.cpp
 GUI_SRCS     = $(COMMON_SRCS) src/VNAssetManager.cpp src/VNRenderer.cpp \
